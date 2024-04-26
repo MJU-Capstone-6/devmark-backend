@@ -1,15 +1,16 @@
 package main
 
 import (
-	"net/http"
+	"log"
 
-	"github.com/labstack/echo/v4"
+	"github.com/MJU-Capstone-6/devmark-backend/internal/app"
 )
 
 func main() {
-	e := echo.New()
-	e.GET("/", func(c echo.Context) error {
-		return c.String(http.StatusOK, "devmark server")
-	})
-	e.Logger.Fatal(e.Start(":8080"))
+	application, err := app.InitApplication()
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Println(application.App.Port)
+	application.Run()
 }
