@@ -29,3 +29,4 @@ go.work
 .env
 postgres-data/
 sql/*.go
+.DS_Store

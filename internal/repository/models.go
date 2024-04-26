@@ -4,7 +4,23 @@
 
 package repository
 
+import (
+	"github.com/jackc/pgx/v5/pgtype"
+)
+
+type RefreshToken struct {
+	ID        int64            `json:"id"`
+	Token     pgtype.Text      `json:"token"`
+	UserID    pgtype.Int4      `json:"user_id"`
+	CreatedAt pgtype.Timestamp `json:"created_at"`
+	UpdatedAt pgtype.Timestamp `json:"updated_at"`
+}
+
 type User struct {
-	ID   int64
-	Name string
+	ID           int64            `json:"id"`
+	Username     pgtype.Text      `json:"username"`
+	Provider     pgtype.Text      `json:"provider"`
+	RefreshToken pgtype.Int4      `json:"refresh_token"`
+	CreatedAt    pgtype.Timestamp `json:"created_at"`
+	UpdatedAt    pgtype.Timestamp `json:"updated_at"`
 }

@@ -11,5 +11,5 @@ func (app *Application) InitRoutes() {
 func (app *Application) InitUserRoutes() {
 	e := app.Handler.Group("/user")
 	userController := user.InitController(app.DB)
-	e.POST("/", userController.CreateUser)
+	e.POST("", userController.CreateUser)
 }

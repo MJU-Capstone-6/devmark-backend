@@ -7,26 +7,56 @@ package repository
 
 import (
 	"context"
+
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 const create = `-- name: Create :one
-INSERT INTO users (name) VALUES ($1) RETURNING id, name
+INSERT INTO "user" (
+  "username",
+  "provider",
+  "refresh_token"
+) VALUES (
+  $1,
+  $2,
+  $3
+) RETURNING id, username, provider, refresh_token, created_at, updated_at
 `
 
-func (q *Queries) Create(ctx context.Context, name string) (User, error) {
-	row := q.db.QueryRow(ctx, create, name)
+type CreateParams struct {
+	Username     pgtype.Text `json:"username"`
+	Provider     pgtype.Text `json:"provider"`
+	RefreshToken pgtype.Int4 `json:"refresh_token"`
+}
+
+func (q *Queries) Create(ctx context.Context, arg CreateParams) (User, error) {
+	row := q.db.QueryRow(ctx, create, arg.Username, arg.Provider, arg.RefreshToken)
 	var i User
-	err := row.Scan(&i.ID, &i.Name)
+	err := row.Scan(
+		&i.ID,
+		&i.Username,
+		&i.Provider,
+		&i.RefreshToken,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
 	return i, err
 }
 
 const findUserByID = `-- name: FindUserByID :one
-SELECT id, name FROM users WHERE id = $1 LIMIT 1
+SELECT id, username, provider, refresh_token, created_at, updated_at FROM "user" WHERE "id" = $1 LIMIT 1
 `
 
 func (q *Queries) FindUserByID(ctx context.Context, id int64) (User, error) {
 	row := q.db.QueryRow(ctx, findUserByID, id)
 	var i User
-	err := row.Scan(&i.ID, &i.Name)
+	err := row.Scan(
+		&i.ID,
+		&i.Username,
+		&i.Provider,
+		&i.RefreshToken,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
 	return i, err
 }
