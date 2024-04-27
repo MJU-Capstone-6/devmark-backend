@@ -9,8 +9,8 @@ import (
 
 var serveCmd = &cobra.Command{
 	Use:   "serve",
-	Short: "Run Puddlee Backend Server",
-	Long: `Run Puddlee Backend Server on local.
+	Short: "Run Devmark Backend Server",
+	Long: `Run Devmark Backend Server on local.
 	configuration file lies on the config directory.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		err := Run()
