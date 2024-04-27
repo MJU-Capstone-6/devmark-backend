@@ -30,3 +30,4 @@ go.work
 postgres-data/
 sql/*.go
 .DS_Store
+tmp/
