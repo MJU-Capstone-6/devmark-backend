@@ -4,5 +4,5 @@ migration:
 	atlas schema apply --url ${url} --dev-url "docker://postgres" --to "file://db/schema.sql"
 
 run:
-	go run cmd/main.go
+	go run main.go serve
 	
