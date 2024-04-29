@@ -1,19 +1,33 @@
 package auth
 
 import (
+	"net/http"
+
+	"github.com/MJU-Capstone-6/devmark-backend/internal/config"
 	"github.com/jackc/pgx/v5"
 	"github.com/labstack/echo/v4"
 )
 
+const BASE_URL = "https://kapi.kakao.com/v2/user/me?secure_resource=true"
+
 type AuthController struct {
 	AuthService AuthService
+	KakaoInfo   config.Kakao
 }
 
 func (a *AuthController) GetKakaoUserInfo(ctx echo.Context) error {
-	return nil
+	key := ctx.Get("key")
+	if parsedKey, ok := key.(string); ok {
+		user, err := requestKakaoUserInfo(parsedKey)
+		if err != nil {
+			return err
+		}
+		return ctx.JSON(http.StatusOK, user)
+	}
+	return ctx.JSON(http.StatusUnauthorized, "")
 }
 
-func InitAuthController(conn *pgx.Conn) *AuthController {
+func InitAuthController(conn *pgx.Conn, kakaoInfo config.Kakao) *AuthController {
 	authService := AuthService{Conn: conn}
-	return &AuthController{AuthService: authService}
+	return &AuthController{AuthService: authService, KakaoInfo: kakaoInfo}
 }

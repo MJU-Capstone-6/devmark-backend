@@ -7,3 +7,6 @@ db:
 app:
   port: 8080
   is_dev_mode: true
+kakao:
+  client_key: df54d00443f5ef6a78735a9a4b4e1737
+  client_secret: XEt8j0JXUa0SFHkcx2i2Nf3Pj55wTNIJ

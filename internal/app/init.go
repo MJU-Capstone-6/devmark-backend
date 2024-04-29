@@ -33,7 +33,7 @@ func InitApplication() (*Application, error) {
 }
 
 func (app *Application) Run() error {
-	if err := app.Handler.Start(fmt.Sprintf(":%s", app.App.Port)); err != nil {
+	if err := app.Handler.Start(fmt.Sprintf(":%s", app.Config.App.Port)); err != nil {
 		return err
 	}
 	defer app.DB.Close(context.Background())
@@ -53,7 +53,7 @@ func setApplication() error {
 	handler := echo.New()
 	app = &Application{
 		DB:      db,
-		App:     applicationConfig.App,
+		Config:  applicationConfig,
 		Queries: *repository.New(db),
 		Handler: handler,
 	}
