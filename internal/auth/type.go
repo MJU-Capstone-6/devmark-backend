@@ -23,3 +23,7 @@ type KakaoUser struct {
 type Properties struct {
 	Nickname string `json:"nickname"`
 }
+
+type GetKakaoInfoResponse struct {
+	AccessKey string `json:"access_key"`
+}

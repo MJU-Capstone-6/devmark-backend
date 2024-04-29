@@ -1,6 +1,6 @@
 CREATE TABLE "user" (
   "id" bigserial PRIMARY KEY,
-  "username" varchar,
+  "username" varchar UNIQUE,
   "provider" varchar,
   "refresh_token" int UNIQUE,
   "created_at" timestamp DEFAULT CURRENT_TIMESTAMP,

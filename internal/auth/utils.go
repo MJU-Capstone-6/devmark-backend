@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
 )
 
@@ -15,7 +14,6 @@ func requestKakaoUserInfo(key string) (*KakaoUser, error) {
 		return nil, err
 	}
 	bearerToken := fmt.Sprintf("Bearer %s", key)
-	log.Println(bearerToken)
 	req.Header.Set("Authorization", bearerToken)
 
 	resp, err := client.Do(req)
