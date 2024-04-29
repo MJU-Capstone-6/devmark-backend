@@ -1,9 +1,11 @@
 package auth
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/MJU-Capstone-6/devmark-backend/internal/config"
+	customerror "github.com/MJU-Capstone-6/devmark-backend/internal/customError"
 	"github.com/jackc/pgx/v5"
 	"github.com/labstack/echo/v4"
 )
@@ -24,7 +26,7 @@ func (a *AuthController) GetKakaoUserInfo(ctx echo.Context) error {
 		}
 		return ctx.JSON(http.StatusOK, user)
 	}
-	return ctx.JSON(http.StatusUnauthorized, "")
+	return ctx.JSON(http.StatusUnauthorized, customerror.UnauthorizedError(errors.New("")))
 }
 
 func InitAuthController(conn *pgx.Conn, kakaoInfo config.Kakao) *AuthController {
