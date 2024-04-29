@@ -11,5 +11,5 @@ type Application struct {
 	Queries repository.Queries
 	DB      *pgx.Conn
 	Handler *echo.Echo
-	App     config.App
+	Config  *config.Config
 }

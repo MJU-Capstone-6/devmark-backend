@@ -31,3 +31,4 @@ postgres-data/
 sql/*.go
 .DS_Store
 tmp/
+config/

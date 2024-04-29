@@ -11,8 +11,8 @@ type UserService struct {
 	UserRepository *repository.Queries
 }
 
-func (s *UserService) Create(ctx context.Context, params repository.CreateParams) (*repository.User, error) {
-	user, err := s.UserRepository.Create(ctx, params)
+func (u *UserService) FindUserByUserName(username *string) (*repository.User, error) {
+	user, err := u.UserRepository.FindUserByUsername(context.Background(), username)
 	if err != nil {
 		return nil, err
 	}

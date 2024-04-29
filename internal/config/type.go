@@ -1,8 +1,9 @@
 package config
 
 type Config struct {
-	DB  DB
-	App App
+	DB    DB    `yaml:"db"`
+	App   App   `yaml:"app"`
+	Kakao Kakao `yaml:"kakao"`
 }
 
 type DB struct {
@@ -16,4 +17,9 @@ type DB struct {
 type App struct {
 	Port      string `yaml:"port"`
 	IsDevMode string `yaml:"is_dev_mode"`
+}
+
+type Kakao struct {
+	ClientKey    string `yaml:"client_key"`
+	ClientSecret string `yaml:"client_secret"`
 }

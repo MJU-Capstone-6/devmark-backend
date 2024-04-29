@@ -1,9 +1,0 @@
-db:
-  port: 5432
-  host: localhost
-  name: devmark_db
-  username: admin
-  password: 123
-app:
-  port: 8080
-  is_dev_mode: true
