@@ -4,11 +4,11 @@ import (
 	"context"
 
 	"github.com/MJU-Capstone-6/devmark-backend/internal/repository"
-	"github.com/jackc/pgx/v5"
+	"github.com/MJU-Capstone-6/devmark-backend/pkg/interfaces"
 )
 
 type UserService struct {
-	UserRepository *repository.Queries
+	UserRepository interfaces.IUserRepository
 }
 
 func (u *UserService) FindUserByUserName(username *string) (*repository.User, error) {
@@ -19,6 +19,6 @@ func (u *UserService) FindUserByUserName(username *string) (*repository.User, er
 	return &user, nil
 }
 
-func InitUserService(conn *pgx.Conn) *UserService {
-	return &UserService{UserRepository: repository.New(conn)}
+func InitUserService(repo interfaces.IUserRepository) *UserService {
+	return &UserService{UserRepository: repo}
 }

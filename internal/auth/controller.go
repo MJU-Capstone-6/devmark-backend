@@ -6,6 +6,7 @@ import (
 
 	"github.com/MJU-Capstone-6/devmark-backend/internal/config"
 	customerror "github.com/MJU-Capstone-6/devmark-backend/internal/customError"
+	"github.com/MJU-Capstone-6/devmark-backend/internal/repository"
 	"github.com/MJU-Capstone-6/devmark-backend/internal/user"
 	"github.com/jackc/pgx/v5"
 	"github.com/labstack/echo/v4"
@@ -40,6 +41,6 @@ func (a *AuthController) GetKakaoUserInfo(ctx echo.Context) error {
 
 func InitAuthController(conn *pgx.Conn, kakaoInfo config.Kakao) *AuthController {
 	authService := AuthService{Conn: conn}
-	userService := user.InitUserService(conn)
+	userService := user.InitUserService(repository.New(conn))
 	return &AuthController{AuthService: authService, UserService: userService, KakaoInfo: kakaoInfo}
 }

@@ -3,6 +3,9 @@ url="postgres://${DB_USER}:${DB_PASSWORD}@localhost:${DB_PORT}/${DB_NAME}?sslmod
 migration:
 	atlas schema apply --url ${url} --dev-url "docker://postgres" --to "file://db/schema.sql"
 
+generate:
+	sqlc generate
+
 run:
 	go run main.go serve
 	

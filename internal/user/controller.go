@@ -1,6 +1,7 @@
 package user
 
 import (
+	"github.com/MJU-Capstone-6/devmark-backend/internal/repository"
 	"github.com/jackc/pgx/v5"
 )
 
@@ -9,6 +10,7 @@ type UserController struct {
 }
 
 func InitController(conn *pgx.Conn) *UserController {
-	userService := InitUserService(conn)
+	repo := repository.New(conn)
+	userService := InitUserService(repo)
 	return &UserController{UserService: *userService}
 }
