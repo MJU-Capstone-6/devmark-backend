@@ -6,6 +6,7 @@ import (
 
 	"github.com/MJU-Capstone-6/devmark-backend/internal/config"
 	customerror "github.com/MJU-Capstone-6/devmark-backend/internal/customError"
+	"github.com/MJU-Capstone-6/devmark-backend/internal/repository"
 	"github.com/MJU-Capstone-6/devmark-backend/internal/user"
 	"github.com/jackc/pgx/v5"
 	"github.com/labstack/echo/v4"
@@ -19,6 +20,18 @@ type AuthController struct {
 	KakaoInfo   config.Kakao
 }
 
+// GetKakaoUserInfo godoc
+//
+//	@Summary	Retrive user info from kakao oauth
+//	@Schemes
+//	@Description	Retrive user info from kakao oauth. If user exists in our service, then return access token.
+//	@Tags			users
+//	@Accept			json
+//	@Produce		json
+//	@Success		200	{object}	GetKakaoInfoResponse
+//	@Failure		401	{object}	customerror.CustomError
+//	@Failure		401	{object}	customerror.CustomError
+//	@Router			/auth/kakao [GET]
 func (a *AuthController) GetKakaoUserInfo(ctx echo.Context) error {
 	key := ctx.Get("key")
 	if parsedKey, ok := key.(string); ok {
@@ -40,6 +53,6 @@ func (a *AuthController) GetKakaoUserInfo(ctx echo.Context) error {
 
 func InitAuthController(conn *pgx.Conn, kakaoInfo config.Kakao) *AuthController {
 	authService := AuthService{Conn: conn}
-	userService := user.InitUserService(conn)
+	userService := user.InitUserService(repository.New(conn))
 	return &AuthController{AuthService: authService, UserService: userService, KakaoInfo: kakaoInfo}
 }

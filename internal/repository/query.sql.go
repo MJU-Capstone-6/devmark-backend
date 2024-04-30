@@ -9,38 +9,6 @@ import (
 	"context"
 )
 
-const create = `-- name: Create :one
-INSERT INTO "user" (
-  "username",
-  "provider",
-  "refresh_token"
-) VALUES (
-  $1,
-  $2,
-  $3
-) RETURNING id, username, provider, refresh_token, created_at, updated_at
-`
-
-type CreateParams struct {
-	Username     *string `json:"username"`
-	Provider     *string `json:"provider"`
-	RefreshToken *int32  `json:"refresh_token"`
-}
-
-func (q *Queries) Create(ctx context.Context, arg CreateParams) (User, error) {
-	row := q.db.QueryRow(ctx, create, arg.Username, arg.Provider, arg.RefreshToken)
-	var i User
-	err := row.Scan(
-		&i.ID,
-		&i.Username,
-		&i.Provider,
-		&i.RefreshToken,
-		&i.CreatedAt,
-		&i.UpdatedAt,
-	)
-	return i, err
-}
-
 const findUserByUsername = `-- name: FindUserByUsername :one
 SELECT id, username, provider, refresh_token, created_at, updated_at FROM "user" WHERE "username" = $1 LIMIT 1
 `
