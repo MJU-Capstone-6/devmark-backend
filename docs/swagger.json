@@ -1,0 +1,71 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "Bookmark service with automatic classification.",
+        "title": "Devmark API",
+        "contact": {
+            "name": "MilkyMilky0116",
+            "url": "https://milkymilky0116.github.io",
+            "email": "sjlee990129@gmail.com"
+        },
+        "version": "1.0"
+    },
+    "host": "localhost",
+    "basePath": "/",
+    "paths": {
+        "/auth/kakao": {
+            "get": {
+                "description": "Retrive user info from kakao oauth. If user exists in our service, then return access token.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Retrive user info from kakao oauth",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/auth.GetKakaoInfoResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/customerror.CustomError"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "auth.GetKakaoInfoResponse": {
+            "type": "object",
+            "properties": {
+                "access_key": {
+                    "type": "string"
+                }
+            }
+        },
+        "customerror.CustomError": {
+            "type": "object",
+            "properties": {
+                "data": {},
+                "error_code": {
+                    "type": "string"
+                },
+                "msg": {
+                    "type": "string"
+                },
+                "status_code": {
+                    "type": "integer"
+                }
+            }
+        }
+    }
+}
