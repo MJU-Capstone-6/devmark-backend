@@ -44,6 +44,12 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/customerror.CustomError"
                         }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/customerror.CustomError"
+                        }
                     }
                 }
             }
@@ -54,6 +60,9 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "access_key": {
+                    "type": "string"
+                },
+                "refresh_token": {
                     "type": "string"
                 }
             }

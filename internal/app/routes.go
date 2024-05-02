@@ -18,14 +18,15 @@ func (app *Application) InitRoutes() {
 	app.InitAuthRoutes()
 }
 
-func (app *Application) InitSwaggerRoutes() {
-}
-
 func (app *Application) InitUserRoutes() {
 }
 
 func (app *Application) InitAuthRoutes() {
 	e := app.Handler.Group("/auth")
-	authController := auth.InitAuthController(app.DB, app.Config.Kakao)
+	authController := auth.InitAuthController().
+		WithUserService(app.DB).
+		WithAuthService(app.DB).
+		WithKakaoInfo(app.Config.Kakao).
+		WithJWTService(app.PubKey, app.PrivateKey, app.Config.App.FooterKey)
 	e.GET("/:provider", authController.GetKakaoUserInfo)
 }

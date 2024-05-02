@@ -1,13 +1,16 @@
 package auth
 
 import (
+	"crypto/ed25519"
 	"errors"
-	"net/http"
 
 	"github.com/MJU-Capstone-6/devmark-backend/internal/config"
+	"github.com/MJU-Capstone-6/devmark-backend/internal/constants"
 	customerror "github.com/MJU-Capstone-6/devmark-backend/internal/customError"
+	"github.com/MJU-Capstone-6/devmark-backend/internal/jwtToken"
 	"github.com/MJU-Capstone-6/devmark-backend/internal/repository"
 	"github.com/MJU-Capstone-6/devmark-backend/internal/user"
+	"github.com/MJU-Capstone-6/devmark-backend/internal/utils"
 	"github.com/jackc/pgx/v5"
 	"github.com/labstack/echo/v4"
 )
@@ -17,6 +20,7 @@ const BASE_URL = "https://kapi.kakao.com/v2/user/me?secure_resource=true"
 type AuthController struct {
 	AuthService AuthService
 	UserService *user.UserService
+	JWTService  *jwtToken.JWTService
 	KakaoInfo   config.Kakao
 }
 
@@ -30,7 +34,7 @@ type AuthController struct {
 //	@Produce		json
 //	@Success		200	{object}	GetKakaoInfoResponse
 //	@Failure		401	{object}	customerror.CustomError
-//	@Failure		401	{object}	customerror.CustomError
+//	@Failure		500 {object}	customerror.CustomError
 //	@Router			/auth/kakao [GET]
 func (a *AuthController) GetKakaoUserInfo(ctx echo.Context) error {
 	key := ctx.Get("key")
@@ -40,19 +44,50 @@ func (a *AuthController) GetKakaoUserInfo(ctx echo.Context) error {
 			return err
 		}
 		if userInfo.ID == 0 {
-			return ctx.JSON(http.StatusUnauthorized, customerror.TokenNotValid(errors.New("")))
+			return utils.Unauthorized(ctx, customerror.TokenNotValidError(errors.New("")))
 		}
-		_, err = a.UserService.FindUserByUserName(&userInfo.Properties.Nickname)
+		existedUser, err := a.UserService.FindUserByUserName(&userInfo.Properties.Nickname)
 		if err != nil {
-			return ctx.JSON(http.StatusOK, userInfo)
+			return utils.OK(ctx, userInfo)
 		}
-		return ctx.JSON(http.StatusOK, GetKakaoInfoResponse{AccessKey: parsedKey})
+
+		accessToken, err := a.JWTService.GenerateToken(int(existedUser.ID), constants.ACCESSTOKEN_EXPIRED_TIME)
+		if err != nil {
+			return utils.InternalServer(ctx, customerror.InternalServerError(err))
+		}
+
+		refreshToken, err := a.JWTService.GenerateToken(int(existedUser.ID), constants.REFRESH_TOKEN_EXPIRED_TIME)
+		if err != nil {
+			return utils.InternalServer(ctx, customerror.InternalServerError(err))
+		}
+		return utils.OK(ctx, GetKakaoInfoResponse{AccessToken: *accessToken, RefreshToken: *refreshToken})
 	}
-	return ctx.JSON(http.StatusUnauthorized, customerror.TokenNotProvidedError(errors.New("")))
+	return utils.Unauthorized(ctx, customerror.TokenNotProvidedError(errors.New("")))
 }
 
-func InitAuthController(conn *pgx.Conn, kakaoInfo config.Kakao) *AuthController {
+func InitAuthController() *AuthController {
+	return &AuthController{}
+}
+
+func (a AuthController) WithAuthService(conn *pgx.Conn) AuthController {
 	authService := AuthService{Conn: conn}
+	a.AuthService = authService
+	return a
+}
+
+func (a AuthController) WithUserService(conn *pgx.Conn) AuthController {
 	userService := user.InitUserService(repository.New(conn))
-	return &AuthController{AuthService: authService, UserService: userService, KakaoInfo: kakaoInfo}
+	a.UserService = userService
+	return a
+}
+
+func (a AuthController) WithKakaoInfo(kakaoInfo config.Kakao) AuthController {
+	a.KakaoInfo = kakaoInfo
+	return a
+}
+
+func (a AuthController) WithJWTService(publicKey ed25519.PublicKey, privateKey ed25519.PrivateKey, footer string) AuthController {
+	jwtService := jwtToken.InitJWTService(publicKey, privateKey, footer)
+	a.JWTService = jwtService
+	return a
 }

@@ -2,6 +2,7 @@ package app
 
 import (
 	"context"
+	"crypto/ed25519"
 	"errors"
 	"fmt"
 	"log"
@@ -51,11 +52,17 @@ func setApplication() error {
 		return err
 	}
 	handler := echo.New()
+	publicKey, privateKey, err := ed25519.GenerateKey(nil)
+	if err != nil {
+		return err
+	}
 	app = &Application{
-		DB:      db,
-		Config:  applicationConfig,
-		Queries: *repository.New(db),
-		Handler: handler,
+		DB:         db,
+		Config:     applicationConfig,
+		Queries:    *repository.New(db),
+		PubKey:     publicKey,
+		PrivateKey: privateKey,
+		Handler:    handler,
 	}
 
 	app.InitRoutes()

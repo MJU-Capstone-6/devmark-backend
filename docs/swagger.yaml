@@ -4,6 +4,8 @@ definitions:
     properties:
       access_key:
         type: string
+      refresh_token:
+        type: string
     type: object
   customerror.CustomError:
     properties:
@@ -40,6 +42,10 @@ paths:
             $ref: '#/definitions/auth.GetKakaoInfoResponse'
         "401":
           description: Unauthorized
+          schema:
+            $ref: '#/definitions/customerror.CustomError'
+        "500":
+          description: Internal Server Error
           schema:
             $ref: '#/definitions/customerror.CustomError'
       summary: Retrive user info from kakao oauth

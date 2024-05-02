@@ -25,5 +25,6 @@ type Properties struct {
 }
 
 type GetKakaoInfoResponse struct {
-	AccessKey string `json:"access_key"`
+	AccessToken  string `json:"access_key"`
+	RefreshToken string `json:"refresh_token"`
 }

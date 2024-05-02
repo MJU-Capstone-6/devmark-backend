@@ -15,8 +15,11 @@ type DB struct {
 }
 
 type App struct {
-	Port      string `yaml:"port"`
-	IsDevMode string `yaml:"is_dev_mode"`
+	Port       string `yaml:"port"`
+	IsDevMode  string `yaml:"is_dev_mode"`
+	PublicKey  string `yaml:"public_key"`
+	PrivateKey string `yaml:"private_key"`
+	FooterKey  string `yaml:"footer_key"`
 }
 
 type Kakao struct {
