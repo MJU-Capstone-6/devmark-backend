@@ -46,7 +46,7 @@ func TestJWTService_GenerateToken(t *testing.T) {
 			}
 			var parsedJSONToken paseto.JSONToken
 			var footer string
-			if err := paseto.NewV2().Verify(*got, publicKey, &parsedJSONToken, &footer); err != nil {
+			if err := paseto.NewV2().Verify(got, publicKey, &parsedJSONToken, &footer); err != nil {
 				t.Errorf("Token is invalid error = %v", err)
 			}
 			/*
@@ -88,7 +88,7 @@ func TestJWTService_DecryptToken(t *testing.T) {
 		{
 			name: "VerifyToken_success",
 			args: args{
-				token: *generatedToken,
+				token: generatedToken,
 			},
 			wantErr: false,
 		},

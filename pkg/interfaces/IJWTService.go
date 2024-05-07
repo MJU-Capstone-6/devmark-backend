@@ -8,6 +8,6 @@ import (
 
 //go:generate mockery --name IJWTService
 type IJWTService interface {
-	GenerateToken(int, time.Time) (*string, error)
+	GenerateToken(int, time.Time) (string, error)
 	VerifyToken(string) (paseto.JSONToken, error)
 }

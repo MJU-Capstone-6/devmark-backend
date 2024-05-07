@@ -2,6 +2,7 @@ package refreshtoken
 
 import (
 	"context"
+	"log"
 	"strconv"
 
 	"github.com/MJU-Capstone-6/devmark-backend/internal/constants"
@@ -15,6 +16,7 @@ type RefreshTokenService struct {
 }
 
 func (r *RefreshTokenService) CreateToken(token string) (*repository.RefreshToken, error) {
+	log.Println(token)
 	parsedToken, err := r.JwtService.VerifyToken(token)
 	if err != nil {
 		return nil, err
@@ -53,8 +55,10 @@ func (r *RefreshTokenService) FindOneByUserId(id int) (*repository.RefreshToken,
 	return &refreshToken, nil
 }
 
-func InitRefreshTokenService(repo interfaces.IRepository, service interfaces.IJWTService) RefreshTokenService {
-	return RefreshTokenService{}.WithRepository(repo).WithJWTService(service)
+func InitRefreshTokenService(repo interfaces.IRepository, service interfaces.IJWTService) *RefreshTokenService {
+	refreshService := RefreshTokenService{}.WithRepository(repo).WithJWTService(service)
+
+	return &refreshService
 }
 
 func (r RefreshTokenService) WithRepository(repo interfaces.IRepository) RefreshTokenService {

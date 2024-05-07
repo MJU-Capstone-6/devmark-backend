@@ -19,6 +19,22 @@ func (u *UserService) FindUserByUserName(username *string) (*repository.User, er
 	return &user, nil
 }
 
+func (u *UserService) CreateUser(arg repository.CreateUserParams) (*repository.User, error) {
+	user, err := u.Repository.CreateUser(context.Background(), arg)
+	if err != nil {
+		return nil, err
+	}
+	return &user, nil
+}
+
+func (u *UserService) UpdateUser(arg repository.UpdateUserParams) (*repository.User, error) {
+	user, err := u.Repository.UpdateUser(context.Background(), arg)
+	if err != nil {
+		return nil, err
+	}
+	return &user, nil
+}
+
 func InitUserService(repo interfaces.IRepository) *UserService {
 	return &UserService{Repository: repo}
 }

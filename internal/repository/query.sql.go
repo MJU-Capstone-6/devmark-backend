@@ -33,6 +33,31 @@ func (q *Queries) CreateRefreshToken(ctx context.Context, arg CreateRefreshToken
 	return i, err
 }
 
+const createUser = `-- name: CreateUser :one
+INSERT INTO "user" (username, provider)
+VALUES ($1, $2)
+RETURNING id, username, provider, refresh_token, created_at, updated_at
+`
+
+type CreateUserParams struct {
+	Username *string `json:"username"`
+	Provider *string `json:"provider"`
+}
+
+func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
+	row := q.db.QueryRow(ctx, createUser, arg.Username, arg.Provider)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.Username,
+		&i.Provider,
+		&i.RefreshToken,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
 const findRefreshTokenByUserID = `-- name: FindRefreshTokenByUserID :one
 SELECT id, token, user_id, created_at, updated_at from "refresh_token" WHERE "user_id" = $1 LIMIT 1
 `
@@ -71,26 +96,54 @@ func (q *Queries) FindUserByUsername(ctx context.Context, username *string) (Use
 const updateRefreshToken = `-- name: UpdateRefreshToken :one
 UPDATE refresh_token
 SET
-    token = COALESCE(NULLIF($2, ''), token),
-    user_id = COALESCE(NULLIF($3, ''), user_id),
+    token = $1,
     updated_at = CURRENT_TIMESTAMP
-WHERE id = $1
+WHERE id = $2 
 RETURNING id, token, user_id, created_at, updated_at
 `
 
 type UpdateRefreshTokenParams struct {
-	ID      int64       `json:"id"`
-	Column2 interface{} `json:"column_2"`
-	Column3 interface{} `json:"column_3"`
+	Token *string `json:"token"`
+	ID    int64   `json:"id"`
 }
 
 func (q *Queries) UpdateRefreshToken(ctx context.Context, arg UpdateRefreshTokenParams) (RefreshToken, error) {
-	row := q.db.QueryRow(ctx, updateRefreshToken, arg.ID, arg.Column2, arg.Column3)
+	row := q.db.QueryRow(ctx, updateRefreshToken, arg.Token, arg.ID)
 	var i RefreshToken
 	err := row.Scan(
 		&i.ID,
 		&i.Token,
 		&i.UserID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
+const updateUser = `-- name: UpdateUser :one
+Update "user"
+SET 
+    refresh_token = $1,
+    username = $2,
+    updated_at = CURRENT_TIMESTAMP
+WHERE id = $3
+RETURNING id, username, provider, refresh_token, created_at, updated_at
+`
+
+type UpdateUserParams struct {
+	RefreshToken *int32  `json:"refresh_token"`
+	Username     *string `json:"username"`
+	ID           int64   `json:"id"`
+}
+
+func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, error) {
+	row := q.db.QueryRow(ctx, updateUser, arg.RefreshToken, arg.Username, arg.ID)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.Username,
+		&i.Provider,
+		&i.RefreshToken,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)

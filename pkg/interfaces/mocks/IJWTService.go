@@ -15,24 +15,22 @@ type IJWTService struct {
 }
 
 // GenerateToken provides a mock function with given fields: _a0, _a1
-func (_m *IJWTService) GenerateToken(_a0 int, _a1 time.Time) (*string, error) {
+func (_m *IJWTService) GenerateToken(_a0 int, _a1 time.Time) (string, error) {
 	ret := _m.Called(_a0, _a1)
 
 	if len(ret) == 0 {
 		panic("no return value specified for GenerateToken")
 	}
 
-	var r0 *string
+	var r0 string
 	var r1 error
-	if rf, ok := ret.Get(0).(func(int, time.Time) (*string, error)); ok {
+	if rf, ok := ret.Get(0).(func(int, time.Time) (string, error)); ok {
 		return rf(_a0, _a1)
 	}
-	if rf, ok := ret.Get(0).(func(int, time.Time) *string); ok {
+	if rf, ok := ret.Get(0).(func(int, time.Time) string); ok {
 		r0 = rf(_a0, _a1)
 	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*string)
-		}
+		r0 = ret.Get(0).(string)
 	}
 
 	if rf, ok := ret.Get(1).(func(int, time.Time) error); ok {

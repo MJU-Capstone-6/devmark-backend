@@ -15,7 +15,7 @@ type JWTService struct {
 	Footer     string
 }
 
-func (j *JWTService) GenerateToken(id int, expTime time.Time) (*string, error) {
+func (j *JWTService) GenerateToken(id int, expTime time.Time) (string, error) {
 	now := time.Now()
 
 	jsonToken := paseto.JSONToken{
@@ -25,9 +25,9 @@ func (j *JWTService) GenerateToken(id int, expTime time.Time) (*string, error) {
 	jsonToken.Set(constants.TOKEN_DATA_KEY, fmt.Sprintf("%d", id))
 	token, err := paseto.NewV2().Sign(j.PrivateKey, jsonToken, j.Footer)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
-	return &token, nil
+	return token, nil
 }
 
 func (j *JWTService) VerifyToken(token string) (paseto.JSONToken, error) {

@@ -44,7 +44,7 @@ func TestRefreshTokenService_CreateToken(t *testing.T) {
 				JwtService: service,
 			},
 			args: args{
-				token: *token,
+				token: token,
 			},
 			wantErr: false,
 		},
