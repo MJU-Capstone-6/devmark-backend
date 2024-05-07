@@ -14,53 +14,25 @@ type IJWTService struct {
 	mock.Mock
 }
 
-// DecryptToken provides a mock function with given fields: _a0
-func (_m *IJWTService) DecryptToken(_a0 string) (*paseto.JSONToken, error) {
-	ret := _m.Called(_a0)
-
-	if len(ret) == 0 {
-		panic("no return value specified for DecryptToken")
-	}
-
-	var r0 *paseto.JSONToken
-	var r1 error
-	if rf, ok := ret.Get(0).(func(string) (*paseto.JSONToken, error)); ok {
-		return rf(_a0)
-	}
-	if rf, ok := ret.Get(0).(func(string) *paseto.JSONToken); ok {
-		r0 = rf(_a0)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*paseto.JSONToken)
-		}
-	}
-
-	if rf, ok := ret.Get(1).(func(string) error); ok {
-		r1 = rf(_a0)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
 // GenerateToken provides a mock function with given fields: _a0, _a1
-func (_m *IJWTService) GenerateToken(_a0 int, _a1 time.Time) (string, error) {
+func (_m *IJWTService) GenerateToken(_a0 int, _a1 time.Time) (*string, error) {
 	ret := _m.Called(_a0, _a1)
 
 	if len(ret) == 0 {
 		panic("no return value specified for GenerateToken")
 	}
 
-	var r0 string
+	var r0 *string
 	var r1 error
-	if rf, ok := ret.Get(0).(func(int, time.Time) (string, error)); ok {
+	if rf, ok := ret.Get(0).(func(int, time.Time) (*string, error)); ok {
 		return rf(_a0, _a1)
 	}
-	if rf, ok := ret.Get(0).(func(int, time.Time) string); ok {
+	if rf, ok := ret.Get(0).(func(int, time.Time) *string); ok {
 		r0 = rf(_a0, _a1)
 	} else {
-		r0 = ret.Get(0).(string)
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*string)
+		}
 	}
 
 	if rf, ok := ret.Get(1).(func(int, time.Time) error); ok {
@@ -72,22 +44,32 @@ func (_m *IJWTService) GenerateToken(_a0 int, _a1 time.Time) (string, error) {
 	return r0, r1
 }
 
-// Verify provides a mock function with given fields: _a0
-func (_m *IJWTService) Verify(_a0 string) error {
+// VerifyToken provides a mock function with given fields: _a0
+func (_m *IJWTService) VerifyToken(_a0 string) (paseto.JSONToken, error) {
 	ret := _m.Called(_a0)
 
 	if len(ret) == 0 {
-		panic("no return value specified for Verify")
+		panic("no return value specified for VerifyToken")
 	}
 
-	var r0 error
-	if rf, ok := ret.Get(0).(func(string) error); ok {
+	var r0 paseto.JSONToken
+	var r1 error
+	if rf, ok := ret.Get(0).(func(string) (paseto.JSONToken, error)); ok {
+		return rf(_a0)
+	}
+	if rf, ok := ret.Get(0).(func(string) paseto.JSONToken); ok {
 		r0 = rf(_a0)
 	} else {
-		r0 = ret.Error(0)
+		r0 = ret.Get(0).(paseto.JSONToken)
 	}
 
-	return r0
+	if rf, ok := ret.Get(1).(func(string) error); ok {
+		r1 = rf(_a0)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
 
 // NewIJWTService creates a new instance of IJWTService. It also registers a testing interface on the mock and a cleanup function to assert the mocks expectations.

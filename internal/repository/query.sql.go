@@ -9,6 +9,47 @@ import (
 	"context"
 )
 
+const createRefreshToken = `-- name: CreateRefreshToken :one
+INSERT INTO refresh_token (token, user_id)
+VALUES ($1, $2)
+RETURNING id, token, user_id, created_at, updated_at
+`
+
+type CreateRefreshTokenParams struct {
+	Token  *string `json:"token"`
+	UserID *int32  `json:"user_id"`
+}
+
+func (q *Queries) CreateRefreshToken(ctx context.Context, arg CreateRefreshTokenParams) (RefreshToken, error) {
+	row := q.db.QueryRow(ctx, createRefreshToken, arg.Token, arg.UserID)
+	var i RefreshToken
+	err := row.Scan(
+		&i.ID,
+		&i.Token,
+		&i.UserID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
+const findRefreshTokenByUserID = `-- name: FindRefreshTokenByUserID :one
+SELECT id, token, user_id, created_at, updated_at from "refresh_token" WHERE "user_id" = $1 LIMIT 1
+`
+
+func (q *Queries) FindRefreshTokenByUserID(ctx context.Context, userID *int32) (RefreshToken, error) {
+	row := q.db.QueryRow(ctx, findRefreshTokenByUserID, userID)
+	var i RefreshToken
+	err := row.Scan(
+		&i.ID,
+		&i.Token,
+		&i.UserID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
 const findUserByUsername = `-- name: FindUserByUsername :one
 SELECT id, username, provider, refresh_token, created_at, updated_at FROM "user" WHERE "username" = $1 LIMIT 1
 `
@@ -21,6 +62,35 @@ func (q *Queries) FindUserByUsername(ctx context.Context, username *string) (Use
 		&i.Username,
 		&i.Provider,
 		&i.RefreshToken,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
+const updateRefreshToken = `-- name: UpdateRefreshToken :one
+UPDATE refresh_token
+SET
+    token = COALESCE(NULLIF($2, ''), token),
+    user_id = COALESCE(NULLIF($3, ''), user_id),
+    updated_at = CURRENT_TIMESTAMP
+WHERE id = $1
+RETURNING id, token, user_id, created_at, updated_at
+`
+
+type UpdateRefreshTokenParams struct {
+	ID      int64       `json:"id"`
+	Column2 interface{} `json:"column_2"`
+	Column3 interface{} `json:"column_3"`
+}
+
+func (q *Queries) UpdateRefreshToken(ctx context.Context, arg UpdateRefreshTokenParams) (RefreshToken, error) {
+	row := q.db.QueryRow(ctx, updateRefreshToken, arg.ID, arg.Column2, arg.Column3)
+	var i RefreshToken
+	err := row.Scan(
+		&i.ID,
+		&i.Token,
+		&i.UserID,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
