@@ -6,6 +6,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/MJU-Capstone-6/devmark-backend/internal/constants"
 	"github.com/o1egl/paseto"
 )
 
@@ -62,12 +63,19 @@ func TestJWTService_DecryptToken(t *testing.T) {
 	}
 
 	publicKey, privateKey, nil := ed25519.GenerateKey(nil)
-	jsonToken := paseto.JSONToken{}
-	generateToken, _ := paseto.NewV2().Sign(privateKey, &jsonToken, "test")
+	jwtService := &JWTService{
+		PublicKey:  publicKey,
+		PrivateKey: privateKey,
+		Footer:     "test",
+	}
+	generatedToken, err := jwtService.GenerateToken(1, constants.ACCESSTOKEN_EXPIRED_TIME)
+	if err != nil {
+		t.Fatal(err)
+	}
 	tests := []struct {
 		name    string
 		args    args
-		want    *paseto.JSONToken
+		want    *AuthToken
 		wantErr bool
 	}{
 		{
@@ -80,7 +88,7 @@ func TestJWTService_DecryptToken(t *testing.T) {
 		{
 			name: "VerifyToken_success",
 			args: args{
-				token: generateToken,
+				token: *generatedToken,
 			},
 			wantErr: false,
 		},

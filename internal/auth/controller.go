@@ -9,8 +9,8 @@ import (
 	customerror "github.com/MJU-Capstone-6/devmark-backend/internal/customError"
 	"github.com/MJU-Capstone-6/devmark-backend/internal/jwtToken"
 	"github.com/MJU-Capstone-6/devmark-backend/internal/repository"
+	"github.com/MJU-Capstone-6/devmark-backend/internal/responses"
 	"github.com/MJU-Capstone-6/devmark-backend/internal/user"
-	"github.com/MJU-Capstone-6/devmark-backend/internal/utils"
 	"github.com/jackc/pgx/v5"
 	"github.com/labstack/echo/v4"
 )
@@ -44,25 +44,25 @@ func (a *AuthController) GetKakaoUserInfo(ctx echo.Context) error {
 			return err
 		}
 		if userInfo.ID == 0 {
-			return utils.Unauthorized(ctx, customerror.TokenNotValidError(errors.New("")))
+			return responses.Unauthorized(ctx, customerror.TokenNotValidError(errors.New("")))
 		}
 		existedUser, err := a.UserService.FindUserByUserName(&userInfo.Properties.Nickname)
 		if err != nil {
-			return utils.OK(ctx, userInfo)
+			return responses.OK(ctx, userInfo)
 		}
 
 		accessToken, err := a.JWTService.GenerateToken(int(existedUser.ID), constants.ACCESSTOKEN_EXPIRED_TIME)
 		if err != nil {
-			return utils.InternalServer(ctx, customerror.InternalServerError(err))
+			return responses.InternalServer(ctx, customerror.InternalServerError(err))
 		}
 
 		refreshToken, err := a.JWTService.GenerateToken(int(existedUser.ID), constants.REFRESH_TOKEN_EXPIRED_TIME)
 		if err != nil {
-			return utils.InternalServer(ctx, customerror.InternalServerError(err))
+			return responses.InternalServer(ctx, customerror.InternalServerError(err))
 		}
-		return utils.OK(ctx, GetKakaoInfoResponse{AccessToken: *accessToken, RefreshToken: *refreshToken})
+		return responses.OK(ctx, GetKakaoInfoResponse{AccessToken: *accessToken, RefreshToken: *refreshToken})
 	}
-	return utils.Unauthorized(ctx, customerror.TokenNotProvidedError(errors.New("")))
+	return responses.Unauthorized(ctx, customerror.TokenNotProvidedError(errors.New("")))
 }
 
 func InitAuthController() *AuthController {

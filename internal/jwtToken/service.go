@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/MJU-Capstone-6/devmark-backend/internal/constants"
 	"github.com/o1egl/paseto"
 )
 
@@ -21,7 +22,7 @@ func (j *JWTService) GenerateToken(id int, expTime time.Time) (*string, error) {
 		IssuedAt:   now,
 		Expiration: expTime,
 	}
-	jsonToken.Set("data", fmt.Sprintf("%d", id))
+	jsonToken.Set(constants.TOKEN_DATA_KEY, fmt.Sprintf("%d", id))
 	token, err := paseto.NewV2().Sign(j.PrivateKey, jsonToken, j.Footer)
 	if err != nil {
 		return nil, err
@@ -29,14 +30,14 @@ func (j *JWTService) GenerateToken(id int, expTime time.Time) (*string, error) {
 	return &token, nil
 }
 
-func (j *JWTService) VerifyToken(token string) (*paseto.JSONToken, error) {
+func (j *JWTService) VerifyToken(token string) (paseto.JSONToken, error) {
 	var parsedJSONToken paseto.JSONToken
 	var footer string
 	err := paseto.NewV2().Verify(token, j.PublicKey, &parsedJSONToken, &footer)
 	if err != nil {
-		return nil, err
+		return parsedJSONToken, err
 	}
-	return &parsedJSONToken, nil
+	return parsedJSONToken, nil
 }
 
 func InitJWTService(pubKey ed25519.PublicKey, privateKey ed25519.PrivateKey, footer string) *JWTService {
