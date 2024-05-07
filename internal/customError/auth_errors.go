@@ -12,7 +12,7 @@ func TokenNotProvidedError(err error) error {
 	return tokenNotProvidedError
 }
 
-func TokenNotValid(err error) error {
+func TokenNotValidError(err error) error {
 	tokenNotValid := TOKEN_NOT_VALID
 	tokenNotValid.Data = err.Error()
 	return tokenNotValid
