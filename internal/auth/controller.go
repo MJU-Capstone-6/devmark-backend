@@ -1,16 +1,13 @@
 package auth
 
 import (
-	"crypto/ed25519"
 	"errors"
 
 	"github.com/MJU-Capstone-6/devmark-backend/internal/config"
 	"github.com/MJU-Capstone-6/devmark-backend/internal/constants"
 	customerror "github.com/MJU-Capstone-6/devmark-backend/internal/customError"
-	"github.com/MJU-Capstone-6/devmark-backend/internal/jwtToken"
-	"github.com/MJU-Capstone-6/devmark-backend/internal/repository"
 	"github.com/MJU-Capstone-6/devmark-backend/internal/responses"
-	"github.com/MJU-Capstone-6/devmark-backend/internal/user"
+	"github.com/MJU-Capstone-6/devmark-backend/pkg/interfaces"
 	"github.com/jackc/pgx/v5"
 	"github.com/labstack/echo/v4"
 )
@@ -18,10 +15,11 @@ import (
 const BASE_URL = "https://kapi.kakao.com/v2/user/me?secure_resource=true"
 
 type AuthController struct {
-	AuthService AuthService
-	UserService *user.UserService
-	JWTService  *jwtToken.JWTService
-	KakaoInfo   config.Kakao
+	AuthService    AuthService
+	UserService    interfaces.IUserService
+	JWTService     interfaces.IJWTService
+	RefreshService interfaces.IRefreshTokenService
+	KakaoInfo      config.Kakao
 }
 
 // GetKakaoUserInfo godoc
@@ -60,6 +58,7 @@ func (a *AuthController) GetKakaoUserInfo(ctx echo.Context) error {
 		if err != nil {
 			return responses.InternalServer(ctx, customerror.InternalServerError(err))
 		}
+
 		return responses.OK(ctx, GetKakaoInfoResponse{AccessToken: *accessToken, RefreshToken: *refreshToken})
 	}
 	return responses.Unauthorized(ctx, customerror.TokenNotProvidedError(errors.New("")))
@@ -75,9 +74,8 @@ func (a AuthController) WithAuthService(conn *pgx.Conn) AuthController {
 	return a
 }
 
-func (a AuthController) WithUserService(conn *pgx.Conn) AuthController {
-	userService := user.InitUserService(repository.New(conn))
-	a.UserService = userService
+func (a AuthController) WithUserService(service interfaces.IUserService) AuthController {
+	a.UserService = service
 	return a
 }
 
@@ -86,8 +84,12 @@ func (a AuthController) WithKakaoInfo(kakaoInfo config.Kakao) AuthController {
 	return a
 }
 
-func (a AuthController) WithJWTService(publicKey ed25519.PublicKey, privateKey ed25519.PrivateKey, footer string) AuthController {
-	jwtService := jwtToken.InitJWTService(publicKey, privateKey, footer)
-	a.JWTService = jwtService
+func (a AuthController) WithJWTService(service interfaces.IJWTService) AuthController {
+	a.JWTService = service
+	return a
+}
+
+func (a AuthController) WithRefreshTokenService(service interfaces.IRefreshTokenService) AuthController {
+	a.RefreshService = service
 	return a
 }

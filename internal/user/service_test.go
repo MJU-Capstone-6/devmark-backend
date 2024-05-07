@@ -12,13 +12,13 @@ import (
 
 func TestUserService_FindUserByUserName(t *testing.T) {
 	tests := []struct {
-		before func(*testing.T, *mocks.IUserRepository)
+		before func(*testing.T, *mocks.IRepository)
 		expect func(*testing.T, *UserService)
 		name   string
 	}{
 		{
 			name: "FindUserByUsername/find_user_failed",
-			before: func(_ *testing.T, repo *mocks.IUserRepository) {
+			before: func(_ *testing.T, repo *mocks.IRepository) {
 				str := ""
 				repo.On("FindUserByUsername", context.Background(), &str).Return(repository.User{}, errors.New("")).Once()
 			},
@@ -31,7 +31,7 @@ func TestUserService_FindUserByUserName(t *testing.T) {
 		},
 		{
 			name: "FindUserByUsername/find_user_success",
-			before: func(_ *testing.T, repo *mocks.IUserRepository) {
+			before: func(_ *testing.T, repo *mocks.IRepository) {
 				str := ""
 				repo.On("FindUserByUsername", context.Background(), &str).Return(repository.User{}, nil).Once()
 			},
@@ -45,7 +45,7 @@ func TestUserService_FindUserByUserName(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			repo := mocks.NewIUserRepository(t)
+			repo := mocks.NewIRepository(t)
 			userService := InitUserService(repo)
 			tt.before(t, repo)
 			tt.expect(t, userService)

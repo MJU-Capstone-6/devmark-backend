@@ -10,7 +10,7 @@ import (
 )
 
 type Application struct {
-	Queries    repository.Queries
+	Repository repository.Queries
 	DB         *pgx.Conn
 	Handler    *echo.Echo
 	Config     *config.Config

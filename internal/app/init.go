@@ -59,7 +59,7 @@ func setApplication() error {
 	app = &Application{
 		DB:         db,
 		Config:     applicationConfig,
-		Queries:    *repository.New(db),
+		Repository: *repository.New(db),
 		PubKey:     publicKey,
 		PrivateKey: privateKey,
 		Handler:    handler,
