@@ -58,7 +58,10 @@ func (a *AuthController) GetKakaoUserInfo(ctx echo.Context) error {
 		if err != nil {
 			return responses.InternalServer(ctx, customerror.InternalServerError(err))
 		}
-
+		_, err = a.RefreshService.Create(*refreshToken)
+		if err != nil {
+			return responses.InternalServer(ctx, customerror.TokenCreationFailed(err))
+		}
 		return responses.OK(ctx, GetKakaoInfoResponse{AccessToken: *accessToken, RefreshToken: *refreshToken})
 	}
 	return responses.Unauthorized(ctx, customerror.TokenNotProvidedError(errors.New("")))
