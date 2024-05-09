@@ -1,0 +1,4 @@
+-- Create "user" table
+CREATE TABLE "public"."user" ("id" bigserial NOT NULL, "username" character varying NULL, "provider" character varying NULL, "refresh_token" integer NULL, "created_at" timestamp NULL DEFAULT CURRENT_TIMESTAMP, "updated_at" timestamp NULL DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY ("id"), CONSTRAINT "user_refresh_token_key" UNIQUE ("refresh_token"), CONSTRAINT "user_username_key" UNIQUE ("username"));
+-- Create "refresh_token" table
+CREATE TABLE "public"."refresh_token" ("id" bigserial NOT NULL, "token" character varying NULL, "user_id" integer NULL, "created_at" timestamp NULL DEFAULT CURRENT_TIMESTAMP, "updated_at" timestamp NULL DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY ("id"), CONSTRAINT "refresh_token_user_id_key" UNIQUE ("user_id"), CONSTRAINT "refresh_token_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."user" ("id") ON UPDATE NO ACTION ON DELETE NO ACTION);
