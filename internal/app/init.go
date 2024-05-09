@@ -12,6 +12,7 @@ import (
 	"github.com/MJU-Capstone-6/devmark-backend/internal/config"
 	"github.com/MJU-Capstone-6/devmark-backend/internal/db"
 	"github.com/MJU-Capstone-6/devmark-backend/internal/repository"
+	"github.com/jackc/pgx/v5"
 	"github.com/labstack/echo/v4"
 	"github.com/testcontainers/testcontainers-go"
 	"github.com/testcontainers/testcontainers-go/modules/postgres"
@@ -28,6 +29,7 @@ func InitApplication() (*Application, error) {
 		once.Do(func() {
 			err := setApplication()
 			if err != nil {
+				log.Println(err)
 				log.Fatal("something went wrong while configure application")
 			}
 		})
@@ -58,24 +60,60 @@ func runWithPostgresContainer(ctx context.Context, dbConfig config.DB) (*postgre
 	if err != nil {
 		return nil, err
 	}
+	/*
+		postgresContainer, err := testcontainers.GenericContainer(ctx, testcontainers.GenericContainerRequest{
+			ContainerRequest: testcontainers.ContainerRequest{
+				Image:        "postgres:14-alpine",
+				ExposedPorts: []string{"5432/tcp"},
+				WaitingFor: wait.ForLog("database system is ready to accept connections").
+					WithOccurrence(2).
+					WithStartupTimeout(5 * time.Second),
+				Env: map[string]string{
+					"POSTGRES_USER":     dbConfig.Username,
+					"POSTGRES_DB":       dbConfig.Name,
+					"POSTGRES_PASSWORD": dbConfig.Password,
+				},
+			},
+			Started: true,
+		})*/
 	return postgresContainer, nil
 }
 
 func setApplication() error {
+	var dbConn *pgx.Conn
+
 	ctx := context.Background()
 	applicationConfig, err := config.InitConfig()
 	if err != nil {
 		return err
 	}
+	if applicationConfig.App.IsDevMode {
+		postgresContainer, err := runWithPostgresContainer(ctx, applicationConfig.DB)
+		if err != nil {
+			return err
+		}
+		dbURL, _ := postgresContainer.ConnectionString(ctx)
+		dbConn, err = db.InitDBbyURL(ctx, dbURL)
+		if err != nil {
+			return err
+		}
 
-	postgresContainer, err := runWithPostgresContainer(ctx, applicationConfig.DB)
-	if err != nil {
-		return err
-	}
+		err = db.Migration(fmt.Sprintf("%ssslmode=disable", dbURL))
+		if err != nil {
+			log.Println(err)
+		}
 
-	db, err := db.InitDB(ctx, applicationConfig.DB)
-	if err != nil {
-		return err
+		/*
+			defer func() {
+				if err := postgresContainer.Terminate(ctx); err != nil {
+					log.Fatal(err)
+				}
+			}()*/
+	} else {
+		dbConn, err = db.InitDBbyConfig(ctx, applicationConfig.DB)
+		if err != nil {
+			return err
+		}
 	}
 
 	handler := echo.New()
@@ -84,20 +122,15 @@ func setApplication() error {
 		return err
 	}
 	app = &Application{
-		DB:         db,
+		DB:         dbConn,
 		Config:     applicationConfig,
-		Repository: *repository.New(db),
+		Repository: *repository.New(dbConn),
 		PubKey:     publicKey,
 		PrivateKey: privateKey,
 		Handler:    handler,
 	}
 
 	app.InitRoutes()
-	defer func() {
-		if err := postgresContainer.Terminate(ctx); err != nil {
-			log.Fatal(err)
-		}
-	}()
 
 	return nil
 }
