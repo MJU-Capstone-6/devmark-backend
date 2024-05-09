@@ -103,12 +103,6 @@ func setApplication() error {
 			log.Println(err)
 		}
 
-		/*
-			defer func() {
-				if err := postgresContainer.Terminate(ctx); err != nil {
-					log.Fatal(err)
-				}
-			}()*/
 	} else {
 		dbConn, err = db.InitDBbyConfig(ctx, applicationConfig.DB)
 		if err != nil {
