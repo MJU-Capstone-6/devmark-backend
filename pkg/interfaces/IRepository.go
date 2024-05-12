@@ -9,6 +9,7 @@ import (
 //go:generate mockery --name IRepository
 type IRepository interface {
 	FindUserByUsername(context.Context, *string) (repository.User, error)
+	FindUserById(context.Context, int64) (repository.User, error)
 	CreateRefreshToken(context.Context, repository.CreateRefreshTokenParams) (repository.RefreshToken, error)
 	FindRefreshTokenByUserID(context.Context, *int32) (repository.RefreshToken, error)
 	UpdateRefreshToken(context.Context, repository.UpdateRefreshTokenParams) (repository.RefreshToken, error)

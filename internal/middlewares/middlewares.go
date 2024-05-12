@@ -1,10 +1,12 @@
 package middlewares
 
 import (
-	"log"
+	"strconv"
 	"strings"
 
 	"github.com/MJU-Capstone-6/devmark-backend/internal/constants"
+	customerror "github.com/MJU-Capstone-6/devmark-backend/internal/customError"
+	"github.com/MJU-Capstone-6/devmark-backend/internal/responses"
 	"github.com/MJU-Capstone-6/devmark-backend/pkg/interfaces"
 	"github.com/labstack/echo/v4"
 )
@@ -38,12 +40,19 @@ func (cm *CustomMiddleware) Auth(next echo.HandlerFunc) echo.HandlerFunc {
 			trimmedKey := strings.TrimSpace(key)
 			token, err := cm.jwtTokenService.VerifyToken(trimmedKey)
 			if err != nil {
-				c.Error(err)
+				return responses.Unauthorized(c, customerror.TokenNotValidError(err))
 			}
-			userId := token.Get(constants.TOKEN_DATA_KEY)
-			log.Println(userId)
+			userId, err := strconv.Atoi(token.Get(constants.TOKEN_DATA_KEY))
+			if err != nil {
+				return responses.InternalServer(c, customerror.InternalServerError(err))
+			}
+			user, err := cm.userService.FindUserById(userId)
+			if err != nil {
+				return responses.Unauthorized(c, customerror.UserNotFound(err))
+			}
+			c.Set("user", user)
 			if err := next(c); err != nil {
-				c.Error(err)
+				return responses.InternalServer(c, customerror.InternalServerError(err))
 			}
 			return nil
 		}

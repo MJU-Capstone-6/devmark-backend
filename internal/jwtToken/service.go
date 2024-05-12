@@ -23,7 +23,7 @@ func (j *JWTService) GenerateToken(id int, expTime time.Time) (string, error) {
 		Expiration: expTime,
 	}
 	jsonToken.Set(constants.TOKEN_DATA_KEY, fmt.Sprintf("%d", id))
-	token, err := paseto.NewV2().Sign(j.PrivateKey, jsonToken, j.Footer)
+	token, err := paseto.NewV2().Sign(j.PrivateKey, jsonToken, nil)
 	if err != nil {
 		return "", err
 	}
@@ -32,8 +32,7 @@ func (j *JWTService) GenerateToken(id int, expTime time.Time) (string, error) {
 
 func (j *JWTService) VerifyToken(token string) (paseto.JSONToken, error) {
 	var parsedJSONToken paseto.JSONToken
-	var footer string
-	err := paseto.NewV2().Verify(token, j.PublicKey, &parsedJSONToken, &footer)
+	err := paseto.NewV2().Verify(token, j.PublicKey, &parsedJSONToken, nil)
 	if err != nil {
 		return parsedJSONToken, err
 	}

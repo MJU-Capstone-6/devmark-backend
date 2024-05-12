@@ -201,6 +201,34 @@ func (_m *IRepository) FindRefreshTokenByUserID(_a0 context.Context, _a1 *int32)
 	return r0, r1
 }
 
+// FindUserById provides a mock function with given fields: _a0, _a1
+func (_m *IRepository) FindUserById(_a0 context.Context, _a1 int64) (repository.User, error) {
+	ret := _m.Called(_a0, _a1)
+
+	if len(ret) == 0 {
+		panic("no return value specified for FindUserById")
+	}
+
+	var r0 repository.User
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, int64) (repository.User, error)); ok {
+		return rf(_a0, _a1)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, int64) repository.User); ok {
+		r0 = rf(_a0, _a1)
+	} else {
+		r0 = ret.Get(0).(repository.User)
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, int64) error); ok {
+		r1 = rf(_a0, _a1)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // FindUserByUsername provides a mock function with given fields: _a0, _a1
 func (_m *IRepository) FindUserByUsername(_a0 context.Context, _a1 *string) (repository.User, error) {
 	ret := _m.Called(_a0, _a1)

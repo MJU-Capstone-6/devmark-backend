@@ -51,10 +51,10 @@ func (app *Application) InitAuthRoutes() {
 
 func (app *Application) InitWorkspaceRoutes() {
 	e := app.Handler.Group(fmt.Sprintf("%s/workspace", V1))
-	workspaceService := workspace.InitWorkspaceService(&app.Repository)
-	inviteCodeService := invitecode.InitInviteCodeService().WithRepository(&app.Repository).WithWorkspaceService(workspaceService)
-	workspaceService.WithInviteCodeService(&inviteCodeService)
-	workspaceController := workspace.InitWorkspaceController().WithWorkspaceService(workspaceService)
+	tempWorkspaceService := workspace.InitWorkspaceService(&app.Repository)
+	inviteCodeService := invitecode.InitInviteCodeService().WithRepository(&app.Repository).WithWorkspaceService(tempWorkspaceService)
+	workspaceService := workspace.InitWorkspaceService(&app.Repository).WithInviteCodeService(&inviteCodeService)
+	workspaceController := workspace.InitWorkspaceController().WithWorkspaceService(&workspaceService)
 
 	userService := user.InitUserService(&app.Repository)
 	jwtService := jwtToken.InitJWTService(app.PubKey, app.PrivateKey, app.Config.App.FooterKey)
