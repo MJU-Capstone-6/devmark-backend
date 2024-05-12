@@ -8,8 +8,11 @@ migrate:
 
 generate:
 	sqlc generate
+	make migrate
 
 run:
+	sqlc generate
+	make migrate
 	air
 	
 	
