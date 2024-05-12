@@ -1,16 +1,31 @@
 package user
 
 import (
-	"github.com/MJU-Capstone-6/devmark-backend/internal/repository"
-	"github.com/jackc/pgx/v5"
+	"log"
+	"net/http"
+
+	"github.com/MJU-Capstone-6/devmark-backend/pkg/interfaces"
+	"github.com/labstack/echo/v4"
 )
 
 type UserController struct {
-	UserService UserService
+	UserService interfaces.IUserService
 }
 
-func InitController(conn *pgx.Conn) *UserController {
-	repo := repository.New(conn)
-	userService := InitUserService(repo)
-	return &UserController{UserService: *userService}
+func (u *UserController) ViewOneUser(ctx echo.Context) error {
+	name := ctx.Param("name")
+	user, err := u.UserService.FindUserByUserName(&name)
+	if err != nil {
+		log.Println(err)
+	}
+	return ctx.JSON(http.StatusOK, user)
+}
+
+func InitController() *UserController {
+	return &UserController{}
+}
+
+func (u UserController) WithUserService(service interfaces.IUserService) UserController {
+	u.UserService = service
+	return u
 }

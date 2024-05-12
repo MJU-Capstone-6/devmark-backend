@@ -97,7 +97,6 @@ func setApplication() error {
 		if err != nil {
 			return err
 		}
-
 		err = db.Migration(fmt.Sprintf("%ssslmode=disable", dbURL))
 		if err != nil {
 			log.Println(err)

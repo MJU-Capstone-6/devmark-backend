@@ -9,6 +9,31 @@ import (
 	"context"
 )
 
+const createInviteCode = `-- name: CreateInviteCode :one
+INSERT INTO invite_code (workspace_id, code)
+VALUES ($1, $2)
+RETURNING id, workspace_id, code, expired_at, created_at, updated_at
+`
+
+type CreateInviteCodeParams struct {
+	WorkspaceID *int32  `db:"workspace_id" json:"workspace_id"`
+	Code        *string `db:"code" json:"code"`
+}
+
+func (q *Queries) CreateInviteCode(ctx context.Context, arg CreateInviteCodeParams) (InviteCode, error) {
+	row := q.db.QueryRow(ctx, createInviteCode, arg.WorkspaceID, arg.Code)
+	var i InviteCode
+	err := row.Scan(
+		&i.ID,
+		&i.WorkspaceID,
+		&i.Code,
+		&i.ExpiredAt,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
 const createRefreshToken = `-- name: CreateRefreshToken :one
 INSERT INTO refresh_token (token, user_id)
 VALUES ($1, $2)
@@ -16,8 +41,8 @@ RETURNING id, token, user_id, created_at, updated_at
 `
 
 type CreateRefreshTokenParams struct {
-	Token  *string `json:"token"`
-	UserID *int32  `json:"user_id"`
+	Token  *string `db:"token" json:"token"`
+	UserID *int32  `db:"user_id" json:"user_id"`
 }
 
 func (q *Queries) CreateRefreshToken(ctx context.Context, arg CreateRefreshTokenParams) (RefreshToken, error) {
@@ -40,8 +65,8 @@ RETURNING id, username, provider, refresh_token, created_at, updated_at
 `
 
 type CreateUserParams struct {
-	Username *string `json:"username"`
-	Provider *string `json:"provider"`
+	Username *string `db:"username" json:"username"`
+	Provider *string `db:"provider" json:"provider"`
 }
 
 func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
@@ -52,6 +77,51 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 		&i.Username,
 		&i.Provider,
 		&i.RefreshToken,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
+const createWorkspace = `-- name: CreateWorkspace :one
+INSERT INTO workspace (name)
+VALUES ($1)
+RETURNING id, name, created_at, updated_at
+`
+
+func (q *Queries) CreateWorkspace(ctx context.Context, name *string) (Workspace, error) {
+	row := q.db.QueryRow(ctx, createWorkspace, name)
+	var i Workspace
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
+const deleteWorkspace = `-- name: DeleteWorkspace :exec
+DELETE FROM workspace WHERE id = $1
+`
+
+func (q *Queries) DeleteWorkspace(ctx context.Context, id int64) error {
+	_, err := q.db.Exec(ctx, deleteWorkspace, id)
+	return err
+}
+
+const findInviteCodeByWorkspaceID = `-- name: FindInviteCodeByWorkspaceID :one
+SELECT id, workspace_id, code, expired_at, created_at, updated_at FROM invite_code WHERE workspace_id = $1
+`
+
+func (q *Queries) FindInviteCodeByWorkspaceID(ctx context.Context, workspaceID *int32) (InviteCode, error) {
+	row := q.db.QueryRow(ctx, findInviteCodeByWorkspaceID, workspaceID)
+	var i InviteCode
+	err := row.Scan(
+		&i.ID,
+		&i.WorkspaceID,
+		&i.Code,
+		&i.ExpiredAt,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
@@ -93,6 +163,24 @@ func (q *Queries) FindUserByUsername(ctx context.Context, username *string) (Use
 	return i, err
 }
 
+const findWorkspace = `-- name: FindWorkspace :one
+SELECT id, name, created_at, updated_at, categories, users FROM workspace_user_category WHERE id = $1
+`
+
+func (q *Queries) FindWorkspace(ctx context.Context, id int64) (WorkspaceUserCategory, error) {
+	row := q.db.QueryRow(ctx, findWorkspace, id)
+	var i WorkspaceUserCategory
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.Categories,
+		&i.Users,
+	)
+	return i, err
+}
+
 const updateRefreshToken = `-- name: UpdateRefreshToken :one
 UPDATE refresh_token
 SET
@@ -103,8 +191,8 @@ RETURNING id, token, user_id, created_at, updated_at
 `
 
 type UpdateRefreshTokenParams struct {
-	Token *string `json:"token"`
-	ID    int64   `json:"id"`
+	Token *string `db:"token" json:"token"`
+	ID    int64   `db:"id" json:"id"`
 }
 
 func (q *Queries) UpdateRefreshToken(ctx context.Context, arg UpdateRefreshTokenParams) (RefreshToken, error) {
@@ -131,9 +219,9 @@ RETURNING id, username, provider, refresh_token, created_at, updated_at
 `
 
 type UpdateUserParams struct {
-	RefreshToken *int32  `json:"refresh_token"`
-	Username     *string `json:"username"`
-	ID           int64   `json:"id"`
+	RefreshToken *int32  `db:"refresh_token" json:"refresh_token"`
+	Username     *string `db:"username" json:"username"`
+	ID           int64   `db:"id" json:"id"`
 }
 
 func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, error) {
@@ -144,6 +232,32 @@ func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, e
 		&i.Username,
 		&i.Provider,
 		&i.RefreshToken,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
+const updateWorkspace = `-- name: UpdateWorkspace :one
+UPDATE workspace
+SET
+  name = $1,
+  updated_at = CURRENT_TIMESTAMP
+WHERE id = $2
+RETURNING id, name, created_at, updated_at
+`
+
+type UpdateWorkspaceParams struct {
+	Name *string `db:"name" json:"name"`
+	ID   int64   `db:"id" json:"id"`
+}
+
+func (q *Queries) UpdateWorkspace(ctx context.Context, arg UpdateWorkspaceParams) (Workspace, error) {
+	row := q.db.QueryRow(ctx, updateWorkspace, arg.Name, arg.ID)
+	var i Workspace
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)

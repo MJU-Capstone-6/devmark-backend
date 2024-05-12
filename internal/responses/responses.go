@@ -10,6 +10,14 @@ func Unauthorized(ctx echo.Context, data interface{}) error {
 	return ctx.JSON(http.StatusUnauthorized, data)
 }
 
+func NotFound(ctx echo.Context, data interface{}) error {
+	return ctx.JSON(http.StatusNotFound, data)
+}
+
+func BadRequest(ctx echo.Context, data interface{}) error {
+	return ctx.JSON(http.StatusBadRequest, data)
+}
+
 func OK(ctx echo.Context, data interface{}) error {
 	return ctx.JSON(http.StatusOK, data)
 }

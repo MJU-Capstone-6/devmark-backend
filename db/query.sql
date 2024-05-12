@@ -31,3 +31,31 @@ SET
 WHERE id = $2 
 RETURNING *; 
 
+-- name: CreateWorkspace :one
+INSERT INTO workspace (name)
+VALUES ($1)
+RETURNING *;
+
+-- name: UpdateWorkspace :one
+UPDATE workspace
+SET
+  name = $1,
+  updated_at = CURRENT_TIMESTAMP
+WHERE id = $2
+RETURNING *;
+
+-- name: DeleteWorkspace :exec
+DELETE FROM workspace WHERE id = $1;
+
+-- name: FindWorkspace :one
+SELECT * FROM workspace_user_category WHERE id = $1;
+
+-- name: FindInviteCodeByWorkspaceID :one
+SELECT * FROM invite_code WHERE workspace_id = $1;
+
+-- name: CreateInviteCode :one
+INSERT INTO invite_code (workspace_id, code)
+VALUES ($1, $2)
+RETURNING *;
+
+

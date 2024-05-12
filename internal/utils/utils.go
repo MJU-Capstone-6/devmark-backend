@@ -1,24 +1,17 @@
 package utils
 
 import (
-	"crypto/ed25519"
-	"encoding/hex"
+	"strconv"
+
+	customerror "github.com/MJU-Capstone-6/devmark-backend/internal/customError"
+	"github.com/MJU-Capstone-6/devmark-backend/internal/responses"
+	"github.com/labstack/echo/v4"
 )
 
-type KeyGeneratorFunc func(token []byte) ([]byte, error)
-
-func GenerateKey(token string, keyGenerator KeyGeneratorFunc) ([]byte, error) {
-	decodedString, err := hex.DecodeString(token)
+func ParseURLParam(ctx echo.Context, paramName string) (*int, error) {
+	param, err := strconv.Atoi(ctx.Param(paramName))
 	if err != nil {
-		return nil, err
+		return nil, responses.BadRequest(ctx, customerror.InvalidParamError(err))
 	}
-	return keyGenerator(decodedString)
-}
-
-func GeneratePublicKey(token []byte) ([]byte, error) {
-	return ed25519.PublicKey(token), nil
-}
-
-func GeneratePrivateKey(token []byte) ([]byte, error) {
-	return ed25519.PrivateKey(token), nil
+	return &param, nil
 }
