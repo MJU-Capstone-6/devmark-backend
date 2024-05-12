@@ -1,6 +1,8 @@
 package auth
 
 import (
+	"log"
+
 	"github.com/MJU-Capstone-6/devmark-backend/internal/constants"
 	customerror "github.com/MJU-Capstone-6/devmark-backend/internal/customError"
 	"github.com/MJU-Capstone-6/devmark-backend/internal/repository"
@@ -28,6 +30,8 @@ func (a *AuthService) KakaoSignUp(nickname string, provider string, ctx echo.Con
 		if err != nil {
 			return responses.InternalServer(ctx, customerror.InternalServerError(err))
 		}
+
+		log.Println(user.ID)
 
 		tokenString, err := a.JWTService.GenerateToken(int(user.ID), constants.REFRESH_TOKEN_EXPIRED_TIME)
 		if err != nil {

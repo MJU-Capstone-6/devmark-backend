@@ -21,7 +21,7 @@ func (app *Application) InitRoutes() {
 		Format: "method=${method}, uri=${uri}, status=${status}\n",
 	}))
 	app.Handler.File("/docs", "swagger.json")
-	app.Handler.GET("/swagger/*", echoSwagger.WrapHandler)
+	app.Handler.GET("/api/v1/swagger/*", echoSwagger.WrapHandler)
 	app.InitUserRoutes()
 	app.InitAuthRoutes()
 	app.InitWorkspaceRoutes()
@@ -45,8 +45,8 @@ func (app *Application) InitAuthRoutes() {
 	authController := auth.InitAuthController().
 		WithKakaoInfo(app.Config.Kakao).
 		WithAuthService(authService)
-	customMiddleware := middlewares.CustomMiddleware{}
-	e.POST("/:provider", authController.GetKakaoUserInfo, customMiddleware.Auth)
+	customMiddleware := middlewares.InitMiddleware()
+	e.POST("/:provider", authController.GetKakaoUserInfo, customMiddleware.ParseHeader)
 }
 
 func (app *Application) InitWorkspaceRoutes() {
@@ -56,9 +56,15 @@ func (app *Application) InitWorkspaceRoutes() {
 	workspaceService.WithInviteCodeService(&inviteCodeService)
 	workspaceController := workspace.InitWorkspaceController().WithWorkspaceService(workspaceService)
 
+	userService := user.InitUserService(&app.Repository)
+	jwtService := jwtToken.InitJWTService(app.PubKey, app.PrivateKey, app.Config.App.FooterKey)
+
+	customMiddleware := middlewares.InitMiddleware().WithUserService(userService).WithJwtTokenService(jwtService)
+
 	e.GET("/:id", workspaceController.ViewWorkspaceController)
 	e.PUT("/:id", workspaceController.UpdateWorkspaceController)
 	e.POST("", workspaceController.CreateWorkspaceController)
+	e.POST("/:id/join", workspaceController.JoinWorkspaceController, customMiddleware.Auth)
 	e.DELETE("/:id", workspaceController.DeleteWorkspaceController)
 }
 

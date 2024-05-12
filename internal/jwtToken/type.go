@@ -4,4 +4,5 @@ import "github.com/o1egl/paseto"
 
 type AuthToken struct {
 	paseto.JSONToken
+	Id int `json:"id"`
 }

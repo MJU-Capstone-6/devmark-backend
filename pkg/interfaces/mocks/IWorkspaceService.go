@@ -90,6 +90,24 @@ func (_m *IWorkspaceService) FindById(_a0 int) (*repository.WorkspaceUserCategor
 	return r0, r1
 }
 
+// Join provides a mock function with given fields: _a0, _a1
+func (_m *IWorkspaceService) Join(_a0 string, _a1 repository.JoinWorkspaceParams) error {
+	ret := _m.Called(_a0, _a1)
+
+	if len(ret) == 0 {
+		panic("no return value specified for Join")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(string, repository.JoinWorkspaceParams) error); ok {
+		r0 = rf(_a0, _a1)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
 // Update provides a mock function with given fields: _a0
 func (_m *IWorkspaceService) Update(_a0 repository.UpdateWorkspaceParams) (*repository.Workspace, error) {
 	ret := _m.Called(_a0)
