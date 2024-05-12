@@ -45,8 +45,8 @@ func (app *Application) InitAuthRoutes() {
 	authController := auth.InitAuthController().
 		WithKakaoInfo(app.Config.Kakao).
 		WithAuthService(authService)
-
-	e.POST("/:provider", authController.GetKakaoUserInfo, middlewares.ParseHeader)
+	customMiddleware := middlewares.CustomMiddleware{}
+	e.POST("/:provider", authController.GetKakaoUserInfo, customMiddleware.Auth)
 }
 
 func (app *Application) InitWorkspaceRoutes() {
