@@ -76,6 +76,30 @@ func (w *WorkspaceController) CreateWorkspaceController(ctx echo.Context) error 
 	return ctx.JSON(http.StatusOK, workspace)
 }
 
+func (w *WorkspaceController) JoinWorkspaceController(ctx echo.Context) error {
+	var param JoinWorkspaceParam
+	id, err := utils.ParseURLParam(ctx, "id")
+	if err != nil {
+		return err
+	}
+	err = ctx.Bind(&param)
+	if err != nil {
+		return responses.InternalServer(ctx, customerror.InternalServerError(err))
+	}
+	joinWorkspaceParam := repository.JoinWorkspaceParams{
+		WorkspaceID: int64(*id),
+	}
+	err = w.WorkspaceService.Join(param.Code, joinWorkspaceParam)
+	if err != nil {
+		if _, ok := err.(*customerror.CustomError); ok {
+			return responses.NotAcceptable(ctx, err)
+		} else {
+			return responses.InternalServer(ctx, customerror.InternalServerError(err))
+		}
+	}
+	return nil
+}
+
 func InitWorkspaceController() *WorkspaceController {
 	return &WorkspaceController{}
 }

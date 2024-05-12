@@ -4,12 +4,15 @@ import (
 	"context"
 	"log"
 
+	customerror "github.com/MJU-Capstone-6/devmark-backend/internal/customError"
 	"github.com/MJU-Capstone-6/devmark-backend/internal/repository"
+	"github.com/MJU-Capstone-6/devmark-backend/internal/utils"
 	"github.com/MJU-Capstone-6/devmark-backend/pkg/interfaces"
 )
 
 type WorkspaceService struct {
-	Repository interfaces.IRepository
+	Repository        interfaces.IRepository
+	InviteCodeService interfaces.IInviteCodeService
 }
 
 func (w *WorkspaceService) Create(name string) (*repository.Workspace, error) {
@@ -46,6 +49,30 @@ func (w *WorkspaceService) Delete(id int) error {
 	return nil
 }
 
+func (w *WorkspaceService) Join(code string, param repository.JoinWorkspaceParams) error {
+	verifyParam := utils.VerifyCodeParam{
+		Code:        code,
+		WorkspaceId: int(param.WorkspaceID),
+	}
+	if ok, err := w.InviteCodeService.VerifyCode(verifyParam); !ok {
+		if err != nil {
+			return err
+		}
+		return customerror.CodeVerifyFailedErr(nil)
+	}
+
+	err := w.Repository.JoinWorkspace(context.Background(), param)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func InitWorkspaceService(repo interfaces.IRepository) *WorkspaceService {
 	return &WorkspaceService{Repository: repo}
+}
+
+func (w WorkspaceService) WithInviteCodeService(service interfaces.IInviteCodeService) WorkspaceService {
+	w.InviteCodeService = service
+	return w
 }

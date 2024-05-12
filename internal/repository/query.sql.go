@@ -181,6 +181,22 @@ func (q *Queries) FindWorkspace(ctx context.Context, id int64) (WorkspaceUserCat
 	return i, err
 }
 
+const joinWorkspace = `-- name: JoinWorkspace :exec
+INSERT INTO workspace_user (workspace_id, user_id)
+VALUES ($1, $2)
+RETURNING workspace_id, user_id
+`
+
+type JoinWorkspaceParams struct {
+	WorkspaceID int64 `db:"workspace_id" json:"workspace_id"`
+	UserID      int64 `db:"user_id" json:"user_id"`
+}
+
+func (q *Queries) JoinWorkspace(ctx context.Context, arg JoinWorkspaceParams) error {
+	_, err := q.db.Exec(ctx, joinWorkspace, arg.WorkspaceID, arg.UserID)
+	return err
+}
+
 const updateRefreshToken = `-- name: UpdateRefreshToken :one
 UPDATE refresh_token
 SET

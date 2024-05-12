@@ -18,4 +18,7 @@ type IRepository interface {
 	FindWorkspace(context.Context, int64) (repository.WorkspaceUserCategory, error)
 	UpdateWorkspace(context.Context, repository.UpdateWorkspaceParams) (repository.Workspace, error)
 	DeleteWorkspace(context.Context, int64) error
+	FindInviteCodeByWorkspaceID(context.Context, *int32) (repository.InviteCode, error)
+	CreateInviteCode(context.Context, repository.CreateInviteCodeParams) (repository.InviteCode, error)
+	JoinWorkspace(context.Context, repository.JoinWorkspaceParams) error
 }

@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/MJU-Capstone-6/devmark-backend/internal/auth"
+	invitecode "github.com/MJU-Capstone-6/devmark-backend/internal/inviteCode"
 	"github.com/MJU-Capstone-6/devmark-backend/internal/jwtToken"
 	"github.com/MJU-Capstone-6/devmark-backend/internal/middlewares"
 	refreshtoken "github.com/MJU-Capstone-6/devmark-backend/internal/refreshToken"
@@ -24,6 +25,7 @@ func (app *Application) InitRoutes() {
 	app.InitUserRoutes()
 	app.InitAuthRoutes()
 	app.InitWorkspaceRoutes()
+	app.InitInviteCodeRoutes()
 }
 
 func (app *Application) InitUserRoutes() {
@@ -50,10 +52,23 @@ func (app *Application) InitAuthRoutes() {
 func (app *Application) InitWorkspaceRoutes() {
 	e := app.Handler.Group(fmt.Sprintf("%s/workspace", V1))
 	workspaceService := workspace.InitWorkspaceService(&app.Repository)
+	inviteCodeService := invitecode.InitInviteCodeService().WithRepository(&app.Repository).WithWorkspaceService(workspaceService)
+	workspaceService.WithInviteCodeService(&inviteCodeService)
 	workspaceController := workspace.InitWorkspaceController().WithWorkspaceService(workspaceService)
 
 	e.GET("/:id", workspaceController.ViewWorkspaceController)
 	e.PUT("/:id", workspaceController.UpdateWorkspaceController)
 	e.POST("", workspaceController.CreateWorkspaceController)
 	e.DELETE("/:id", workspaceController.DeleteWorkspaceController)
+}
+
+func (app *Application) InitInviteCodeRoutes() {
+	e := app.Handler.Group(fmt.Sprintf("%s/invitecode", V1))
+	workspaceService := workspace.InitWorkspaceService(&app.Repository)
+	inviteCodeService := invitecode.InitInviteCodeService().
+		WithRepository(&app.Repository).
+		WithWorkspaceService(workspaceService)
+	inviteCodeController := invitecode.InitInviteCodeController().WithInviteCodeService(&inviteCodeService)
+
+	e.POST("", inviteCodeController.GenerateInviteCodeController)
 }

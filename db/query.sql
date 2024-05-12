@@ -58,4 +58,8 @@ INSERT INTO invite_code (workspace_id, code)
 VALUES ($1, $2)
 RETURNING *;
 
+-- name: JoinWorkspace :exec
+INSERT INTO workspace_user (workspace_id, user_id)
+VALUES ($1, $2)
+RETURNING *;
 
