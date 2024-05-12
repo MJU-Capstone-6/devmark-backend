@@ -15,6 +15,34 @@ type IRepository struct {
 	mock.Mock
 }
 
+// CreateInviteCode provides a mock function with given fields: _a0, _a1
+func (_m *IRepository) CreateInviteCode(_a0 context.Context, _a1 repository.CreateInviteCodeParams) (repository.InviteCode, error) {
+	ret := _m.Called(_a0, _a1)
+
+	if len(ret) == 0 {
+		panic("no return value specified for CreateInviteCode")
+	}
+
+	var r0 repository.InviteCode
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, repository.CreateInviteCodeParams) (repository.InviteCode, error)); ok {
+		return rf(_a0, _a1)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, repository.CreateInviteCodeParams) repository.InviteCode); ok {
+		r0 = rf(_a0, _a1)
+	} else {
+		r0 = ret.Get(0).(repository.InviteCode)
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, repository.CreateInviteCodeParams) error); ok {
+		r1 = rf(_a0, _a1)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // CreateRefreshToken provides a mock function with given fields: _a0, _a1
 func (_m *IRepository) CreateRefreshToken(_a0 context.Context, _a1 repository.CreateRefreshTokenParams) (repository.RefreshToken, error) {
 	ret := _m.Called(_a0, _a1)
@@ -117,6 +145,34 @@ func (_m *IRepository) DeleteWorkspace(_a0 context.Context, _a1 int64) error {
 	return r0
 }
 
+// FindInviteCodeByWorkspaceID provides a mock function with given fields: _a0, _a1
+func (_m *IRepository) FindInviteCodeByWorkspaceID(_a0 context.Context, _a1 *int32) (repository.InviteCode, error) {
+	ret := _m.Called(_a0, _a1)
+
+	if len(ret) == 0 {
+		panic("no return value specified for FindInviteCodeByWorkspaceID")
+	}
+
+	var r0 repository.InviteCode
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, *int32) (repository.InviteCode, error)); ok {
+		return rf(_a0, _a1)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, *int32) repository.InviteCode); ok {
+		r0 = rf(_a0, _a1)
+	} else {
+		r0 = ret.Get(0).(repository.InviteCode)
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, *int32) error); ok {
+		r1 = rf(_a0, _a1)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // FindRefreshTokenByUserID provides a mock function with given fields: _a0, _a1
 func (_m *IRepository) FindRefreshTokenByUserID(_a0 context.Context, _a1 *int32) (repository.RefreshToken, error) {
 	ret := _m.Called(_a0, _a1)
@@ -199,6 +255,24 @@ func (_m *IRepository) FindWorkspace(_a0 context.Context, _a1 int64) (repository
 	}
 
 	return r0, r1
+}
+
+// JoinWorkspace provides a mock function with given fields: _a0, _a1
+func (_m *IRepository) JoinWorkspace(_a0 context.Context, _a1 repository.JoinWorkspaceParams) error {
+	ret := _m.Called(_a0, _a1)
+
+	if len(ret) == 0 {
+		panic("no return value specified for JoinWorkspace")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, repository.JoinWorkspaceParams) error); ok {
+		r0 = rf(_a0, _a1)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
 }
 
 // UpdateRefreshToken provides a mock function with given fields: _a0, _a1

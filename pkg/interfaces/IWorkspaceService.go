@@ -9,4 +9,5 @@ type IWorkspaceService interface {
 	FindById(int) (*repository.WorkspaceUserCategory, error)
 	Update(repository.UpdateWorkspaceParams) (*repository.Workspace, error)
 	Delete(int) error
+	Join(string, repository.JoinWorkspaceParams) error
 }
