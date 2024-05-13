@@ -67,6 +67,9 @@ INSERT INTO workspace_user (workspace_id, user_id)
 VALUES ($1, $2)
 RETURNING *;
 
+-- name: FindCategoryById :one
+SELECT * FROM category WHERE id = $1;
+
 -- name: CreateCategory :one
 INSERT INTO category (name)
 VALUES ($1)

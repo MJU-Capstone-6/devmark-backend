@@ -29,6 +29,7 @@ func (app *Application) InitRoutes() {
 	app.InitWorkspaceRoutes()
 	app.InitInviteCodeRoutes()
 	app.InitCategoryRoutes()
+	app.InitBookmarkRoutes()
 }
 
 func (app *Application) InitUserRoutes() {
@@ -102,9 +103,13 @@ func (app *Application) InitCategoryRoutes() {
 }
 
 func (app *Application) InitBookmarkRoutes() {
-	e := app.Handler.Group(fmt.Sprintf("%s/bookmark"))
-
-	bookmarkService := bookmark.InitBookmarkService().WithRepository(&app.Repository)
+	e := app.Handler.Group(fmt.Sprintf("%s/bookmark", V1))
+	workspaceService := workspace.InitWorkspaceService(&app.Repository)
+	categoryService := category.InitCategoryService().WithRepository(&app.Repository)
+	bookmarkService := bookmark.InitBookmarkService().
+		WithRepository(&app.Repository).
+		WithWorkspaceService(workspaceService).
+		WithCategoryService(&categoryService)
 	bookmarkController := bookmark.InitBookmarkController().WithBookmarkService(&bookmarkService)
 
 	e.GET("/:id", bookmarkController.FindBookmarkController)

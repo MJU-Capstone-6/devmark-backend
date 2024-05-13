@@ -215,6 +215,22 @@ func (q *Queries) FindBookmark(ctx context.Context, id int64) (FindBookmarkRow, 
 	return i, err
 }
 
+const findCategoryById = `-- name: FindCategoryById :one
+SELECT id, name, created_at, updated_at FROM category WHERE id = $1
+`
+
+func (q *Queries) FindCategoryById(ctx context.Context, id int64) (Category, error) {
+	row := q.db.QueryRow(ctx, findCategoryById, id)
+	var i Category
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
 const findInviteCodeByWorkspaceID = `-- name: FindInviteCodeByWorkspaceID :one
 SELECT id, workspace_id, code, expired_at, created_at, updated_at FROM invite_code WHERE workspace_id = $1
 `

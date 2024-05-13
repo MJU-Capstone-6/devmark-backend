@@ -11,6 +11,14 @@ type CategoryService struct {
 	Repository interfaces.IRepository
 }
 
+func (c *CategoryService) FindById(id int) (*repository.Category, error) {
+	category, err := c.Repository.FindCategoryById(context.Background(), int64(id))
+	if err != nil {
+		return nil, err
+	}
+	return &category, nil
+}
+
 func (c *CategoryService) Create(name string) (*repository.Category, error) {
 	category, err := c.Repository.CreateCategory(context.Background(), &name)
 	if err != nil {

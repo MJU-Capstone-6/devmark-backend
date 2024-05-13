@@ -8,10 +8,21 @@ import (
 )
 
 type BookmarkService struct {
-	Repository interfaces.IRepository
+	Repository       interfaces.IRepository
+	WorkspaceService interfaces.IWorkspaceService
+	CategoryService  interfaces.ICategoryService
 }
 
 func (b *BookmarkService) Create(param repository.CreateBookmarkParams) (*repository.Bookmark, error) {
+	_, err := b.WorkspaceService.FindById(int(*param.WorkspaceID))
+	if err != nil {
+		return nil, err
+	}
+	_, err = b.CategoryService.FindById(int(*param.CategoryID))
+	if err != nil {
+		return nil, err
+	}
+
 	bookmark, err := b.Repository.CreateBookmark(context.Background(), param)
 	if err != nil {
 		return nil, err
@@ -49,5 +60,15 @@ func InitBookmarkService() *BookmarkService {
 
 func (b BookmarkService) WithRepository(repo interfaces.IRepository) BookmarkService {
 	b.Repository = repo
+	return b
+}
+
+func (b BookmarkService) WithWorkspaceService(service interfaces.IWorkspaceService) BookmarkService {
+	b.WorkspaceService = service
+	return b
+}
+
+func (b BookmarkService) WithCategoryService(service interfaces.ICategoryService) BookmarkService {
+	b.CategoryService = service
 	return b
 }

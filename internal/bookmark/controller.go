@@ -16,7 +16,16 @@ type BookmarkController struct {
 }
 
 func (b *BookmarkController) CreateBookmarkController(ctx echo.Context) error {
-	return nil
+	var body repository.CreateBookmarkParams
+	err := ctx.Bind(&body)
+	if err != nil {
+		return responses.InternalServer(ctx, customerror.InternalServerError(err))
+	}
+	bookmark, err := b.BookmarkService.Create(body)
+	if err != nil {
+		return responses.InternalServer(ctx, customerror.InternalServerError(err))
+	}
+	return ctx.JSON(http.StatusOK, bookmark)
 }
 
 func (b *BookmarkController) FindBookmarkController(ctx echo.Context) error {
