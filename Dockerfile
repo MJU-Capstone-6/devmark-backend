@@ -23,6 +23,9 @@ COPY --from=build /app/config config
 
 RUN chmod +x ./devmark
 
-EXPOSE 3000
+RUN make migrations
+RUN make swag
+
+EXPOSE 8080 
 # 어플리케이션 실행
 CMD ["./devmark","serve"]
