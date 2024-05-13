@@ -19,6 +19,14 @@ func (u *UserService) FindUserByUserName(username *string) (*repository.User, er
 	return &user, nil
 }
 
+func (u *UserService) FindUserById(id int) (*repository.User, error) {
+	user, err := u.Repository.FindUserById(context.Background(), int64(id))
+	if err != nil {
+		return nil, err
+	}
+	return &user, nil
+}
+
 func (u *UserService) CreateUser(arg repository.CreateUserParams) (*repository.User, error) {
 	user, err := u.Repository.CreateUser(context.Background(), arg)
 	if err != nil {

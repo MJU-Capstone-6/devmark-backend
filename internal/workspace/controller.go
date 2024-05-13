@@ -84,17 +84,21 @@ func (w *WorkspaceController) JoinWorkspaceController(ctx echo.Context) error {
 	}
 	err = ctx.Bind(&param)
 	if err != nil {
-		return responses.InternalServer(ctx, customerror.InternalServerError(err))
+		return responses.BadRequest(ctx, customerror.TokenNotProvidedError(err))
 	}
-	joinWorkspaceParam := repository.JoinWorkspaceParams{
-		WorkspaceID: int64(*id),
-	}
-	err = w.WorkspaceService.Join(param.Code, joinWorkspaceParam)
-	if err != nil {
-		if _, ok := err.(*customerror.CustomError); ok {
-			return responses.NotAcceptable(ctx, err)
-		} else {
-			return responses.InternalServer(ctx, customerror.InternalServerError(err))
+
+	if user, ok := ctx.Get("user").(*repository.User); ok {
+		joinWorkspaceParam := repository.JoinWorkspaceParams{
+			WorkspaceID: int64(*id),
+			UserID:      user.ID,
+		}
+		err = w.WorkspaceService.Join(param.Code, joinWorkspaceParam)
+		if err != nil {
+			if _, ok := err.(*customerror.CustomError); ok {
+				return responses.NotAcceptable(ctx, err)
+			} else {
+				return responses.InternalServer(ctx, customerror.InternalServerError(err))
+			}
 		}
 	}
 	return nil

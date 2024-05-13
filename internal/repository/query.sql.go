@@ -145,6 +145,24 @@ func (q *Queries) FindRefreshTokenByUserID(ctx context.Context, userID *int32) (
 	return i, err
 }
 
+const findUserById = `-- name: FindUserById :one
+SELECT id, username, provider, refresh_token, created_at, updated_at FROM "user" WHERE "id" = $1 LIMIT 1
+`
+
+func (q *Queries) FindUserById(ctx context.Context, id int64) (User, error) {
+	row := q.db.QueryRow(ctx, findUserById, id)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.Username,
+		&i.Provider,
+		&i.RefreshToken,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
 const findUserByUsername = `-- name: FindUserByUsername :one
 SELECT id, username, provider, refresh_token, created_at, updated_at FROM "user" WHERE "username" = $1 LIMIT 1
 `

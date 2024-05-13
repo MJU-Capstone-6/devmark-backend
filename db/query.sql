@@ -1,6 +1,10 @@
 -- name: FindUserByUsername :one
 SELECT * FROM "user" WHERE "username" = $1 LIMIT 1;
 
+-- name: FindUserById :one
+SELECT * FROM "user" WHERE "id" = $1 LIMIT 1;
+
+
 -- name: CreateUser :one
 INSERT INTO "user" (username, provider)
 VALUES ($1, $2)
