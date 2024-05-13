@@ -5,6 +5,7 @@ WORKDIR /app
 COPY go.mod .
 COPY go.sum .
 RUN go mod download
+RUN curl -sSf https://atlasgo.sh | sh
 
 COPY . .
 RUN CGO_ENABLED=1 GOOS=linux go build -a -installsuffix cgo -o devmark .
