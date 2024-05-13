@@ -24,4 +24,6 @@ type IRepository interface {
 	JoinWorkspace(context.Context, repository.JoinWorkspaceParams) error
 	CreateCategory(context.Context, *string) (repository.Category, error)
 	RegisterCategoryToWorkspace(context.Context, repository.RegisterCategoryToWorkspaceParams) error
+	UpdateCategory(context.Context, repository.UpdateCategoryParams) (repository.Category, error)
+	DeleteCategory(context.Context, int64) error
 }

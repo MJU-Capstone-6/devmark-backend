@@ -119,6 +119,15 @@ func (q *Queries) CreateWorkspace(ctx context.Context, name *string) (Workspace,
 	return i, err
 }
 
+const deleteCategory = `-- name: DeleteCategory :exec
+DELETE FROM category WHERE id = $1
+`
+
+func (q *Queries) DeleteCategory(ctx context.Context, id int64) error {
+	_, err := q.db.Exec(ctx, deleteCategory, id)
+	return err
+}
+
 const deleteWorkspace = `-- name: DeleteWorkspace :exec
 DELETE FROM workspace WHERE id = $1
 `
@@ -247,6 +256,32 @@ type RegisterCategoryToWorkspaceParams struct {
 func (q *Queries) RegisterCategoryToWorkspace(ctx context.Context, arg RegisterCategoryToWorkspaceParams) error {
 	_, err := q.db.Exec(ctx, registerCategoryToWorkspace, arg.WorkspaceID, arg.CategoryID)
 	return err
+}
+
+const updateCategory = `-- name: UpdateCategory :one
+UPDATE category
+SET
+  name = $1,
+  updated_at = CURRENT_TIMESTAMP
+WHERE id = $2
+RETURNING id, name, created_at, updated_at
+`
+
+type UpdateCategoryParams struct {
+	Name *string `db:"name" json:"name"`
+	ID   int64   `db:"id" json:"id"`
+}
+
+func (q *Queries) UpdateCategory(ctx context.Context, arg UpdateCategoryParams) (Category, error) {
+	row := q.db.QueryRow(ctx, updateCategory, arg.Name, arg.ID)
+	var i Category
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
 }
 
 const updateRefreshToken = `-- name: UpdateRefreshToken :one
