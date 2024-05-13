@@ -9,6 +9,24 @@ import (
 	"context"
 )
 
+const createCategory = `-- name: CreateCategory :one
+INSERT INTO category (name)
+VALUES ($1)
+RETURNING id, name, created_at, updated_at
+`
+
+func (q *Queries) CreateCategory(ctx context.Context, name *string) (Category, error) {
+	row := q.db.QueryRow(ctx, createCategory, name)
+	var i Category
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
 const createInviteCode = `-- name: CreateInviteCode :one
 INSERT INTO invite_code (workspace_id, code)
 VALUES ($1, $2)
@@ -212,6 +230,22 @@ type JoinWorkspaceParams struct {
 
 func (q *Queries) JoinWorkspace(ctx context.Context, arg JoinWorkspaceParams) error {
 	_, err := q.db.Exec(ctx, joinWorkspace, arg.WorkspaceID, arg.UserID)
+	return err
+}
+
+const registerCategoryToWorkspace = `-- name: RegisterCategoryToWorkspace :exec
+INSERT INTO workspace_category (workspace_id, category_id)
+VALUES ($1, $2)
+RETURNING workspace_id, category_id
+`
+
+type RegisterCategoryToWorkspaceParams struct {
+	WorkspaceID int64 `db:"workspace_id" json:"workspace_id"`
+	CategoryID  int64 `db:"category_id" json:"category_id"`
+}
+
+func (q *Queries) RegisterCategoryToWorkspace(ctx context.Context, arg RegisterCategoryToWorkspaceParams) error {
+	_, err := q.db.Exec(ctx, registerCategoryToWorkspace, arg.WorkspaceID, arg.CategoryID)
 	return err
 }
 

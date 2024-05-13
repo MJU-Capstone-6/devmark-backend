@@ -15,6 +15,34 @@ type IRepository struct {
 	mock.Mock
 }
 
+// CreateCategory provides a mock function with given fields: _a0, _a1
+func (_m *IRepository) CreateCategory(_a0 context.Context, _a1 *string) (repository.Category, error) {
+	ret := _m.Called(_a0, _a1)
+
+	if len(ret) == 0 {
+		panic("no return value specified for CreateCategory")
+	}
+
+	var r0 repository.Category
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, *string) (repository.Category, error)); ok {
+		return rf(_a0, _a1)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, *string) repository.Category); ok {
+		r0 = rf(_a0, _a1)
+	} else {
+		r0 = ret.Get(0).(repository.Category)
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, *string) error); ok {
+		r1 = rf(_a0, _a1)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // CreateInviteCode provides a mock function with given fields: _a0, _a1
 func (_m *IRepository) CreateInviteCode(_a0 context.Context, _a1 repository.CreateInviteCodeParams) (repository.InviteCode, error) {
 	ret := _m.Called(_a0, _a1)
@@ -295,6 +323,24 @@ func (_m *IRepository) JoinWorkspace(_a0 context.Context, _a1 repository.JoinWor
 
 	var r0 error
 	if rf, ok := ret.Get(0).(func(context.Context, repository.JoinWorkspaceParams) error); ok {
+		r0 = rf(_a0, _a1)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// RegisterCategoryToWorkspace provides a mock function with given fields: _a0, _a1
+func (_m *IRepository) RegisterCategoryToWorkspace(_a0 context.Context, _a1 repository.RegisterCategoryToWorkspaceParams) error {
+	ret := _m.Called(_a0, _a1)
+
+	if len(ret) == 0 {
+		panic("no return value specified for RegisterCategoryToWorkspace")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, repository.RegisterCategoryToWorkspaceParams) error); ok {
 		r0 = rf(_a0, _a1)
 	} else {
 		r0 = ret.Error(0)

@@ -22,4 +22,6 @@ type IRepository interface {
 	FindInviteCodeByWorkspaceID(context.Context, *int32) (repository.InviteCode, error)
 	CreateInviteCode(context.Context, repository.CreateInviteCodeParams) (repository.InviteCode, error)
 	JoinWorkspace(context.Context, repository.JoinWorkspaceParams) error
+	CreateCategory(context.Context, *string) (repository.Category, error)
+	RegisterCategoryToWorkspace(context.Context, repository.RegisterCategoryToWorkspaceParams) error
 }

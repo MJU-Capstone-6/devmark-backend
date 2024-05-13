@@ -42,6 +42,36 @@ func (_m *IUserService) CreateUser(_a0 repository.CreateUserParams) (*repository
 	return r0, r1
 }
 
+// FindUserById provides a mock function with given fields: _a0
+func (_m *IUserService) FindUserById(_a0 int) (*repository.User, error) {
+	ret := _m.Called(_a0)
+
+	if len(ret) == 0 {
+		panic("no return value specified for FindUserById")
+	}
+
+	var r0 *repository.User
+	var r1 error
+	if rf, ok := ret.Get(0).(func(int) (*repository.User, error)); ok {
+		return rf(_a0)
+	}
+	if rf, ok := ret.Get(0).(func(int) *repository.User); ok {
+		r0 = rf(_a0)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*repository.User)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(int) error); ok {
+		r1 = rf(_a0)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // FindUserByUserName provides a mock function with given fields: _a0
 func (_m *IUserService) FindUserByUserName(_a0 *string) (*repository.User, error) {
 	ret := _m.Called(_a0)

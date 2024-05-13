@@ -67,3 +67,12 @@ INSERT INTO workspace_user (workspace_id, user_id)
 VALUES ($1, $2)
 RETURNING *;
 
+-- name: CreateCategory :one
+INSERT INTO category (name)
+VALUES ($1)
+RETURNING *;
+
+-- name: RegisterCategoryToWorkspace :exec
+INSERT INTO workspace_category (workspace_id, category_id)
+VALUES ($1, $2)
+RETURNING *;
