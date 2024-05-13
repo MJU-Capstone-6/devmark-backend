@@ -14,6 +14,18 @@ type InviteCodeController struct {
 	InviteCodeService interfaces.IInviteCodeService
 }
 
+// GenerateInviteCodeController godoc
+//
+//	@summary	retrive user info from kakao oauth
+//	@schemes
+//	@description	retrive user info from kakao oauth. if user exists in our service, then return access token.
+//	@tags			users
+//	@accept			json
+//	@produce		json
+//	@success		200	{object}	getkakaoinforesponse
+//	@failure		401	{object}	customerror.customerror
+//	@failure		500 {object}	customerror.customerror
+//	@router			/invitecode [POST]
 func (i *InviteCodeController) GenerateInviteCodeController(ctx echo.Context) error {
 	var param repository.CreateInviteCodeParams
 	err := ctx.Bind(&param)

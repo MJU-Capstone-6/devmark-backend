@@ -17,18 +17,18 @@ type AuthController struct {
 	KakaoInfo   config.Kakao
 }
 
-// GetKakaoUserInfo godoc
+// getkakaouserinfo godoc
 //
-//	@Summary	Retrive user info from kakao oauth
-//	@Schemes
-//	@Description	Retrive user info from kakao oauth. If user exists in our service, then return access token.
-//	@Tags			users
-//	@Accept			json
-//	@Produce		json
-//	@Success		200	{object}	GetKakaoInfoResponse
-//	@Failure		401	{object}	customerror.CustomError
-//	@Failure		500 {object}	customerror.CustomError
-//	@Router			/auth/kakao [GET]
+//	@summary	retrive user info from kakao oauth
+//	@schemes
+//	@description	retrive user info from kakao oauth. if user exists in our service, then return access token.
+//	@tags			users
+//	@accept			json
+//	@produce		json
+//	@success		200	{object}	getkakaoinforesponse
+//	@failure		401	{object}	customerror.customerror
+//	@failure		500 {object}	customerror.customerror
+//	@router			/auth/kakao [POST]
 func (a *AuthController) GetKakaoUserInfo(ctx echo.Context) error {
 	key := ctx.Get("key")
 	provider := ctx.Param("provider")
