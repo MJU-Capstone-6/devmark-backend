@@ -87,3 +87,30 @@ DELETE FROM category WHERE id = $1;
 INSERT INTO workspace_category (workspace_id, category_id)
 VALUES ($1, $2)
 RETURNING *;
+
+-- name: FindBookmark :one
+SELECT sqlc.embed(bookmark), sqlc.embed(workspace), sqlc.embed(category) FROM bookmark
+JOIN workspace on workspace.id = bookmark.workspace_id
+JOIN category on category.id = bookmark.workspace_id
+WHERE bookmark.id = $1;
+
+-- name: CreateBookmark :one
+INSERT INTO bookmark (link, workspace_id, category_id, summary)
+VALUES ($1, $2, $3, $4)
+RETURNING *;
+
+-- name: UpdateBookmark :one
+UPDATE bookmark 
+SET
+  link = $2,
+  workspace_id = $3,
+  category_id = $4,
+  summary = $5,
+  updated_at = CURRENT_TIMESTAMP
+WHERE id = $1
+RETURNING *;
+
+-- name: DeleteBookmark :exec
+DELETE FROM bookmark WHERE id = $1;
+
+

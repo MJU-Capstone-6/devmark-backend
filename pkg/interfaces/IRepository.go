@@ -26,4 +26,8 @@ type IRepository interface {
 	RegisterCategoryToWorkspace(context.Context, repository.RegisterCategoryToWorkspaceParams) error
 	UpdateCategory(context.Context, repository.UpdateCategoryParams) (repository.Category, error)
 	DeleteCategory(context.Context, int64) error
+	FindBookmark(context.Context, int64) (repository.FindBookmarkRow, error)
+	CreateBookmark(context.Context, repository.CreateBookmarkParams) (repository.Bookmark, error)
+	DeleteBookmark(context.Context, int64) error
+	UpdateBookmark(context.Context, repository.UpdateBookmarkParams) (repository.Bookmark, error)
 }

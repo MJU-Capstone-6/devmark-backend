@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/MJU-Capstone-6/devmark-backend/internal/auth"
+	"github.com/MJU-Capstone-6/devmark-backend/internal/bookmark"
 	"github.com/MJU-Capstone-6/devmark-backend/internal/category"
 	invitecode "github.com/MJU-Capstone-6/devmark-backend/internal/inviteCode"
 	"github.com/MJU-Capstone-6/devmark-backend/internal/jwtToken"
@@ -98,4 +99,16 @@ func (app *Application) InitCategoryRoutes() {
 	e.POST("", categoryController.CreateCategoryController, customMiddleware.Auth)
 	e.PUT("/:id", categoryController.UpdateCategoryController, customMiddleware.Auth)
 	e.DELETE("/:id", categoryController.DeleteCategoryController, customMiddleware.Auth)
+}
+
+func (app *Application) InitBookmarkRoutes() {
+	e := app.Handler.Group(fmt.Sprintf("%s/bookmark"))
+
+	bookmarkService := bookmark.InitBookmarkService().WithRepository(&app.Repository)
+	bookmarkController := bookmark.InitBookmarkController().WithBookmarkService(&bookmarkService)
+
+	e.GET("/:id", bookmarkController.FindBookmarkController)
+	e.POST("", bookmarkController.CreateBookmarkController)
+	e.PUT("/:id", bookmarkController.UpdateBookmarkController)
+	e.DELETE("/:id", bookmarkController.DeleteBookmarkController)
 }
