@@ -22,7 +22,7 @@ services:
     ports:
       - 80:80
       - 443:443
-      - 5432:543ttp.routers.traefik.tls.certresolver=letsencryptresolver2
+      - 5432:5432
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro # allow Traefik to listen to Docker events
