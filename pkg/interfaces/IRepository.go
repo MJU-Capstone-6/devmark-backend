@@ -22,8 +22,13 @@ type IRepository interface {
 	FindInviteCodeByWorkspaceID(context.Context, *int32) (repository.InviteCode, error)
 	CreateInviteCode(context.Context, repository.CreateInviteCodeParams) (repository.InviteCode, error)
 	JoinWorkspace(context.Context, repository.JoinWorkspaceParams) error
+	FindCategoryById(context.Context, int64) (repository.Category, error)
 	CreateCategory(context.Context, *string) (repository.Category, error)
 	RegisterCategoryToWorkspace(context.Context, repository.RegisterCategoryToWorkspaceParams) error
 	UpdateCategory(context.Context, repository.UpdateCategoryParams) (repository.Category, error)
 	DeleteCategory(context.Context, int64) error
+	FindBookmark(context.Context, int64) (repository.FindBookmarkRow, error)
+	CreateBookmark(context.Context, repository.CreateBookmarkParams) (repository.Bookmark, error)
+	DeleteBookmark(context.Context, int64) error
+	UpdateBookmark(context.Context, repository.UpdateBookmarkParams) (repository.Bookmark, error)
 }

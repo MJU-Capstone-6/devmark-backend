@@ -37,7 +37,7 @@ CREATE TABLE "invite_code" (
 
 CREATE TABLE "category" (
   "id" bigserial PRIMARY KEY,
-  "name" varchar,
+  "name" varchar UNIQUE,
   "created_at" timestamptz DEFAULT CURRENT_TIMESTAMP NOT NULL,
   "updated_at" timestamptz DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
@@ -72,7 +72,7 @@ CREATE TABLE "bookmark" (
   "link" varchar,
   "category_id" bigint,
   "workspace_id" bigint,
-  "summary" varchar,
+  "summary" varchar NULL,
   "created_at" timestamptz DEFAULT CURRENT_TIMESTAMP NOT NULL,
   "updated_at" timestamptz DEFAULT CURRENT_TIMESTAMP NOT NULL,
   FOREIGN KEY ("workspace_id") REFERENCES "workspace" ("id"),

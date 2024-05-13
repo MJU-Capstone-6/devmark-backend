@@ -15,6 +15,34 @@ type IRepository struct {
 	mock.Mock
 }
 
+// CreateBookmark provides a mock function with given fields: _a0, _a1
+func (_m *IRepository) CreateBookmark(_a0 context.Context, _a1 repository.CreateBookmarkParams) (repository.Bookmark, error) {
+	ret := _m.Called(_a0, _a1)
+
+	if len(ret) == 0 {
+		panic("no return value specified for CreateBookmark")
+	}
+
+	var r0 repository.Bookmark
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, repository.CreateBookmarkParams) (repository.Bookmark, error)); ok {
+		return rf(_a0, _a1)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, repository.CreateBookmarkParams) repository.Bookmark); ok {
+		r0 = rf(_a0, _a1)
+	} else {
+		r0 = ret.Get(0).(repository.Bookmark)
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, repository.CreateBookmarkParams) error); ok {
+		r1 = rf(_a0, _a1)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // CreateCategory provides a mock function with given fields: _a0, _a1
 func (_m *IRepository) CreateCategory(_a0 context.Context, _a1 *string) (repository.Category, error) {
 	ret := _m.Called(_a0, _a1)
@@ -155,6 +183,24 @@ func (_m *IRepository) CreateWorkspace(_a0 context.Context, _a1 *string) (reposi
 	return r0, r1
 }
 
+// DeleteBookmark provides a mock function with given fields: _a0, _a1
+func (_m *IRepository) DeleteBookmark(_a0 context.Context, _a1 int64) error {
+	ret := _m.Called(_a0, _a1)
+
+	if len(ret) == 0 {
+		panic("no return value specified for DeleteBookmark")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, int64) error); ok {
+		r0 = rf(_a0, _a1)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
 // DeleteCategory provides a mock function with given fields: _a0, _a1
 func (_m *IRepository) DeleteCategory(_a0 context.Context, _a1 int64) error {
 	ret := _m.Called(_a0, _a1)
@@ -189,6 +235,62 @@ func (_m *IRepository) DeleteWorkspace(_a0 context.Context, _a1 int64) error {
 	}
 
 	return r0
+}
+
+// FindBookmark provides a mock function with given fields: _a0, _a1
+func (_m *IRepository) FindBookmark(_a0 context.Context, _a1 int64) (repository.FindBookmarkRow, error) {
+	ret := _m.Called(_a0, _a1)
+
+	if len(ret) == 0 {
+		panic("no return value specified for FindBookmark")
+	}
+
+	var r0 repository.FindBookmarkRow
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, int64) (repository.FindBookmarkRow, error)); ok {
+		return rf(_a0, _a1)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, int64) repository.FindBookmarkRow); ok {
+		r0 = rf(_a0, _a1)
+	} else {
+		r0 = ret.Get(0).(repository.FindBookmarkRow)
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, int64) error); ok {
+		r1 = rf(_a0, _a1)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// FindCategoryById provides a mock function with given fields: _a0, _a1
+func (_m *IRepository) FindCategoryById(_a0 context.Context, _a1 int64) (repository.Category, error) {
+	ret := _m.Called(_a0, _a1)
+
+	if len(ret) == 0 {
+		panic("no return value specified for FindCategoryById")
+	}
+
+	var r0 repository.Category
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, int64) (repository.Category, error)); ok {
+		return rf(_a0, _a1)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, int64) repository.Category); ok {
+		r0 = rf(_a0, _a1)
+	} else {
+		r0 = ret.Get(0).(repository.Category)
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, int64) error); ok {
+		r1 = rf(_a0, _a1)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
 
 // FindInviteCodeByWorkspaceID provides a mock function with given fields: _a0, _a1
@@ -365,6 +467,34 @@ func (_m *IRepository) RegisterCategoryToWorkspace(_a0 context.Context, _a1 repo
 	}
 
 	return r0
+}
+
+// UpdateBookmark provides a mock function with given fields: _a0, _a1
+func (_m *IRepository) UpdateBookmark(_a0 context.Context, _a1 repository.UpdateBookmarkParams) (repository.Bookmark, error) {
+	ret := _m.Called(_a0, _a1)
+
+	if len(ret) == 0 {
+		panic("no return value specified for UpdateBookmark")
+	}
+
+	var r0 repository.Bookmark
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, repository.UpdateBookmarkParams) (repository.Bookmark, error)); ok {
+		return rf(_a0, _a1)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, repository.UpdateBookmarkParams) repository.Bookmark); ok {
+		r0 = rf(_a0, _a1)
+	} else {
+		r0 = ret.Get(0).(repository.Bookmark)
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, repository.UpdateBookmarkParams) error); ok {
+		r1 = rf(_a0, _a1)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
 
 // UpdateCategory provides a mock function with given fields: _a0, _a1

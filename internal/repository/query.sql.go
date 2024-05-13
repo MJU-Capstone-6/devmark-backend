@@ -9,6 +9,39 @@ import (
 	"context"
 )
 
+const createBookmark = `-- name: CreateBookmark :one
+INSERT INTO bookmark (link, workspace_id, category_id, summary)
+VALUES ($1, $2, $3, $4)
+RETURNING id, link, category_id, workspace_id, summary, created_at, updated_at
+`
+
+type CreateBookmarkParams struct {
+	Link        *string `db:"link" json:"link"`
+	WorkspaceID *int64  `db:"workspace_id" json:"workspace_id"`
+	CategoryID  *int64  `db:"category_id" json:"category_id"`
+	Summary     *string `db:"summary" json:"summary"`
+}
+
+func (q *Queries) CreateBookmark(ctx context.Context, arg CreateBookmarkParams) (Bookmark, error) {
+	row := q.db.QueryRow(ctx, createBookmark,
+		arg.Link,
+		arg.WorkspaceID,
+		arg.CategoryID,
+		arg.Summary,
+	)
+	var i Bookmark
+	err := row.Scan(
+		&i.ID,
+		&i.Link,
+		&i.CategoryID,
+		&i.WorkspaceID,
+		&i.Summary,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
 const createCategory = `-- name: CreateCategory :one
 INSERT INTO category (name)
 VALUES ($1)
@@ -119,6 +152,15 @@ func (q *Queries) CreateWorkspace(ctx context.Context, name *string) (Workspace,
 	return i, err
 }
 
+const deleteBookmark = `-- name: DeleteBookmark :exec
+DELETE FROM bookmark WHERE id = $1
+`
+
+func (q *Queries) DeleteBookmark(ctx context.Context, id int64) error {
+	_, err := q.db.Exec(ctx, deleteBookmark, id)
+	return err
+}
+
 const deleteCategory = `-- name: DeleteCategory :exec
 DELETE FROM category WHERE id = $1
 `
@@ -135,6 +177,58 @@ DELETE FROM workspace WHERE id = $1
 func (q *Queries) DeleteWorkspace(ctx context.Context, id int64) error {
 	_, err := q.db.Exec(ctx, deleteWorkspace, id)
 	return err
+}
+
+const findBookmark = `-- name: FindBookmark :one
+SELECT bookmark.id, bookmark.link, bookmark.category_id, bookmark.workspace_id, bookmark.summary, bookmark.created_at, bookmark.updated_at, workspace.id, workspace.name, workspace.created_at, workspace.updated_at, category.id, category.name, category.created_at, category.updated_at FROM bookmark
+JOIN workspace on workspace.id = bookmark.workspace_id
+JOIN category on category.id = bookmark.workspace_id
+WHERE bookmark.id = $1
+`
+
+type FindBookmarkRow struct {
+	Bookmark  Bookmark  `db:"bookmark" json:"bookmark"`
+	Workspace Workspace `db:"workspace" json:"workspace"`
+	Category  Category  `db:"category" json:"category"`
+}
+
+func (q *Queries) FindBookmark(ctx context.Context, id int64) (FindBookmarkRow, error) {
+	row := q.db.QueryRow(ctx, findBookmark, id)
+	var i FindBookmarkRow
+	err := row.Scan(
+		&i.Bookmark.ID,
+		&i.Bookmark.Link,
+		&i.Bookmark.CategoryID,
+		&i.Bookmark.WorkspaceID,
+		&i.Bookmark.Summary,
+		&i.Bookmark.CreatedAt,
+		&i.Bookmark.UpdatedAt,
+		&i.Workspace.ID,
+		&i.Workspace.Name,
+		&i.Workspace.CreatedAt,
+		&i.Workspace.UpdatedAt,
+		&i.Category.ID,
+		&i.Category.Name,
+		&i.Category.CreatedAt,
+		&i.Category.UpdatedAt,
+	)
+	return i, err
+}
+
+const findCategoryById = `-- name: FindCategoryById :one
+SELECT id, name, created_at, updated_at FROM category WHERE id = $1
+`
+
+func (q *Queries) FindCategoryById(ctx context.Context, id int64) (Category, error) {
+	row := q.db.QueryRow(ctx, findCategoryById, id)
+	var i Category
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
 }
 
 const findInviteCodeByWorkspaceID = `-- name: FindInviteCodeByWorkspaceID :one
@@ -256,6 +350,47 @@ type RegisterCategoryToWorkspaceParams struct {
 func (q *Queries) RegisterCategoryToWorkspace(ctx context.Context, arg RegisterCategoryToWorkspaceParams) error {
 	_, err := q.db.Exec(ctx, registerCategoryToWorkspace, arg.WorkspaceID, arg.CategoryID)
 	return err
+}
+
+const updateBookmark = `-- name: UpdateBookmark :one
+UPDATE bookmark 
+SET
+  link = $2,
+  workspace_id = $3,
+  category_id = $4,
+  summary = $5,
+  updated_at = CURRENT_TIMESTAMP
+WHERE id = $1
+RETURNING id, link, category_id, workspace_id, summary, created_at, updated_at
+`
+
+type UpdateBookmarkParams struct {
+	ID          int64   `db:"id" json:"id"`
+	Link        *string `db:"link" json:"link"`
+	WorkspaceID *int64  `db:"workspace_id" json:"workspace_id"`
+	CategoryID  *int64  `db:"category_id" json:"category_id"`
+	Summary     *string `db:"summary" json:"summary"`
+}
+
+func (q *Queries) UpdateBookmark(ctx context.Context, arg UpdateBookmarkParams) (Bookmark, error) {
+	row := q.db.QueryRow(ctx, updateBookmark,
+		arg.ID,
+		arg.Link,
+		arg.WorkspaceID,
+		arg.CategoryID,
+		arg.Summary,
+	)
+	var i Bookmark
+	err := row.Scan(
+		&i.ID,
+		&i.Link,
+		&i.CategoryID,
+		&i.WorkspaceID,
+		&i.Summary,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
 }
 
 const updateCategory = `-- name: UpdateCategory :one

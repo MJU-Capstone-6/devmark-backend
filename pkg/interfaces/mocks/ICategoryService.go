@@ -12,9 +12,9 @@ type ICategoryService struct {
 	mock.Mock
 }
 
-// Create provides a mock function with given fields: name
-func (_m *ICategoryService) Create(name string) (*repository.Category, error) {
-	ret := _m.Called(name)
+// Create provides a mock function with given fields: _a0
+func (_m *ICategoryService) Create(_a0 string) (*repository.Category, error) {
+	ret := _m.Called(_a0)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Create")
@@ -23,10 +23,10 @@ func (_m *ICategoryService) Create(name string) (*repository.Category, error) {
 	var r0 *repository.Category
 	var r1 error
 	if rf, ok := ret.Get(0).(func(string) (*repository.Category, error)); ok {
-		return rf(name)
+		return rf(_a0)
 	}
 	if rf, ok := ret.Get(0).(func(string) *repository.Category); ok {
-		r0 = rf(name)
+		r0 = rf(_a0)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*repository.Category)
@@ -34,7 +34,7 @@ func (_m *ICategoryService) Create(name string) (*repository.Category, error) {
 	}
 
 	if rf, ok := ret.Get(1).(func(string) error); ok {
-		r1 = rf(name)
+		r1 = rf(_a0)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -42,17 +42,17 @@ func (_m *ICategoryService) Create(name string) (*repository.Category, error) {
 	return r0, r1
 }
 
-// Delete provides a mock function with given fields:
-func (_m *ICategoryService) Delete() error {
-	ret := _m.Called()
+// Delete provides a mock function with given fields: _a0
+func (_m *ICategoryService) Delete(_a0 int) error {
+	ret := _m.Called(_a0)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Delete")
 	}
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func() error); ok {
-		r0 = rf()
+	if rf, ok := ret.Get(0).(func(int) error); ok {
+		r0 = rf(_a0)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -60,9 +60,9 @@ func (_m *ICategoryService) Delete() error {
 	return r0
 }
 
-// Update provides a mock function with given fields:
-func (_m *ICategoryService) Update() (*repository.Category, error) {
-	ret := _m.Called()
+// Update provides a mock function with given fields: _a0
+func (_m *ICategoryService) Update(_a0 repository.UpdateCategoryParams) (*repository.Category, error) {
+	ret := _m.Called(_a0)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Update")
@@ -70,19 +70,19 @@ func (_m *ICategoryService) Update() (*repository.Category, error) {
 
 	var r0 *repository.Category
 	var r1 error
-	if rf, ok := ret.Get(0).(func() (*repository.Category, error)); ok {
-		return rf()
+	if rf, ok := ret.Get(0).(func(repository.UpdateCategoryParams) (*repository.Category, error)); ok {
+		return rf(_a0)
 	}
-	if rf, ok := ret.Get(0).(func() *repository.Category); ok {
-		r0 = rf()
+	if rf, ok := ret.Get(0).(func(repository.UpdateCategoryParams) *repository.Category); ok {
+		r0 = rf(_a0)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*repository.Category)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func() error); ok {
-		r1 = rf()
+	if rf, ok := ret.Get(1).(func(repository.UpdateCategoryParams) error); ok {
+		r1 = rf(_a0)
 	} else {
 		r1 = ret.Error(1)
 	}
