@@ -67,3 +67,26 @@ LEFT JOIN workspace_user wu ON w.id = wu.workspace_id
 LEFT JOIN "user" u ON wu.user_id = u.id
 GROUP BY w.id;
 
+CREATE TABLE "bookmark" (
+  "id" bigserial PRIMARY KEY,
+  "link" varchar,
+  "category_id" bigint,
+  "workspace_id" bigint,
+  "summary" varchar,
+  "created_at" timestamptz DEFAULT CURRENT_TIMESTAMP NOT NULL,
+  "updated_at" timestamptz DEFAULT CURRENT_TIMESTAMP NOT NULL,
+  FOREIGN KEY ("workspace_id") REFERENCES "workspace" ("id"),
+  FOREIGN KEY ("category_id") REFERENCES "category" ("id")
+);
+
+CREATE TABLE "comment" (
+  "id" bigserial PRIMARY KEY,
+  "bookmark_id" bigint,
+  "user_id" bigint,
+  "context" bigint,
+  "created_at" timestamptz DEFAULT CURRENT_TIMESTAMP NOT NULL,
+  "updated_at" timestamptz DEFAULT CURRENT_TIMESTAMP NOT NULL,
+  FOREIGN KEY ("bookmark_id") REFERENCES "bookmark" ("id"),
+  FOREIGN KEY ("user_id") REFERENCES "user" ("id")
+);
+
