@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/MJU-Capstone-6/devmark-backend/internal/auth"
+	"github.com/MJU-Capstone-6/devmark-backend/internal/category"
 	invitecode "github.com/MJU-Capstone-6/devmark-backend/internal/inviteCode"
 	"github.com/MJU-Capstone-6/devmark-backend/internal/jwtToken"
 	"github.com/MJU-Capstone-6/devmark-backend/internal/middlewares"
@@ -26,6 +27,7 @@ func (app *Application) InitRoutes() {
 	app.InitAuthRoutes()
 	app.InitWorkspaceRoutes()
 	app.InitInviteCodeRoutes()
+	app.InitCategoryRoutes()
 }
 
 func (app *Application) InitUserRoutes() {
@@ -80,4 +82,20 @@ func (app *Application) InitInviteCodeRoutes() {
 
 	customMiddleware := middlewares.InitMiddleware().WithUserService(userService).WithJwtTokenService(jwtService)
 	e.POST("", inviteCodeController.GenerateInviteCodeController, customMiddleware.Auth)
+}
+
+func (app *Application) InitCategoryRoutes() {
+	e := app.Handler.Group(fmt.Sprintf("%s/category", V1))
+
+	categoryService := category.InitCategoryService().WithRepository(&app.Repository)
+	categoryController := category.InitCategoryController().WithCategoryService(&categoryService)
+
+	jwtService := jwtToken.InitJWTService(app.PubKey, app.PrivateKey, app.Config.App.FooterKey)
+	userService := user.InitUserService(&app.Repository)
+
+	customMiddleware := middlewares.InitMiddleware().WithUserService(userService).WithJwtTokenService(jwtService)
+
+	e.POST("", categoryController.CreateCategoryController, customMiddleware.Auth)
+	e.PUT("/:id", categoryController.UpdateCategoryController, customMiddleware.Auth)
+	e.DELETE("/:id", categoryController.DeleteCategoryController, customMiddleware.Auth)
 }

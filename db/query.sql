@@ -72,6 +72,17 @@ INSERT INTO category (name)
 VALUES ($1)
 RETURNING *;
 
+-- name: UpdateCategory :one
+UPDATE category
+SET
+  name = $1,
+  updated_at = CURRENT_TIMESTAMP
+WHERE id = $2
+RETURNING *;
+
+-- name: DeleteCategory :exec
+DELETE FROM category WHERE id = $1;
+
 -- name: RegisterCategoryToWorkspace :exec
 INSERT INTO workspace_category (workspace_id, category_id)
 VALUES ($1, $2)
