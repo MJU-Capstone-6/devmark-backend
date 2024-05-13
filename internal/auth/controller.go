@@ -22,13 +22,13 @@ type AuthController struct {
 //	@summary	retrive user info from kakao oauth
 //	@schemes
 //	@description	retrive user info from kakao oauth. if user exists in our service, then return access token.
-//	@tags			users
+//	@tags			auth
 //	@accept			json
 //	@produce		json
-//	@success		200	{object}	getkakaoinforesponse
-//	@failure		401	{object}	customerror.customerror
-//	@failure		500 {object}	customerror.customerror
-//	@router			/auth/kakao [POST]
+//	@success		200	{object}	GetKakaoInfoResponse
+//	@failure		401	{object}	customerror.CustomError
+//	@failure		500 {object}	customerror.CustomError
+//	@router			/api/v1/auth/kakao [POST]
 func (a *AuthController) GetKakaoUserInfo(ctx echo.Context) error {
 	key := ctx.Get("key")
 	provider := ctx.Param("provider")

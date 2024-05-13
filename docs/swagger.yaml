@@ -1,10 +1,15 @@
-basePath: /
+basePath: /api/v1
 definitions:
   auth.GetKakaoInfoResponse:
     properties:
       access_key:
         type: string
       refresh_token:
+        type: string
+    type: object
+  category.CreateCategoryParam:
+    properties:
+      name:
         type: string
     type: object
   customerror.CustomError:
@@ -17,6 +22,103 @@ definitions:
       status_code:
         type: integer
     type: object
+  pgtype.InfinityModifier:
+    enum:
+    - 1
+    - 0
+    - -1
+    type: integer
+    x-enum-varnames:
+    - Infinity
+    - Finite
+    - NegativeInfinity
+  pgtype.Timestamp:
+    properties:
+      infinityModifier:
+        $ref: '#/definitions/pgtype.InfinityModifier'
+      time:
+        description: Time zone will be ignored when encoding to PostgreSQL.
+        type: string
+      valid:
+        type: boolean
+    type: object
+  pgtype.Timestamptz:
+    properties:
+      infinityModifier:
+        $ref: '#/definitions/pgtype.InfinityModifier'
+      time:
+        type: string
+      valid:
+        type: boolean
+    type: object
+  repository.Category:
+    properties:
+      created_at:
+        $ref: '#/definitions/pgtype.Timestamptz'
+      id:
+        type: integer
+      name:
+        type: string
+      updated_at:
+        $ref: '#/definitions/pgtype.Timestamptz'
+    type: object
+  repository.CreateInviteCodeParams:
+    properties:
+      code:
+        type: string
+      workspace_id:
+        type: integer
+    type: object
+  repository.InviteCode:
+    properties:
+      code:
+        type: string
+      created_at:
+        $ref: '#/definitions/pgtype.Timestamptz'
+      expired_at:
+        $ref: '#/definitions/pgtype.Timestamptz'
+      id:
+        type: integer
+      updated_at:
+        $ref: '#/definitions/pgtype.Timestamptz'
+      workspace_id:
+        type: integer
+    type: object
+  repository.UpdateCategoryParams:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  repository.UpdateWorkspaceParams:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  repository.Workspace:
+    properties:
+      created_at:
+        $ref: '#/definitions/pgtype.Timestamp'
+      id:
+        type: integer
+      name:
+        type: string
+      updated_at:
+        $ref: '#/definitions/pgtype.Timestamp'
+    type: object
+  workspace.CreateWorkspaceParam:
+    properties:
+      name:
+        type: string
+    type: object
+  workspace.JoinWorkspaceParam:
+    properties:
+      code:
+        type: string
+    type: object
 host: localhost
 info:
   contact:
@@ -27,11 +129,11 @@ info:
   title: Devmark API
   version: "1.0"
 paths:
-  /auth/kakao:
-    get:
+  /api/v1/auth/kakao:
+    post:
       consumes:
       - application/json
-      description: Retrive user info from kakao oauth. If user exists in our service,
+      description: retrive user info from kakao oauth. if user exists in our service,
         then return access token.
       produces:
       - application/json
@@ -48,7 +150,322 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/customerror.CustomError'
-      summary: Retrive user info from kakao oauth
+      summary: retrive user info from kakao oauth
       tags:
-      - users
+      - auth
+  /api/v1/category:
+    post:
+      consumes:
+      - application/json
+      description: 카테고리를 생성합니다. *워크스페이스에 카테고리를 등록하는 API는 따로 존재합니다.
+      parameters:
+      - description: body to create category
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/category.CreateCategoryParam'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/repository.Category'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/customerror.CustomError'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/customerror.CustomError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/customerror.CustomError'
+      summary: Create Category
+      tags:
+      - category
+  /api/v1/category/:id:
+    delete:
+      consumes:
+      - application/json
+      description: 카테고리를 삭제 합니다.
+      parameters:
+      - description: category id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/repository.Category'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/customerror.CustomError'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/customerror.CustomError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/customerror.CustomError'
+      summary: Delete Category
+      tags:
+      - category
+    put:
+      consumes:
+      - application/json
+      description: 카테고리를 업데이트 합니다.
+      parameters:
+      - description: category id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: body to update category
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/repository.UpdateCategoryParams'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/repository.Category'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/customerror.CustomError'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/customerror.CustomError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/customerror.CustomError'
+      summary: Update Category
+      tags:
+      - category
+  /api/v1/invitecode:
+    post:
+      consumes:
+      - application/json
+      description: 워크스페이스의 초대코드를 생성합니다.
+      parameters:
+      - description: body to Generate Invite code
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/repository.CreateInviteCodeParams'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/repository.InviteCode'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/customerror.CustomError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/customerror.CustomError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/customerror.CustomError'
+      summary: Generate Invite Code from workspace
+      tags:
+      - invitecode
+  /api/v1/workspace:
+    post:
+      consumes:
+      - application/json
+      description: 워크스페이스를 생성합니다.
+      parameters:
+      - description: Workspace id
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/workspace.CreateWorkspaceParam'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/repository.Workspace'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/customerror.CustomError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/customerror.CustomError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/customerror.CustomError'
+      summary: 워크스페이스 생성
+      tags:
+      - workspace
+  /api/v1/workspace/:id:
+    delete:
+      consumes:
+      - application/json
+      description: 워크스페이스를 삭제합니다.
+      parameters:
+      - description: Workspace id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/repository.Workspace'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/customerror.CustomError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/customerror.CustomError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/customerror.CustomError'
+      summary: 워크스페이스 삭제
+      tags:
+      - workspace
+    get:
+      consumes:
+      - application/json
+      description: 워크스페이스를 조회합니다.
+      parameters:
+      - description: Workspace id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/repository.Workspace'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/customerror.CustomError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/customerror.CustomError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/customerror.CustomError'
+      summary: 워크스페이스 조회
+      tags:
+      - workspace
+    put:
+      consumes:
+      - application/json
+      description: 워크스페이스 정보를 업데이트 합니다.
+      parameters:
+      - description: Workspace id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Workspace info
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/repository.UpdateWorkspaceParams'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/repository.Workspace'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/customerror.CustomError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/customerror.CustomError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/customerror.CustomError'
+      summary: 워크스페이스 업데이트
+      tags:
+      - workspace
+  /api/v1/workspace/:id/join:
+    post:
+      consumes:
+      - application/json
+      description: 워크스페이스에 참가합니다.
+      parameters:
+      - description: Workspace join info
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/workspace.JoinWorkspaceParam'
+      - description: Workspace id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/repository.Workspace'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/customerror.CustomError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/customerror.CustomError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/customerror.CustomError'
+      summary: 워크스페이스 참가
+      tags:
+      - workspace
 swagger: "2.0"

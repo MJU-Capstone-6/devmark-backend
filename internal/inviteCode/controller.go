@@ -16,16 +16,18 @@ type InviteCodeController struct {
 
 // GenerateInviteCodeController godoc
 //
-//	@summary	retrive user info from kakao oauth
+//	@summary	Generate Invite Code from workspace
 //	@schemes
-//	@description	retrive user info from kakao oauth. if user exists in our service, then return access token.
-//	@tags			users
+//	@description	워크스페이스의 초대코드를 생성합니다.
+//	@tags		invitecode
 //	@accept			json
 //	@produce		json
-//	@success		200	{object}	getkakaoinforesponse
-//	@failure		401	{object}	customerror.customerror
-//	@failure		500 {object}	customerror.customerror
-//	@router			/invitecode [POST]
+//	@param			body	body		repository.CreateInviteCodeParams	true	"body to Generate Invite code"
+//	@success		200		{object}	repository.InviteCode
+//	@failure		401		{object}	customerror.CustomError
+//	@failure		404		{object}	customerror.CustomError
+//	@failure		500		{object}	customerror.CustomError
+//	@router			/api/v1/invitecode [POST]
 func (i *InviteCodeController) GenerateInviteCodeController(ctx echo.Context) error {
 	var param repository.CreateInviteCodeParams
 	err := ctx.Bind(&param)

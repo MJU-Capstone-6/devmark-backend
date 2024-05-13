@@ -14,7 +14,7 @@ import (
 //	@contact.email	sjlee990129@gmail.com
 
 // @host		localhost
-// @BasePath	/
+// @BasePath	/api/v1
 func main() {
 	cmd.Execute()
 }

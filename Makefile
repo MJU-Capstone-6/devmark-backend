@@ -15,4 +15,7 @@ run:
 	sqlc generate
 	make migrate
 	air
+
+swag:
+	swag init -d internal/auth,internal/category,internal/inviteCode,internal/workspace -g ../../main.go --parseDependency
 	

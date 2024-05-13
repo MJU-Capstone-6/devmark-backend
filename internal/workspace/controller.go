@@ -19,6 +19,20 @@ func (w *WorkspaceController) TestController(ctx echo.Context) error {
 	return nil
 }
 
+// ViewWorkspaceController godoc
+//
+//	@summary	워크스페이스 조회
+//	@schemes
+//	@description	워크스페이스를 조회합니다.
+//	@tags			workspace
+//	@accept			json
+//	@produce		json
+//	@param			id	path		int	true	"Workspace id"
+//	@success		200	{object}	repository.Workspace
+//	@failure		401	{object}	customerror.CustomError
+//	@failure		404	{object}	customerror.CustomError
+//	@failure		500	{object}	customerror.CustomError
+//	@router			/api/v1/workspace/:id [GET]
 func (w *WorkspaceController) ViewWorkspaceController(ctx echo.Context) error {
 	id, err := utils.ParseURLParam(ctx, "id")
 	if err != nil {
@@ -32,6 +46,21 @@ func (w *WorkspaceController) ViewWorkspaceController(ctx echo.Context) error {
 	return ctx.JSON(http.StatusOK, workspaceInfo)
 }
 
+// UpdateWorkspaceController godoc
+//
+//	@summary	워크스페이스 업데이트
+//	@schemes
+//	@description	워크스페이스 정보를 업데이트 합니다.
+//	@tags			workspace
+//	@accept			json
+//	@produce		json
+//	@param			id		path		int									true	"Workspace id"
+//	@param			body	body		repository.UpdateWorkspaceParams	true	"Workspace info"
+//	@success		200		{object}	repository.Workspace
+//	@failure		401		{object}	customerror.CustomError
+//	@failure		404		{object}	customerror.CustomError
+//	@failure		500		{object}	customerror.CustomError
+//	@router			/api/v1/workspace/:id [PUT]
 func (w *WorkspaceController) UpdateWorkspaceController(ctx echo.Context) error {
 	id, err := utils.ParseURLParam(ctx, "id")
 	if err != nil {
@@ -51,6 +80,20 @@ func (w *WorkspaceController) UpdateWorkspaceController(ctx echo.Context) error 
 	return ctx.JSON(http.StatusOK, workspace)
 }
 
+// DeleteWorkspaceController godoc
+//
+//	@summary	워크스페이스 삭제
+//	@schemes
+//	@description	워크스페이스를 삭제합니다.
+//	@tags			workspace
+//	@accept			json
+//	@produce		json
+//	@param			id	path		int	true	"Workspace id"
+//	@success		200	{object}	repository.Workspace
+//	@failure		401	{object}	customerror.CustomError
+//	@failure		404	{object}	customerror.CustomError
+//	@failure		500	{object}	customerror.CustomError
+//	@router			/api/v1/workspace/:id [DELETE]
 func (w *WorkspaceController) DeleteWorkspaceController(ctx echo.Context) error {
 	id, err := utils.ParseURLParam(ctx, "id")
 	if err != nil {
@@ -63,6 +106,20 @@ func (w *WorkspaceController) DeleteWorkspaceController(ctx echo.Context) error 
 	return nil
 }
 
+// CreateWorkspace godoc
+//
+//	@summary	워크스페이스 생성
+//	@schemes
+//	@description	워크스페이스를 생성합니다.
+//	@tags			workspace
+//	@accept			json
+//	@produce		json
+//	@param			body	body		CreateWorkspaceParam	true	"Workspace id"
+//	@success		200		{object}	repository.Workspace
+//	@failure		401		{object}	customerror.CustomError
+//	@failure		404		{object}	customerror.CustomError
+//	@failure		500		{object}	customerror.CustomError
+//	@router			/api/v1/workspace [POST]
 func (w *WorkspaceController) CreateWorkspaceController(ctx echo.Context) error {
 	var param CreateWorkspaceParam
 	err := ctx.Bind(&param)
@@ -76,6 +133,21 @@ func (w *WorkspaceController) CreateWorkspaceController(ctx echo.Context) error 
 	return ctx.JSON(http.StatusOK, workspace)
 }
 
+// JoinWorkspace godoc
+//
+//	@summary	워크스페이스 참가
+//	@schemes
+//	@description	워크스페이스에 참가합니다.
+//	@tags			workspace
+//	@accept			json
+//	@produce		json
+//	@param			body	body		JoinWorkspaceParam	true	"Workspace join info"
+//	@param			id		path		int					true	"Workspace id"
+//	@success		200		{object}	repository.Workspace
+//	@failure		401		{object}	customerror.CustomError
+//	@failure		404		{object}	customerror.CustomError
+//	@failure		500		{object}	customerror.CustomError
+//	@router			/api/v1/workspace/:id/join [POST]
 func (w *WorkspaceController) JoinWorkspaceController(ctx echo.Context) error {
 	var param JoinWorkspaceParam
 	id, err := utils.ParseURLParam(ctx, "id")
