@@ -1,0 +1,64 @@
+version: "3.8"
+
+services:
+  traefik:
+    image: traefik:v2.10.1
+    restart: unless-stopped
+    command:
+      - --entrypoints.web.address=:80
+      - --entrypoints.web.http.redirections.entryPoint.to=websecure
+      - --entrypoints.web.http.redirections.entryPoint.scheme=https
+      - --entrypoints.websecure.address=:443
+      - --entrypoints.postgres.address=:5432
+      - --providers.docker=true
+      - --providers.docker.exposedByDefault=false # require containers to define `traefik.enable=true` to be exposed
+      - --api
+      - --certificatesresolvers.letsencryptresolver.acme.email=${EMAIL}
+      - --certificatesresolvers.letsencryptresolver.acme.storage=/acme.json
+      - --certificatesresolvers.letsencryptresolver.acme.tlschallenge=true
+      - --log.filePath=~/traefik/traefik.log
+      - --accesslog=true
+      - --accesslog.filePath=~/traefik/access.log
+    ports:
+      - 80:80
+      - 443:443
+      - 5432:5432
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro # allow Traefik to listen to Docker events
+      - ${TRAEFIK_DIR}/acme.json:/acme.json # stores ACME (HTTPS) certificates
+    labels:
+      - traefik.enable=true
+
+      # "admin" middleware definition
+      # to be used by services that do not have their own security
+      - traefik.http.middlewares.admin.basicauth.users=${HTTP_BASIC_USER}:${HTTP_BASIC_PWD}
+
+      # expose the traefik dashboard
+      - traefik.http.routers.traefik.entrypoints=websecure
+      - traefik.http.routers.traefik.rule=Host(`traefik.${DOMAINNAME}`)
+      - traefik.http.routers.traefik.service=api@internal
+      - traefik.http.routers.traefik.middlewares=admin
+      - traefik.http.routers.traefik.tls.certresolver=letsencryptresolver
+  devmark-db:
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_USER: "${DB_USERNAME}"
+      POSTGRES_PASSWORD: "${DB_PASSWORD}"
+      POSTGRES_DB: "${DB_NAME}"
+    labels:
+      - traefik.enable=true
+      - traefik.tcp.routers.postgres.rule=HostSNI(`*`)
+      - traefik.tcp.routers.postgres.entrypoints=postgres
+      - traefik.tcp.routers.postgres.service=postgres
+      - traefik.tcp.services.postgres.loadbalancer.server.port=5432
+
+  devmark-backend:
+    image: devmark-backend_devmark
+    restart: always
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.hey-backend.rule=Host(`dev.${DOMAINNAME}`)
+      - traefik.http.routers.hey-backend.entrypoints=websecure
+      - traefik.http.routers.hey-backend.tls.certresolver=letsencryptresolver
