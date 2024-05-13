@@ -15,7 +15,7 @@ var (
 	db   *pgx.Conn
 	once sync.Once
 )
-var BASE_URL = "postgres://%s:%s@%s:%s/%s"
+var BASE_URL = "postgres://%s:%s@%s:%s/%s?sslmode=disable"
 
 func InitDBbyConfig(ctx context.Context, c config.DB) (*pgx.Conn, error) {
 	if db == nil {
@@ -49,6 +49,10 @@ func InitDBbyURL(ctx context.Context, dbURL string) (*pgx.Conn, error) {
 
 func setDBByConfig(ctx context.Context, c config.DB) (*pgx.Conn, error) {
 	dbURL := fmt.Sprintf(BASE_URL, c.Username, c.Password, c.Host, c.Port, c.Name)
+	err := Migration(dbURL)
+	if err != nil {
+		return nil, err
+	}
 	conn, err := pgx.Connect(ctx, dbURL)
 	if err != nil {
 		return nil, err
