@@ -23,7 +23,7 @@ func (b *BookmarkController) CreateBookmarkController(ctx echo.Context) error {
 	}
 	bookmark, err := b.BookmarkService.Create(body)
 	if err != nil {
-		return responses.InternalServer(ctx, customerror.InternalServerError(err))
+		return err
 	}
 	return ctx.JSON(http.StatusOK, bookmark)
 }
@@ -49,7 +49,7 @@ func (b *BookmarkController) UpdateBookmarkController(ctx echo.Context) error {
 	param.ID = int64(*id)
 	bookmark, err := b.BookmarkService.Update(param)
 	if err != nil {
-		return responses.InternalServer(ctx, customerror.InternalServerError(err))
+		return err
 	}
 	return ctx.JSON(http.StatusOK, bookmark)
 }
@@ -61,7 +61,7 @@ func (b *BookmarkController) DeleteBookmarkController(ctx echo.Context) error {
 	}
 	err = b.BookmarkService.Delete(*id)
 	if err != nil {
-		return responses.InternalServer(ctx, customerror.InternalServerError(err))
+		return err
 	}
 	return nil
 }

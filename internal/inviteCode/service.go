@@ -2,7 +2,7 @@ package invitecode
 
 import (
 	"context"
-	"log"
+	"errors"
 	"math/rand"
 	"time"
 
@@ -38,7 +38,7 @@ func (i *InviteCodeService) CreateInviteCode(param repository.CreateInviteCodePa
 	}
 	inviteCode, err := i.Repository.CreateInviteCode(context.Background(), param)
 	if err != nil {
-		return nil, err
+		return nil, customerror.CodeCreationFail(err)
 	}
 	return &inviteCode, nil
 }
@@ -51,22 +51,21 @@ func (i *InviteCodeService) FindByWorkspaceID(id int) (*repository.InviteCode, e
 	}
 	inviteCode, err := i.Repository.FindInviteCodeByWorkspaceID(context.Background(), &parsedId)
 	if err != nil {
-		return nil, err
+		return nil, customerror.CodeNotFound(err)
 	}
 	return &inviteCode, nil
 }
 
 func (i *InviteCodeService) VerifyCode(param utils.VerifyCodeParam) (bool, error) {
 	inviteCode, err := i.FindByWorkspaceID(param.WorkspaceId)
-	log.Println(inviteCode)
 	if err != nil {
-		return false, err
+		return false, customerror.CodeNotFound(err)
 	}
 	if param.Code != *inviteCode.Code {
-		return false, nil
+		return false, customerror.CodeVerifyFailedErr(errors.New(""))
 	}
 	if inviteCode.ExpiredAt.Time.Before(time.Now()) {
-		return false, nil
+		return false, customerror.CodeVerifyFailedErr(errors.New(""))
 	}
 	return true, nil
 }

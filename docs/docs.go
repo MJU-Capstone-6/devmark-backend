@@ -36,11 +36,17 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/auth.GetKakaoInfoResponse"
+                            "$ref": "#/definitions/responses.GetKakaoInfoResponse"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/customerror.CustomError"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
                         "schema": {
                             "$ref": "#/definitions/customerror.CustomError"
                         }
@@ -93,6 +99,12 @@ const docTemplate = `{
                     },
                     "401": {
                         "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/customerror.CustomError"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
                         "schema": {
                             "$ref": "#/definitions/customerror.CustomError"
                         }
@@ -156,6 +168,12 @@ const docTemplate = `{
                             "$ref": "#/definitions/customerror.CustomError"
                         }
                     },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/customerror.CustomError"
+                        }
+                    },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
@@ -200,6 +218,12 @@ const docTemplate = `{
                     },
                     "401": {
                         "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/customerror.CustomError"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
                         "schema": {
                             "$ref": "#/definitions/customerror.CustomError"
                         }
@@ -533,17 +557,6 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "auth.GetKakaoInfoResponse": {
-            "type": "object",
-            "properties": {
-                "access_key": {
-                    "type": "string"
-                },
-                "refresh_token": {
-                    "type": "string"
-                }
-            }
-        },
         "category.CreateCategoryParam": {
             "type": "object",
             "properties": {
@@ -696,6 +709,17 @@ const docTemplate = `{
                 },
                 "updated_at": {
                     "$ref": "#/definitions/pgtype.Timestamp"
+                }
+            }
+        },
+        "responses.GetKakaoInfoResponse": {
+            "type": "object",
+            "properties": {
+                "access_key": {
+                    "type": "string"
+                },
+                "refresh_token": {
+                    "type": "string"
                 }
             }
         },

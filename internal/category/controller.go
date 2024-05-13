@@ -3,9 +3,7 @@ package category
 import (
 	"net/http"
 
-	customerror "github.com/MJU-Capstone-6/devmark-backend/internal/customError"
 	"github.com/MJU-Capstone-6/devmark-backend/internal/repository"
-	"github.com/MJU-Capstone-6/devmark-backend/internal/responses"
 	"github.com/MJU-Capstone-6/devmark-backend/internal/utils"
 	"github.com/MJU-Capstone-6/devmark-backend/pkg/interfaces"
 	"github.com/labstack/echo/v4"
@@ -27,17 +25,18 @@ type CategoryController struct {
 //	@success		200		{object}	repository.Category
 //	@failure		400		{object}	customerror.CustomError
 //	@failure		401		{object}	customerror.CustomError
+//	@failure		422		{object}	customerror.CustomError
 //	@failure		500		{object}	customerror.CustomError
 //	@router			/api/v1/category [POST]
 func (c *CategoryController) CreateCategoryController(ctx echo.Context) error {
 	var param CreateCategoryParam
 	err := ctx.Bind(&param)
 	if err != nil {
-		return responses.BadRequest(ctx, customerror.CategoryBodyNotProvide(err))
+		return err
 	}
 	category, err := c.CategoryService.Create(param.Name)
 	if err != nil {
-		return responses.InternalServer(ctx, customerror.InternalServerError(err))
+		return err
 	}
 	return ctx.JSON(http.StatusOK, category)
 }
@@ -55,6 +54,7 @@ func (c *CategoryController) CreateCategoryController(ctx echo.Context) error {
 //	@success		200		{object}	repository.Category
 //	@failure		400		{object}	customerror.CustomError
 //	@failure		401		{object}	customerror.CustomError
+//	@failure		422		{object}	customerror.CustomError
 //	@failure		500		{object}	customerror.CustomError
 //	@router			/api/v1/category/:id [PUT]
 func (c *CategoryController) UpdateCategoryController(ctx echo.Context) error {
@@ -65,12 +65,12 @@ func (c *CategoryController) UpdateCategoryController(ctx echo.Context) error {
 	}
 	err = ctx.Bind(&param)
 	if err != nil {
-		return responses.BadRequest(ctx, customerror.CategoryBodyNotProvide(err))
+		return err
 	}
 	param.ID = int64(*id)
 	category, err := c.CategoryService.Update(param)
 	if err != nil {
-		return responses.InternalServer(ctx, customerror.InternalServerError(err))
+		return err
 	}
 	return ctx.JSON(http.StatusOK, category)
 }
@@ -87,6 +87,7 @@ func (c *CategoryController) UpdateCategoryController(ctx echo.Context) error {
 //	@success		200	{object}	repository.Category
 //	@failure		400	{object}	customerror.CustomError
 //	@failure		401	{object}	customerror.CustomError
+//	@failure		422	{object}	customerror.CustomError
 //	@failure		500	{object}	customerror.CustomError
 //	@router			/api/v1/category/:id [DELETE]
 func (c *CategoryController) DeleteCategoryController(ctx echo.Context) error {
@@ -96,7 +97,7 @@ func (c *CategoryController) DeleteCategoryController(ctx echo.Context) error {
 	}
 	err = c.CategoryService.Delete(*id)
 	if err != nil {
-		return responses.InternalServer(ctx, customerror.InternalServerError(err))
+		return err
 	}
 
 	return nil

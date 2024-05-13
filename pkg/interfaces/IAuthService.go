@@ -1,10 +1,10 @@
 package interfaces
 
 import (
-	"github.com/labstack/echo/v4"
+	"github.com/MJU-Capstone-6/devmark-backend/internal/responses"
 )
 
 //go:generate mockery --name IAuthService
 type IAuthService interface {
-	KakaoSignUp(string, string, echo.Context) error
+	KakaoSignUp(string, string) (*responses.GetKakaoInfoResponse, error)
 }

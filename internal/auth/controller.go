@@ -2,10 +2,10 @@ package auth
 
 import (
 	"errors"
+	"net/http"
 
 	"github.com/MJU-Capstone-6/devmark-backend/internal/config"
 	customerror "github.com/MJU-Capstone-6/devmark-backend/internal/customError"
-	"github.com/MJU-Capstone-6/devmark-backend/internal/responses"
 	"github.com/MJU-Capstone-6/devmark-backend/pkg/interfaces"
 	"github.com/labstack/echo/v4"
 )
@@ -25,8 +25,9 @@ type AuthController struct {
 //	@tags			auth
 //	@accept			json
 //	@produce		json
-//	@success		200	{object}	GetKakaoInfoResponse
+//	@success		200	{object}	responses.GetKakaoInfoResponse
 //	@failure		401	{object}	customerror.CustomError
+//	@failure		422 {object}	customerror.CustomError
 //	@failure		500 {object}	customerror.CustomError
 //	@router			/api/v1/auth/kakao [POST]
 func (a *AuthController) GetKakaoUserInfo(ctx echo.Context) error {
@@ -38,16 +39,16 @@ func (a *AuthController) GetKakaoUserInfo(ctx echo.Context) error {
 			return err
 		}
 		if userInfo.ID == 0 {
-			return responses.Unauthorized(ctx, customerror.TokenNotValidError(errors.New("")))
+			return customerror.TokenNotValidError(errors.New(""))
 		}
-		err = a.AuthService.KakaoSignUp(userInfo.Properties.Nickname, provider, ctx)
+		request, err := a.AuthService.KakaoSignUp(userInfo.Properties.Nickname, provider)
 		if err != nil {
 			return err
 		}
+		return ctx.JSON(http.StatusOK, request)
 	} else {
-		return responses.Unauthorized(ctx, customerror.TokenNotProvidedError(errors.New("")))
+		return customerror.TokenNotProvidedError(errors.New(""))
 	}
-	return nil
 }
 
 func InitAuthController() *AuthController {

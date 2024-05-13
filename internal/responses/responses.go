@@ -6,6 +6,11 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
+type GetKakaoInfoResponse struct {
+	AccessToken  string `json:"access_key"`
+	RefreshToken string `json:"refresh_token"`
+}
+
 func Unauthorized(ctx echo.Context, data interface{}) error {
 	return ctx.JSON(http.StatusUnauthorized, data)
 }
