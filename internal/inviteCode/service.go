@@ -2,6 +2,7 @@ package invitecode
 
 import (
 	"context"
+	"log"
 	"math/rand"
 	"time"
 
@@ -57,6 +58,7 @@ func (i *InviteCodeService) FindByWorkspaceID(id int) (*repository.InviteCode, e
 
 func (i *InviteCodeService) VerifyCode(param utils.VerifyCodeParam) (bool, error) {
 	inviteCode, err := i.FindByWorkspaceID(param.WorkspaceId)
+	log.Println(inviteCode)
 	if err != nil {
 		return false, err
 	}

@@ -1,6 +1,7 @@
 package middlewares
 
 import (
+	"errors"
 	"strconv"
 	"strings"
 
@@ -55,6 +56,8 @@ func (cm *CustomMiddleware) Auth(next echo.HandlerFunc) echo.HandlerFunc {
 				return responses.InternalServer(c, customerror.InternalServerError(err))
 			}
 			return nil
+		} else {
+			return responses.Unauthorized(c, customerror.TokenNotProvidedError(errors.New("")))
 		}
 		return next(c)
 	}

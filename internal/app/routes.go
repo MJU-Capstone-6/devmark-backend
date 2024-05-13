@@ -61,11 +61,11 @@ func (app *Application) InitWorkspaceRoutes() {
 
 	customMiddleware := middlewares.InitMiddleware().WithUserService(userService).WithJwtTokenService(jwtService)
 
-	e.GET("/:id", workspaceController.ViewWorkspaceController)
-	e.PUT("/:id", workspaceController.UpdateWorkspaceController)
-	e.POST("", workspaceController.CreateWorkspaceController)
+	e.GET("/:id", workspaceController.ViewWorkspaceController, customMiddleware.Auth)
+	e.PUT("/:id", workspaceController.UpdateWorkspaceController, customMiddleware.Auth)
+	e.POST("", workspaceController.CreateWorkspaceController, customMiddleware.Auth)
 	e.POST("/:id/join", workspaceController.JoinWorkspaceController, customMiddleware.Auth)
-	e.DELETE("/:id", workspaceController.DeleteWorkspaceController)
+	e.DELETE("/:id", workspaceController.DeleteWorkspaceController, customMiddleware.Auth)
 }
 
 func (app *Application) InitInviteCodeRoutes() {
@@ -75,6 +75,9 @@ func (app *Application) InitInviteCodeRoutes() {
 		WithRepository(&app.Repository).
 		WithWorkspaceService(workspaceService)
 	inviteCodeController := invitecode.InitInviteCodeController().WithInviteCodeService(&inviteCodeService)
+	jwtService := jwtToken.InitJWTService(app.PubKey, app.PrivateKey, app.Config.App.FooterKey)
+	userService := user.InitUserService(&app.Repository)
 
-	e.POST("", inviteCodeController.GenerateInviteCodeController)
+	customMiddleware := middlewares.InitMiddleware().WithUserService(userService).WithJwtTokenService(jwtService)
+	e.POST("", inviteCodeController.GenerateInviteCodeController, customMiddleware.Auth)
 }

@@ -1,7 +1,6 @@
 package workspace
 
 import (
-	"log"
 	"net/http"
 
 	customerror "github.com/MJU-Capstone-6/devmark-backend/internal/customError"
@@ -85,7 +84,7 @@ func (w *WorkspaceController) JoinWorkspaceController(ctx echo.Context) error {
 	}
 	err = ctx.Bind(&param)
 	if err != nil {
-		return responses.InternalServer(ctx, customerror.InternalServerError(err))
+		return responses.BadRequest(ctx, customerror.TokenNotProvidedError(err))
 	}
 
 	if user, ok := ctx.Get("user").(*repository.User); ok {
@@ -94,7 +93,6 @@ func (w *WorkspaceController) JoinWorkspaceController(ctx echo.Context) error {
 			UserID:      user.ID,
 		}
 		err = w.WorkspaceService.Join(param.Code, joinWorkspaceParam)
-		log.Println(err)
 		if err != nil {
 			if _, ok := err.(*customerror.CustomError); ok {
 				return responses.NotAcceptable(ctx, err)
