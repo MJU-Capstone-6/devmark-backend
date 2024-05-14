@@ -23,7 +23,7 @@ func Migration(dbURL string) error {
 		return err
 	}
 
-	_, err = client.MigrateApply(context.Background(), &atlasexec.MigrateApplyParams{
+	_, err = client.SchemaApply(context.Background(), &atlasexec.SchemaApplyParams{
 		URL: dbURL,
 	})
 	if err != nil {

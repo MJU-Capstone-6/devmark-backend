@@ -4,8 +4,7 @@ url="postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}?sslmo
 migration:
 	atlas schema apply --url ${url} --dev-url "docker://postgres" --to "file://db/schema.sql" 
 
-migrate:
-	atlas migrate diff initial_schema --dir "file://migration" --to "file://db/schema.sql" --dev-url "docker://postgres"
+.PHONY: migration
 
 generate:
 	sqlc generate
