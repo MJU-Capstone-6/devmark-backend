@@ -11,7 +11,7 @@ COPY . .
 RUN CGO_ENABLED=1 GOOS=linux go build -a -installsuffix cgo -o devmark .
 
 COPY config config
-COPY .env ./
+COPY ./.env ./
 
 # 5. 최종 이미지 생성
 FROM build
