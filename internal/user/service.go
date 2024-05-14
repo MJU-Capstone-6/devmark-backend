@@ -28,6 +28,15 @@ func (u *UserService) FindUserById(id int) (*repository.User, error) {
 	return &user, nil
 }
 
+func (u *UserService) FindJoinedWorkspace(id int) (*repository.UserWorkspaceView, error) {
+	userId := int64(id)
+	workspaceRow, err := u.Repository.FindUserWorkspace(context.Background(), &userId)
+	if err != nil {
+		return nil, customerror.WorkspaceNotFoundErr(err)
+	}
+	return &workspaceRow, nil
+}
+
 func (u *UserService) CreateUser(arg repository.CreateUserParams) (*repository.User, error) {
 	user, err := u.Repository.CreateUser(context.Background(), arg)
 	if err != nil {

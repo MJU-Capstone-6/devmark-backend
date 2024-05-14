@@ -116,4 +116,11 @@ RETURNING *;
 -- name: DeleteBookmark :exec
 DELETE FROM bookmark WHERE id = $1;
 
+-- name: FindUserWorkspace :one
+SELECT * FROM user_workspace_view WHERE id = $1;
+
+-- name: JoinWorkspaceWithoutCode :exec
+INSERT INTO workspace_user (workspace_id, user_id)
+VALUES ($1, $2);
+
 

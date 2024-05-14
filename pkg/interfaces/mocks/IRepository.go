@@ -405,6 +405,34 @@ func (_m *IRepository) FindUserByUsername(_a0 context.Context, _a1 *string) (rep
 	return r0, r1
 }
 
+// FindUserWorkspace provides a mock function with given fields: _a0, _a1
+func (_m *IRepository) FindUserWorkspace(_a0 context.Context, _a1 *int64) (repository.UserWorkspaceView, error) {
+	ret := _m.Called(_a0, _a1)
+
+	if len(ret) == 0 {
+		panic("no return value specified for FindUserWorkspace")
+	}
+
+	var r0 repository.UserWorkspaceView
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, *int64) (repository.UserWorkspaceView, error)); ok {
+		return rf(_a0, _a1)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, *int64) repository.UserWorkspaceView); ok {
+		r0 = rf(_a0, _a1)
+	} else {
+		r0 = ret.Get(0).(repository.UserWorkspaceView)
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, *int64) error); ok {
+		r1 = rf(_a0, _a1)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // FindWorkspace provides a mock function with given fields: _a0, _a1
 func (_m *IRepository) FindWorkspace(_a0 context.Context, _a1 int64) (repository.WorkspaceUserCategory, error) {
 	ret := _m.Called(_a0, _a1)
@@ -443,6 +471,24 @@ func (_m *IRepository) JoinWorkspace(_a0 context.Context, _a1 repository.JoinWor
 
 	var r0 error
 	if rf, ok := ret.Get(0).(func(context.Context, repository.JoinWorkspaceParams) error); ok {
+		r0 = rf(_a0, _a1)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// JoinWorkspaceWithoutCode provides a mock function with given fields: _a0, _a1
+func (_m *IRepository) JoinWorkspaceWithoutCode(_a0 context.Context, _a1 repository.JoinWorkspaceWithoutCodeParams) error {
+	ret := _m.Called(_a0, _a1)
+
+	if len(ret) == 0 {
+		panic("no return value specified for JoinWorkspaceWithoutCode")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, repository.JoinWorkspaceWithoutCodeParams) error); ok {
 		r0 = rf(_a0, _a1)
 	} else {
 		r0 = ret.Error(0)

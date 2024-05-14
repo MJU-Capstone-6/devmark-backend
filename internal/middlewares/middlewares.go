@@ -50,9 +50,9 @@ func (cm *CustomMiddleware) Auth(next echo.HandlerFunc) echo.HandlerFunc {
 			if err != nil {
 				return customerror.UserNotFound(err)
 			}
-			c.Set("user", user)
+			c.Set(constants.USER_CONTEXT_KEY, user)
 			if err := next(c); err != nil {
-				return customerror.InternalServerError(err)
+				return err
 			}
 			return nil
 		} else {

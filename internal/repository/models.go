@@ -44,11 +44,11 @@ type InviteCode struct {
 }
 
 type RefreshToken struct {
-	ID        int64            `db:"id" json:"id"`
-	Token     *string          `db:"token" json:"token"`
-	UserID    *int32           `db:"user_id" json:"user_id"`
-	CreatedAt pgtype.Timestamp `db:"created_at" json:"created_at"`
-	UpdatedAt pgtype.Timestamp `db:"updated_at" json:"updated_at"`
+	ID        int64              `db:"id" json:"id"`
+	Token     *string            `db:"token" json:"token"`
+	UserID    *int32             `db:"user_id" json:"user_id"`
+	CreatedAt pgtype.Timestamptz `db:"created_at" json:"created_at"`
+	UpdatedAt pgtype.Timestamptz `db:"updated_at" json:"updated_at"`
 }
 
 type User struct {
@@ -60,11 +60,16 @@ type User struct {
 	UpdatedAt    pgtype.Timestamptz `db:"updated_at" json:"updated_at"`
 }
 
+type UserWorkspaceView struct {
+	ID         *int64      `db:"id" json:"id"`
+	Workspaces []Workspace `db:"workspaces" json:"workspaces"`
+}
+
 type Workspace struct {
-	ID        int64            `db:"id" json:"id"`
-	Name      *string          `db:"name" json:"name"`
-	CreatedAt pgtype.Timestamp `db:"created_at" json:"created_at"`
-	UpdatedAt pgtype.Timestamp `db:"updated_at" json:"updated_at"`
+	ID        int64              `db:"id" json:"id"`
+	Name      *string            `db:"name" json:"name"`
+	CreatedAt pgtype.Timestamptz `db:"created_at" json:"created_at"`
+	UpdatedAt pgtype.Timestamptz `db:"updated_at" json:"updated_at"`
 }
 
 type WorkspaceCategory struct {
@@ -78,10 +83,10 @@ type WorkspaceUser struct {
 }
 
 type WorkspaceUserCategory struct {
-	ID         int64            `db:"id" json:"id"`
-	Name       *string          `db:"name" json:"name"`
-	CreatedAt  pgtype.Timestamp `db:"created_at" json:"created_at"`
-	UpdatedAt  pgtype.Timestamp `db:"updated_at" json:"updated_at"`
-	Categories []Category       `db:"categories" json:"categories"`
-	Users      []User           `db:"users" json:"users"`
+	ID         int64              `db:"id" json:"id"`
+	Name       *string            `db:"name" json:"name"`
+	CreatedAt  pgtype.Timestamptz `db:"created_at" json:"created_at"`
+	UpdatedAt  pgtype.Timestamptz `db:"updated_at" json:"updated_at"`
+	Categories []Category         `db:"categories" json:"categories"`
+	Users      []User             `db:"users" json:"users"`
 }

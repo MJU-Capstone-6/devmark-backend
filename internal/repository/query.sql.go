@@ -302,6 +302,17 @@ func (q *Queries) FindUserByUsername(ctx context.Context, username *string) (Use
 	return i, err
 }
 
+const findUserWorkspace = `-- name: FindUserWorkspace :one
+SELECT id, workspaces FROM user_workspace_view WHERE id = $1
+`
+
+func (q *Queries) FindUserWorkspace(ctx context.Context, id *int64) (UserWorkspaceView, error) {
+	row := q.db.QueryRow(ctx, findUserWorkspace, id)
+	var i UserWorkspaceView
+	err := row.Scan(&i.ID, &i.Workspaces)
+	return i, err
+}
+
 const findWorkspace = `-- name: FindWorkspace :one
 SELECT id, name, created_at, updated_at, categories, users FROM workspace_user_category WHERE id = $1
 `
@@ -333,6 +344,21 @@ type JoinWorkspaceParams struct {
 
 func (q *Queries) JoinWorkspace(ctx context.Context, arg JoinWorkspaceParams) error {
 	_, err := q.db.Exec(ctx, joinWorkspace, arg.WorkspaceID, arg.UserID)
+	return err
+}
+
+const joinWorkspaceWithoutCode = `-- name: JoinWorkspaceWithoutCode :exec
+INSERT INTO workspace_user (workspace_id, user_id)
+VALUES ($1, $2)
+`
+
+type JoinWorkspaceWithoutCodeParams struct {
+	WorkspaceID int64 `db:"workspace_id" json:"workspace_id"`
+	UserID      int64 `db:"user_id" json:"user_id"`
+}
+
+func (q *Queries) JoinWorkspaceWithoutCode(ctx context.Context, arg JoinWorkspaceWithoutCodeParams) error {
+	_, err := q.db.Exec(ctx, joinWorkspaceWithoutCode, arg.WorkspaceID, arg.UserID)
 	return err
 }
 

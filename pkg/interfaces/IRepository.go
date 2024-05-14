@@ -13,6 +13,7 @@ type IRepository interface {
 	CreateRefreshToken(context.Context, repository.CreateRefreshTokenParams) (repository.RefreshToken, error)
 	FindRefreshTokenByUserID(context.Context, *int32) (repository.RefreshToken, error)
 	UpdateRefreshToken(context.Context, repository.UpdateRefreshTokenParams) (repository.RefreshToken, error)
+	FindUserWorkspace(context.Context, *int64) (repository.UserWorkspaceView, error)
 	CreateUser(context.Context, repository.CreateUserParams) (repository.User, error)
 	UpdateUser(context.Context, repository.UpdateUserParams) (repository.User, error)
 	CreateWorkspace(context.Context, *string) (repository.Workspace, error)
@@ -22,6 +23,7 @@ type IRepository interface {
 	FindInviteCodeByWorkspaceID(context.Context, *int32) (repository.InviteCode, error)
 	CreateInviteCode(context.Context, repository.CreateInviteCodeParams) (repository.InviteCode, error)
 	JoinWorkspace(context.Context, repository.JoinWorkspaceParams) error
+	JoinWorkspaceWithoutCode(context.Context, repository.JoinWorkspaceWithoutCodeParams) error
 	FindCategoryById(context.Context, int64) (repository.Category, error)
 	CreateCategory(context.Context, *string) (repository.Category, error)
 	RegisterCategoryToWorkspace(context.Context, repository.RegisterCategoryToWorkspaceParams) error
