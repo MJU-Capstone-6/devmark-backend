@@ -17,5 +17,6 @@ run:
 	air
 
 swag:
+	swag fmt
 	swag init -d internal/auth,internal/category,internal/inviteCode,internal/workspace -g ../../main.go --parseDependency
 	

@@ -2,11 +2,9 @@ package auth
 
 import (
 	"github.com/MJU-Capstone-6/devmark-backend/internal/constants"
-	customerror "github.com/MJU-Capstone-6/devmark-backend/internal/customError"
 	"github.com/MJU-Capstone-6/devmark-backend/internal/repository"
 	"github.com/MJU-Capstone-6/devmark-backend/internal/responses"
 	"github.com/MJU-Capstone-6/devmark-backend/pkg/interfaces"
-	"github.com/labstack/echo/v4"
 )
 
 type AuthService struct {
@@ -16,7 +14,7 @@ type AuthService struct {
 	RefreshService interfaces.IRefreshTokenService
 }
 
-func (a *AuthService) KakaoSignUp(nickname string, provider string, ctx echo.Context) error {
+func (a *AuthService) KakaoSignUp(nickname string, provider string) (*responses.GetKakaoInfoResponse, error) {
 	var userId int
 	var user *repository.User
 	var refreshToken *repository.RefreshToken
@@ -27,16 +25,16 @@ func (a *AuthService) KakaoSignUp(nickname string, provider string, ctx echo.Con
 		user, err = a.UserService.CreateUser(params)
 		userId = int(user.ID)
 		if err != nil {
-			return responses.InternalServer(ctx, customerror.InternalServerError(err))
+			return nil, err
 		}
 
 		tokenString, err := a.JWTService.GenerateToken(userId, constants.REFRESH_TOKEN_EXPIRED_TIME)
 		if err != nil {
-			return responses.InternalServer(ctx, customerror.InternalServerError(err))
+			return nil, err
 		}
 		refreshToken, err = a.RefreshService.CreateToken(tokenString)
 		if err != nil {
-			return responses.InternalServer(ctx, customerror.TokenCreationFailed(err))
+			return nil, err
 		}
 		refreshTokenId := int32(refreshToken.ID)
 
@@ -45,11 +43,11 @@ func (a *AuthService) KakaoSignUp(nickname string, provider string, ctx echo.Con
 		userId = int(user.ID)
 		tokenString, err := a.JWTService.GenerateToken(userId, constants.REFRESH_TOKEN_EXPIRED_TIME)
 		if err != nil {
-			return responses.InternalServer(ctx, customerror.TokenCreationFailed(err))
+			return nil, err
 		}
 		refreshToken, err = a.RefreshService.FindOneByUserId(int(user.ID))
 		if err != nil {
-			return responses.InternalServer(ctx, customerror.TokenCreationFailed(err))
+			return nil, err
 		}
 		updateRefreshTokenParam := repository.UpdateRefreshTokenParams{
 			Token: &tokenString,
@@ -57,12 +55,12 @@ func (a *AuthService) KakaoSignUp(nickname string, provider string, ctx echo.Con
 		}
 		refreshToken, err = a.RefreshService.UpdateToken(updateRefreshTokenParam)
 		if err != nil {
-			return responses.InternalServer(ctx, customerror.TokenCreationFailed(err))
+			return nil, err
 		}
 	}
 	accessToken, err := a.JWTService.GenerateToken(userId, constants.ACCESSTOKEN_EXPIRED_TIME)
 	if err != nil {
-		return responses.InternalServer(ctx, customerror.InternalServerError(err))
+		return nil, err
 	}
 	refreshTokenID := int32(refreshToken.ID)
 	updateUserParam := repository.UpdateUserParams{
@@ -72,9 +70,9 @@ func (a *AuthService) KakaoSignUp(nickname string, provider string, ctx echo.Con
 	}
 	_, err = a.UserService.UpdateUser(updateUserParam)
 	if err != nil {
-		return responses.InternalServer(ctx, customerror.InternalServerError(err))
+		return nil, err
 	}
-	return responses.OK(ctx, GetKakaoInfoResponse{AccessToken: accessToken, RefreshToken: *refreshToken.Token})
+	return &responses.GetKakaoInfoResponse{AccessToken: accessToken, RefreshToken: *refreshToken.Token}, nil
 }
 
 func InitAuthService(repo interfaces.IRepository, userService interfaces.IUserService, jwtService interfaces.IJWTService, refreshTokenService interfaces.IRefreshTokenService) *AuthService {

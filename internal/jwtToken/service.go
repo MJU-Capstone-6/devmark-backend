@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/MJU-Capstone-6/devmark-backend/internal/constants"
+	customerror "github.com/MJU-Capstone-6/devmark-backend/internal/customError"
 	"github.com/o1egl/paseto"
 )
 
@@ -25,7 +26,7 @@ func (j *JWTService) GenerateToken(id int, expTime time.Time) (string, error) {
 	jsonToken.Set(constants.TOKEN_DATA_KEY, fmt.Sprintf("%d", id))
 	token, err := paseto.NewV2().Sign(j.PrivateKey, jsonToken, nil)
 	if err != nil {
-		return "", err
+		return "", customerror.TokenSignFail(err)
 	}
 	return token, nil
 }
@@ -34,7 +35,7 @@ func (j *JWTService) VerifyToken(token string) (paseto.JSONToken, error) {
 	var parsedJSONToken paseto.JSONToken
 	err := paseto.NewV2().Verify(token, j.PublicKey, &parsedJSONToken, nil)
 	if err != nil {
-		return parsedJSONToken, err
+		return parsedJSONToken, customerror.TokenVerifyFail(err)
 	}
 	return parsedJSONToken, nil
 }

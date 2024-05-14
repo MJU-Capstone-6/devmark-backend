@@ -2,7 +2,6 @@ package workspace
 
 import (
 	"context"
-	"log"
 
 	customerror "github.com/MJU-Capstone-6/devmark-backend/internal/customError"
 	"github.com/MJU-Capstone-6/devmark-backend/internal/repository"
@@ -18,7 +17,7 @@ type WorkspaceService struct {
 func (w *WorkspaceService) Create(name string) (*repository.Workspace, error) {
 	workspace, err := w.Repository.CreateWorkspace(context.Background(), &name)
 	if err != nil {
-		return nil, err
+		return nil, customerror.WorkspaceCreateFail(err)
 	}
 	return &workspace, nil
 }
@@ -27,8 +26,7 @@ func (w *WorkspaceService) FindById(id int) (*repository.WorkspaceUserCategory, 
 	workspaceId := int64(id)
 	workspace, err := w.Repository.FindWorkspace(context.Background(), workspaceId)
 	if err != nil {
-		log.Println(err)
-		return nil, err
+		return nil, customerror.WorkspaceNotFoundErr(err)
 	}
 	return &workspace, nil
 }
@@ -36,7 +34,7 @@ func (w *WorkspaceService) FindById(id int) (*repository.WorkspaceUserCategory, 
 func (w *WorkspaceService) Update(param repository.UpdateWorkspaceParams) (*repository.Workspace, error) {
 	workspace, err := w.Repository.UpdateWorkspace(context.Background(), param)
 	if err != nil {
-		return nil, err
+		return nil, customerror.WorkspaceUpdateFail(err)
 	}
 	return &workspace, nil
 }
@@ -44,7 +42,7 @@ func (w *WorkspaceService) Update(param repository.UpdateWorkspaceParams) (*repo
 func (w *WorkspaceService) Delete(id int) error {
 	err := w.Repository.DeleteWorkspace(context.Background(), int64(id))
 	if err != nil {
-		return err
+		return customerror.WorkspaceDeleteFail(err)
 	}
 	return nil
 }
@@ -63,7 +61,7 @@ func (w *WorkspaceService) Join(code string, param repository.JoinWorkspaceParam
 
 	err := w.Repository.JoinWorkspace(context.Background(), param)
 	if err != nil {
-		return err
+		return customerror.WorkspaceJoinFailErr(err)
 	}
 	return nil
 }

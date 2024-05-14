@@ -3,6 +3,7 @@ package user
 import (
 	"context"
 
+	customerror "github.com/MJU-Capstone-6/devmark-backend/internal/customError"
 	"github.com/MJU-Capstone-6/devmark-backend/internal/repository"
 	"github.com/MJU-Capstone-6/devmark-backend/pkg/interfaces"
 )
@@ -14,7 +15,7 @@ type UserService struct {
 func (u *UserService) FindUserByUserName(username *string) (*repository.User, error) {
 	user, err := u.Repository.FindUserByUsername(context.Background(), username)
 	if err != nil {
-		return nil, err
+		return nil, customerror.UserNotFound(err)
 	}
 	return &user, nil
 }
@@ -22,7 +23,7 @@ func (u *UserService) FindUserByUserName(username *string) (*repository.User, er
 func (u *UserService) FindUserById(id int) (*repository.User, error) {
 	user, err := u.Repository.FindUserById(context.Background(), int64(id))
 	if err != nil {
-		return nil, err
+		return nil, customerror.UserNotFound(err)
 	}
 	return &user, nil
 }
@@ -30,7 +31,7 @@ func (u *UserService) FindUserById(id int) (*repository.User, error) {
 func (u *UserService) CreateUser(arg repository.CreateUserParams) (*repository.User, error) {
 	user, err := u.Repository.CreateUser(context.Background(), arg)
 	if err != nil {
-		return nil, err
+		return nil, customerror.UserCreationFail(err)
 	}
 	return &user, nil
 }
@@ -38,7 +39,7 @@ func (u *UserService) CreateUser(arg repository.CreateUserParams) (*repository.U
 func (u *UserService) UpdateUser(arg repository.UpdateUserParams) (*repository.User, error) {
 	user, err := u.Repository.UpdateUser(context.Background(), arg)
 	if err != nil {
-		return nil, err
+		return nil, customerror.UserUpdateFail(err)
 	}
 	return &user, nil
 }

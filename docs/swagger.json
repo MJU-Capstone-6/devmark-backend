@@ -30,11 +30,17 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/auth.GetKakaoInfoResponse"
+                            "$ref": "#/definitions/responses.GetKakaoInfoResponse"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/customerror.CustomError"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
                         "schema": {
                             "$ref": "#/definitions/customerror.CustomError"
                         }
@@ -87,6 +93,12 @@
                     },
                     "401": {
                         "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/customerror.CustomError"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
                         "schema": {
                             "$ref": "#/definitions/customerror.CustomError"
                         }
@@ -150,6 +162,12 @@
                             "$ref": "#/definitions/customerror.CustomError"
                         }
                     },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/customerror.CustomError"
+                        }
+                    },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
@@ -194,6 +212,12 @@
                     },
                     "401": {
                         "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/customerror.CustomError"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
                         "schema": {
                             "$ref": "#/definitions/customerror.CustomError"
                         }
@@ -527,17 +551,6 @@
         }
     },
     "definitions": {
-        "auth.GetKakaoInfoResponse": {
-            "type": "object",
-            "properties": {
-                "access_key": {
-                    "type": "string"
-                },
-                "refresh_token": {
-                    "type": "string"
-                }
-            }
-        },
         "category.CreateCategoryParam": {
             "type": "object",
             "properties": {
@@ -690,6 +703,17 @@
                 },
                 "updated_at": {
                     "$ref": "#/definitions/pgtype.Timestamp"
+                }
+            }
+        },
+        "responses.GetKakaoInfoResponse": {
+            "type": "object",
+            "properties": {
+                "access_key": {
+                    "type": "string"
+                },
+                "refresh_token": {
+                    "type": "string"
                 }
             }
         },

@@ -3,6 +3,7 @@ package bookmark
 import (
 	"context"
 
+	customerror "github.com/MJU-Capstone-6/devmark-backend/internal/customError"
 	"github.com/MJU-Capstone-6/devmark-backend/internal/repository"
 	"github.com/MJU-Capstone-6/devmark-backend/pkg/interfaces"
 )
@@ -16,16 +17,16 @@ type BookmarkService struct {
 func (b *BookmarkService) Create(param repository.CreateBookmarkParams) (*repository.Bookmark, error) {
 	_, err := b.WorkspaceService.FindById(int(*param.WorkspaceID))
 	if err != nil {
-		return nil, err
+		return nil, customerror.WorkspaceNotFoundErr(err)
 	}
 	_, err = b.CategoryService.FindById(int(*param.CategoryID))
 	if err != nil {
-		return nil, err
+		return nil, customerror.CategoryNotFound(err)
 	}
 
 	bookmark, err := b.Repository.CreateBookmark(context.Background(), param)
 	if err != nil {
-		return nil, err
+		return nil, customerror.BookmarkCreationFail(err)
 	}
 	return &bookmark, nil
 }
@@ -33,7 +34,7 @@ func (b *BookmarkService) Create(param repository.CreateBookmarkParams) (*reposi
 func (b *BookmarkService) Update(param repository.UpdateBookmarkParams) (*repository.Bookmark, error) {
 	bookmark, err := b.Repository.UpdateBookmark(context.Background(), param)
 	if err != nil {
-		return nil, err
+		return nil, customerror.BookmarkUpdateFail(err)
 	}
 	return &bookmark, nil
 }
@@ -41,7 +42,7 @@ func (b *BookmarkService) Update(param repository.UpdateBookmarkParams) (*reposi
 func (b *BookmarkService) FindById(id int) (*repository.FindBookmarkRow, error) {
 	bookmark, err := b.Repository.FindBookmark(context.Background(), int64(id))
 	if err != nil {
-		return nil, err
+		return nil, customerror.BookmarkNotFound(err)
 	}
 	return &bookmark, nil
 }
@@ -49,7 +50,7 @@ func (b *BookmarkService) FindById(id int) (*repository.FindBookmarkRow, error) 
 func (b *BookmarkService) Delete(id int) error {
 	err := b.Repository.DeleteBookmark(context.Background(), int64(id))
 	if err != nil {
-		return err
+		return customerror.BookmarkDeleteFail(err)
 	}
 	return nil
 }

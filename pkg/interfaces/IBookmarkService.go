@@ -1,6 +1,8 @@
 package interfaces
 
-import "github.com/MJU-Capstone-6/devmark-backend/internal/repository"
+import (
+	"github.com/MJU-Capstone-6/devmark-backend/internal/repository"
+)
 
 type IBookmarkService interface {
 	Create(repository.CreateBookmarkParams) (*repository.Bookmark, error)

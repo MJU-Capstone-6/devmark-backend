@@ -19,6 +19,7 @@ import (
 const V1 = "/api/v1"
 
 func (app *Application) InitRoutes() {
+	app.Handler.HTTPErrorHandler = CustomHTTPErrorHandler
 	app.Handler.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
 		Format: "method=${method}, uri=${uri}, status=${status}\n",
 	}))
