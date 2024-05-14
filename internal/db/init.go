@@ -52,7 +52,7 @@ func setDBByConfig(ctx context.Context, c config.DB) (*pgx.Conn, error) {
 
 	err := Migration(dbURL)
 	if err != nil {
-		return nil, err
+		log.Println(err)
 	}
 	conn, err := pgx.Connect(ctx, dbURL)
 	if err != nil {
