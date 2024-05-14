@@ -156,7 +156,7 @@ func (_m *IRepository) CreateUser(_a0 context.Context, _a1 repository.CreateUser
 }
 
 // CreateWorkspace provides a mock function with given fields: _a0, _a1
-func (_m *IRepository) CreateWorkspace(_a0 context.Context, _a1 *string) (repository.Workspace, error) {
+func (_m *IRepository) CreateWorkspace(_a0 context.Context, _a1 repository.CreateWorkspaceParams) (repository.Workspace, error) {
 	ret := _m.Called(_a0, _a1)
 
 	if len(ret) == 0 {
@@ -165,16 +165,16 @@ func (_m *IRepository) CreateWorkspace(_a0 context.Context, _a1 *string) (reposi
 
 	var r0 repository.Workspace
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, *string) (repository.Workspace, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, repository.CreateWorkspaceParams) (repository.Workspace, error)); ok {
 		return rf(_a0, _a1)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, *string) repository.Workspace); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, repository.CreateWorkspaceParams) repository.Workspace); ok {
 		r0 = rf(_a0, _a1)
 	} else {
 		r0 = ret.Get(0).(repository.Workspace)
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, *string) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, repository.CreateWorkspaceParams) error); ok {
 		r1 = rf(_a0, _a1)
 	} else {
 		r1 = ret.Error(1)

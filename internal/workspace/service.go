@@ -14,8 +14,8 @@ type WorkspaceService struct {
 	InviteCodeService interfaces.IInviteCodeService
 }
 
-func (w *WorkspaceService) Create(userId int, name string) (*repository.Workspace, error) {
-	workspace, err := w.Repository.CreateWorkspace(context.Background(), &name)
+func (w *WorkspaceService) Create(userId int, createWorkspaceParam repository.CreateWorkspaceParams) (*repository.Workspace, error) {
+	workspace, err := w.Repository.CreateWorkspace(context.Background(), createWorkspaceParam)
 	if err != nil {
 		return nil, customerror.WorkspaceCreateFail(err)
 	}

@@ -1,5 +1,21 @@
 -- Create "bookmark" table
 CREATE TABLE "public"."bookmark" ("id" bigserial NOT NULL, "link" character varying NULL, "category_id" bigint NULL, "workspace_id" bigint NULL, "summary" character varying NULL, "created_at" timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP, "updated_at" timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY ("id"));
+-- Create "update_workspace_bookmark_count" function
+CREATE FUNCTION "public"."update_workspace_bookmark_count" () RETURNS trigger LANGUAGE plpgsql AS $$
+BEGIN
+    UPDATE "workspace"
+    SET "bookmark_count" = (
+        SELECT COUNT(*)
+        FROM "bookmark"
+        WHERE "workspace_id" = NEW."workspace_id"
+    )
+    WHERE "id" = NEW."workspace_id";
+
+    RETURN NEW;
+END;
+$$;
+-- Create trigger "trigger_update_workspace_bookmark_count"
+CREATE TRIGGER "trigger_update_workspace_bookmark_count" AFTER DELETE OR INSERT OR UPDATE ON "public"."bookmark" FOR EACH ROW EXECUTE FUNCTION "public"."update_workspace_bookmark_count"();
 -- Create "category" table
 CREATE TABLE "public"."category" ("id" bigserial NOT NULL, "name" character varying NULL, "created_at" timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP, "updated_at" timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY ("id"), CONSTRAINT "category_name_key" UNIQUE ("name"));
 -- Create "comment" table
@@ -11,11 +27,24 @@ CREATE TABLE "public"."refresh_token" ("id" bigserial NOT NULL, "token" characte
 -- Create "user" table
 CREATE TABLE "public"."user" ("id" bigserial NOT NULL, "username" character varying NULL, "provider" character varying NULL, "refresh_token" integer NULL, "created_at" timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP, "updated_at" timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY ("id"), CONSTRAINT "user_refresh_token_key" UNIQUE ("refresh_token"), CONSTRAINT "user_username_key" UNIQUE ("username"));
 -- Create "workspace" table
-CREATE TABLE "public"."workspace" ("id" bigserial NOT NULL, "name" character varying NULL, "created_at" timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP, "updated_at" timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY ("id"));
+CREATE TABLE "public"."workspace" ("id" bigserial NOT NULL, "name" character varying NULL, "description" character varying NULL, "created_at" timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP, "updated_at" timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP, "bookmark_count" integer NULL DEFAULT 0, "user_count" integer NULL DEFAULT 0, PRIMARY KEY ("id"));
 -- Create "workspace_category" table
 CREATE TABLE "public"."workspace_category" ("workspace_id" bigint NOT NULL, "category_id" bigint NOT NULL, PRIMARY KEY ("workspace_id", "category_id"));
 -- Create "workspace_user" table
 CREATE TABLE "public"."workspace_user" ("workspace_id" bigint NOT NULL, "user_id" bigint NOT NULL, PRIMARY KEY ("workspace_id", "user_id"));
+-- Create "update_workspace_user_count" function
+CREATE FUNCTION "public"."update_workspace_user_count" () RETURNS trigger LANGUAGE plpgsql AS $$
+BEGIN
+    UPDATE "workspace" SET "user_count" = (
+      SELECT COUNT("user_id")
+      FROM "workspace_user"
+      WHERE "workspace_id" = "workspace"."id"
+    );
+    RETURN NEW;
+END;
+$$;
+-- Create trigger "trigger_update_workspace_user_count"
+CREATE TRIGGER "trigger_update_workspace_user_count" AFTER DELETE OR INSERT OR UPDATE ON "public"."workspace_user" FOR EACH ROW EXECUTE FUNCTION "public"."update_workspace_user_count"();
 -- Modify "bookmark" table
 ALTER TABLE "public"."bookmark" ADD CONSTRAINT "bookmark_category_id_fkey" FOREIGN KEY ("category_id") REFERENCES "public"."category" ("id") ON UPDATE NO ACTION ON DELETE NO ACTION, ADD CONSTRAINT "bookmark_workspace_id_fkey" FOREIGN KEY ("workspace_id") REFERENCES "public"."workspace" ("id") ON UPDATE NO ACTION ON DELETE NO ACTION;
 -- Modify "comment" table
@@ -38,10 +67,13 @@ CREATE VIEW "public"."user_workspace_view" ("id", "workspaces") AS SELECT u.id,
      LEFT JOIN "user" u ON ((wu.user_id = u.id)))
   GROUP BY u.id;
 -- Create "workspace_user_category" view
-CREATE VIEW "public"."workspace_user_category" ("id", "name", "created_at", "updated_at", "categories", "users") AS SELECT w.id,
+CREATE VIEW "public"."workspace_user_category" ("id", "name", "description", "created_at", "updated_at", "bookmark_count", "user_count", "categories", "users") AS SELECT w.id,
     w.name,
+    w.description,
     w.created_at,
     w.updated_at,
+    w.bookmark_count,
+    w.user_count,
     json_agg(DISTINCT c.*) AS categories,
     json_agg(DISTINCT u.*) AS users
    FROM ((((workspace w

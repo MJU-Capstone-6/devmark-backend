@@ -13,7 +13,7 @@ type IWorkspaceService struct {
 }
 
 // Create provides a mock function with given fields: _a0, _a1
-func (_m *IWorkspaceService) Create(_a0 int, _a1 string) (*repository.Workspace, error) {
+func (_m *IWorkspaceService) Create(_a0 int, _a1 repository.CreateWorkspaceParams) (*repository.Workspace, error) {
 	ret := _m.Called(_a0, _a1)
 
 	if len(ret) == 0 {
@@ -22,10 +22,10 @@ func (_m *IWorkspaceService) Create(_a0 int, _a1 string) (*repository.Workspace,
 
 	var r0 *repository.Workspace
 	var r1 error
-	if rf, ok := ret.Get(0).(func(int, string) (*repository.Workspace, error)); ok {
+	if rf, ok := ret.Get(0).(func(int, repository.CreateWorkspaceParams) (*repository.Workspace, error)); ok {
 		return rf(_a0, _a1)
 	}
-	if rf, ok := ret.Get(0).(func(int, string) *repository.Workspace); ok {
+	if rf, ok := ret.Get(0).(func(int, repository.CreateWorkspaceParams) *repository.Workspace); ok {
 		r0 = rf(_a0, _a1)
 	} else {
 		if ret.Get(0) != nil {
@@ -33,7 +33,7 @@ func (_m *IWorkspaceService) Create(_a0 int, _a1 string) (*repository.Workspace,
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(int, string) error); ok {
+	if rf, ok := ret.Get(1).(func(int, repository.CreateWorkspaceParams) error); ok {
 		r1 = rf(_a0, _a1)
 	} else {
 		r1 = ret.Error(1)

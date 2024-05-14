@@ -34,6 +34,23 @@ definitions:
       valid:
         type: boolean
     type: object
+  repository.Bookmark:
+    properties:
+      category_id:
+        type: integer
+      created_at:
+        $ref: '#/definitions/pgtype.Timestamptz'
+      id:
+        type: integer
+      link:
+        type: string
+      summary:
+        type: string
+      updated_at:
+        $ref: '#/definitions/pgtype.Timestamptz'
+      workspace_id:
+        type: integer
+    type: object
   repository.Category:
     properties:
       created_at:
@@ -44,6 +61,17 @@ definitions:
         type: string
       updated_at:
         $ref: '#/definitions/pgtype.Timestamptz'
+    type: object
+  repository.CreateBookmarkParams:
+    properties:
+      category_id:
+        type: integer
+      link:
+        type: string
+      summary:
+        type: string
+      workspace_id:
+        type: integer
     type: object
   repository.CreateInviteCodeParams:
     properties:
@@ -67,6 +95,19 @@ definitions:
       workspace_id:
         type: integer
     type: object
+  repository.UpdateBookmarkParams:
+    properties:
+      category_id:
+        type: integer
+      id:
+        type: integer
+      link:
+        type: string
+      summary:
+        type: string
+      workspace_id:
+        type: integer
+    type: object
   repository.UpdateCategoryParams:
     properties:
       id:
@@ -76,6 +117,8 @@ definitions:
     type: object
   repository.UpdateWorkspaceParams:
     properties:
+      description:
+        type: string
       id:
         type: integer
       name:
@@ -92,14 +135,20 @@ definitions:
     type: object
   repository.Workspace:
     properties:
+      bookmark_count:
+        type: integer
       created_at:
         $ref: '#/definitions/pgtype.Timestamptz'
+      description:
+        type: string
       id:
         type: integer
       name:
         type: string
       updated_at:
         $ref: '#/definitions/pgtype.Timestamptz'
+      user_count:
+        type: integer
     type: object
   responses.GetKakaoInfoResponse:
     properties:
@@ -156,6 +205,138 @@ paths:
       summary: retrive user info from kakao oauth
       tags:
       - auth
+  /api/v1/bookmark:
+    post:
+      consumes:
+      - application/json
+      description: 북마크를 생성합니다.
+      parameters:
+      - description: Bookmark param
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/repository.CreateBookmarkParams'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/repository.Bookmark'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/customerror.CustomError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/customerror.CustomError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/customerror.CustomError'
+      summary: 북마크 생성
+      tags:
+      - bookmark
+  /api/v1/bookmark/:id:
+    delete:
+      consumes:
+      - application/json
+      description: 북마크를 삭제합니다.
+      parameters:
+      - description: Bookmark id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/repository.Bookmark'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/customerror.CustomError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/customerror.CustomError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/customerror.CustomError'
+      summary: 북마크 삭제
+      tags:
+      - bookmark
+    get:
+      consumes:
+      - application/json
+      description: 북마크를 조회합니다.
+      parameters:
+      - description: Bookmark id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/repository.Bookmark'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/customerror.CustomError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/customerror.CustomError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/customerror.CustomError'
+      summary: 북마크 조회
+      tags:
+      - bookmark
+    put:
+      consumes:
+      - application/json
+      description: 북마크를 업데이트 합니다.
+      parameters:
+      - description: Bookmark param
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/repository.UpdateBookmarkParams'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/repository.Bookmark'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/customerror.CustomError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/customerror.CustomError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/customerror.CustomError'
+      summary: 북마크 업데이트
+      tags:
+      - bookmark
   /api/v1/category:
     post:
       consumes:

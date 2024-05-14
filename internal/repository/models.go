@@ -66,10 +66,13 @@ type UserWorkspaceView struct {
 }
 
 type Workspace struct {
-	ID        int64              `db:"id" json:"id"`
-	Name      *string            `db:"name" json:"name"`
-	CreatedAt pgtype.Timestamptz `db:"created_at" json:"created_at"`
-	UpdatedAt pgtype.Timestamptz `db:"updated_at" json:"updated_at"`
+	ID            int64              `db:"id" json:"id"`
+	Name          *string            `db:"name" json:"name"`
+	Description   *string            `db:"description" json:"description"`
+	CreatedAt     pgtype.Timestamptz `db:"created_at" json:"created_at"`
+	UpdatedAt     pgtype.Timestamptz `db:"updated_at" json:"updated_at"`
+	BookmarkCount *int32             `db:"bookmark_count" json:"bookmark_count"`
+	UserCount     *int32             `db:"user_count" json:"user_count"`
 }
 
 type WorkspaceCategory struct {
@@ -83,10 +86,13 @@ type WorkspaceUser struct {
 }
 
 type WorkspaceUserCategory struct {
-	ID         int64              `db:"id" json:"id"`
-	Name       *string            `db:"name" json:"name"`
-	CreatedAt  pgtype.Timestamptz `db:"created_at" json:"created_at"`
-	UpdatedAt  pgtype.Timestamptz `db:"updated_at" json:"updated_at"`
-	Categories []Category         `db:"categories" json:"categories"`
-	Users      []User             `db:"users" json:"users"`
+	ID            int64              `db:"id" json:"id"`
+	Name          *string            `db:"name" json:"name"`
+	Description   *string            `db:"description" json:"description"`
+	CreatedAt     pgtype.Timestamptz `db:"created_at" json:"created_at"`
+	UpdatedAt     pgtype.Timestamptz `db:"updated_at" json:"updated_at"`
+	BookmarkCount *int32             `db:"bookmark_count" json:"bookmark_count"`
+	UserCount     *int32             `db:"user_count" json:"user_count"`
+	Categories    []Category         `db:"categories" json:"categories"`
+	Users         []User             `db:"users" json:"users"`
 }

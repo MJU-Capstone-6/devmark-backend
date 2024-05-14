@@ -135,19 +135,27 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 }
 
 const createWorkspace = `-- name: CreateWorkspace :one
-INSERT INTO workspace (name)
-VALUES ($1)
-RETURNING id, name, created_at, updated_at
+INSERT INTO workspace (name, description)
+VALUES ($1, $2)
+RETURNING id, name, description, created_at, updated_at, bookmark_count, user_count
 `
 
-func (q *Queries) CreateWorkspace(ctx context.Context, name *string) (Workspace, error) {
-	row := q.db.QueryRow(ctx, createWorkspace, name)
+type CreateWorkspaceParams struct {
+	Name        *string `db:"name" json:"name"`
+	Description *string `db:"description" json:"description"`
+}
+
+func (q *Queries) CreateWorkspace(ctx context.Context, arg CreateWorkspaceParams) (Workspace, error) {
+	row := q.db.QueryRow(ctx, createWorkspace, arg.Name, arg.Description)
 	var i Workspace
 	err := row.Scan(
 		&i.ID,
 		&i.Name,
+		&i.Description,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.BookmarkCount,
+		&i.UserCount,
 	)
 	return i, err
 }
@@ -180,7 +188,7 @@ func (q *Queries) DeleteWorkspace(ctx context.Context, id int64) error {
 }
 
 const findBookmark = `-- name: FindBookmark :one
-SELECT bookmark.id, bookmark.link, bookmark.category_id, bookmark.workspace_id, bookmark.summary, bookmark.created_at, bookmark.updated_at, workspace.id, workspace.name, workspace.created_at, workspace.updated_at, category.id, category.name, category.created_at, category.updated_at FROM bookmark
+SELECT bookmark.id, bookmark.link, bookmark.category_id, bookmark.workspace_id, bookmark.summary, bookmark.created_at, bookmark.updated_at, workspace.id, workspace.name, workspace.description, workspace.created_at, workspace.updated_at, workspace.bookmark_count, workspace.user_count, category.id, category.name, category.created_at, category.updated_at FROM bookmark
 JOIN workspace on workspace.id = bookmark.workspace_id
 JOIN category on category.id = bookmark.workspace_id
 WHERE bookmark.id = $1
@@ -205,8 +213,11 @@ func (q *Queries) FindBookmark(ctx context.Context, id int64) (FindBookmarkRow, 
 		&i.Bookmark.UpdatedAt,
 		&i.Workspace.ID,
 		&i.Workspace.Name,
+		&i.Workspace.Description,
 		&i.Workspace.CreatedAt,
 		&i.Workspace.UpdatedAt,
+		&i.Workspace.BookmarkCount,
+		&i.Workspace.UserCount,
 		&i.Category.ID,
 		&i.Category.Name,
 		&i.Category.CreatedAt,
@@ -314,7 +325,7 @@ func (q *Queries) FindUserWorkspace(ctx context.Context, id *int64) (UserWorkspa
 }
 
 const findWorkspace = `-- name: FindWorkspace :one
-SELECT id, name, created_at, updated_at, categories, users FROM workspace_user_category WHERE id = $1
+SELECT id, name, description, created_at, updated_at, bookmark_count, user_count, categories, users FROM workspace_user_category WHERE id = $1
 `
 
 func (q *Queries) FindWorkspace(ctx context.Context, id int64) (WorkspaceUserCategory, error) {
@@ -323,8 +334,11 @@ func (q *Queries) FindWorkspace(ctx context.Context, id int64) (WorkspaceUserCat
 	err := row.Scan(
 		&i.ID,
 		&i.Name,
+		&i.Description,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.BookmarkCount,
+		&i.UserCount,
 		&i.Categories,
 		&i.Users,
 	)
@@ -506,24 +520,29 @@ const updateWorkspace = `-- name: UpdateWorkspace :one
 UPDATE workspace
 SET
   name = $1,
+  description = $2,
   updated_at = CURRENT_TIMESTAMP
-WHERE id = $2
-RETURNING id, name, created_at, updated_at
+WHERE id = $3
+RETURNING id, name, description, created_at, updated_at, bookmark_count, user_count
 `
 
 type UpdateWorkspaceParams struct {
-	Name *string `db:"name" json:"name"`
-	ID   int64   `db:"id" json:"id"`
+	Name        *string `db:"name" json:"name"`
+	Description *string `db:"description" json:"description"`
+	ID          int64   `db:"id" json:"id"`
 }
 
 func (q *Queries) UpdateWorkspace(ctx context.Context, arg UpdateWorkspaceParams) (Workspace, error) {
-	row := q.db.QueryRow(ctx, updateWorkspace, arg.Name, arg.ID)
+	row := q.db.QueryRow(ctx, updateWorkspace, arg.Name, arg.Description, arg.ID)
 	var i Workspace
 	err := row.Scan(
 		&i.ID,
 		&i.Name,
+		&i.Description,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.BookmarkCount,
+		&i.UserCount,
 	)
 	return i, err
 }
