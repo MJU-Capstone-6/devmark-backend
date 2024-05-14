@@ -16,7 +16,7 @@ type IRepository interface {
 	FindUserWorkspace(context.Context, *int64) (repository.UserWorkspaceView, error)
 	CreateUser(context.Context, repository.CreateUserParams) (repository.User, error)
 	UpdateUser(context.Context, repository.UpdateUserParams) (repository.User, error)
-	CreateWorkspace(context.Context, *string) (repository.Workspace, error)
+	CreateWorkspace(context.Context, repository.CreateWorkspaceParams) (repository.Workspace, error)
 	FindWorkspace(context.Context, int64) (repository.WorkspaceUserCategory, error)
 	UpdateWorkspace(context.Context, repository.UpdateWorkspaceParams) (repository.Workspace, error)
 	DeleteWorkspace(context.Context, int64) error

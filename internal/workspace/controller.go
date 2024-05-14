@@ -121,7 +121,7 @@ func (w *WorkspaceController) DeleteWorkspaceController(ctx echo.Context) error 
 //	@failure		500		{object}	customerror.CustomError
 //	@router			/api/v1/workspace [POST]
 func (w *WorkspaceController) CreateWorkspaceController(ctx echo.Context) error {
-	var param CreateWorkspaceParam
+	var param repository.CreateWorkspaceParams
 	err := ctx.Bind(&param)
 	if err != nil {
 		return customerror.InternalServerError(err)
@@ -132,7 +132,7 @@ func (w *WorkspaceController) CreateWorkspaceController(ctx echo.Context) error 
 		return err
 	}
 
-	workspace, err := w.WorkspaceService.Create(int(user.ID), param.Name)
+	workspace, err := w.WorkspaceService.Create(int(user.ID), param)
 	if err != nil {
 		return err
 	}

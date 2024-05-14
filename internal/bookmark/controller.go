@@ -15,6 +15,20 @@ type BookmarkController struct {
 	BookmarkService interfaces.IBookmarkService
 }
 
+// CreateBookmarkController godoc
+//
+//	@summary	북마크 생성
+//	@schemes
+//	@description	북마크를 생성합니다.
+//	@tags			bookmark
+//	@accept			json
+//	@produce		json
+//	@param			body	body		repository.CreateBookmarkParams	true	"Bookmark param"
+//	@success		200		{object}	repository.Bookmark
+//	@failure		401		{object}	customerror.CustomError
+//	@failure		404		{object}	customerror.CustomError
+//	@failure		500		{object}	customerror.CustomError
+//	@router			/api/v1/bookmark [POST]
 func (b *BookmarkController) CreateBookmarkController(ctx echo.Context) error {
 	var body repository.CreateBookmarkParams
 	err := ctx.Bind(&body)
@@ -28,6 +42,20 @@ func (b *BookmarkController) CreateBookmarkController(ctx echo.Context) error {
 	return ctx.JSON(http.StatusOK, bookmark)
 }
 
+// FindBookmarkController godoc
+//
+//	@summary	북마크 조회
+//	@schemes
+//	@description	북마크를 조회합니다.
+//	@tags			bookmark
+//	@accept			json
+//	@produce		json
+//	@param			id	path		int	true	"Bookmark id"
+//	@success		200	{object}	repository.Bookmark
+//	@failure		401	{object}	customerror.CustomError
+//	@failure		404	{object}	customerror.CustomError
+//	@failure		500	{object}	customerror.CustomError
+//	@router			/api/v1/bookmark/:id [GET]
 func (b *BookmarkController) FindBookmarkController(ctx echo.Context) error {
 	id, err := utils.ParseURLParam(ctx, "id")
 	if err != nil {
@@ -40,6 +68,20 @@ func (b *BookmarkController) FindBookmarkController(ctx echo.Context) error {
 	return ctx.JSON(http.StatusOK, bookmark)
 }
 
+// UpdateBookmarkController godoc
+//
+//	@summary	북마크 업데이트
+//	@schemes
+//	@description	북마크를 업데이트 합니다.
+//	@tags			bookmark
+//	@accept			json
+//	@produce		json
+//	@param			body	body		repository.UpdateBookmarkParams	true	"Bookmark param"
+//	@success		200		{object}	repository.Bookmark
+//	@failure		401		{object}	customerror.CustomError
+//	@failure		404		{object}	customerror.CustomError
+//	@failure		500		{object}	customerror.CustomError
+//	@router			/api/v1/bookmark/:id [PUT]
 func (b *BookmarkController) UpdateBookmarkController(ctx echo.Context) error {
 	var param repository.UpdateBookmarkParams
 	id, err := utils.ParseURLParam(ctx, "id")
@@ -54,6 +96,20 @@ func (b *BookmarkController) UpdateBookmarkController(ctx echo.Context) error {
 	return ctx.JSON(http.StatusOK, bookmark)
 }
 
+// FindBookmarkController godoc
+//
+//	@summary	북마크 삭제
+//	@schemes
+//	@description	북마크를 삭제합니다.
+//	@tags			bookmark
+//	@accept			json
+//	@produce		json
+//	@param			id	path		int	true	"Bookmark id"
+//	@success		200	{object}	repository.Bookmark
+//	@failure		401	{object}	customerror.CustomError
+//	@failure		404	{object}	customerror.CustomError
+//	@failure		500	{object}	customerror.CustomError
+//	@router			/api/v1/bookmark/:id [DELETE]
 func (b *BookmarkController) DeleteBookmarkController(ctx echo.Context) error {
 	id, err := utils.ParseURLParam(ctx, "id")
 	if err != nil {
