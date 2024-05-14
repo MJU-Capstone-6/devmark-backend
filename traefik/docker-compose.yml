@@ -9,6 +9,7 @@ services:
       - --entrypoints.web.http.redirections.entryPoint.to=websecure
       - --entrypoints.web.http.redirections.entryPoint.scheme=https
       - --entrypoints.websecure.address=:443
+      - --entrypoints.postgres.address=:5432
       - --providers.docker=true
       - --providers.docker.exposedByDefault=false # require containers to define `traefik.enable=true` to be exposed
       - --api
