@@ -124,11 +124,12 @@ func (w *WorkspaceController) CreateWorkspaceController(ctx echo.Context) error 
 	var param CreateWorkspaceParam
 	err := ctx.Bind(&param)
 	if err != nil {
-		return responses.InternalServer(ctx, customerror.InternalServerError(err))
+		return customerror.InternalServerError(err)
 	}
+
 	workspace, err := w.WorkspaceService.Create(param.Name)
 	if err != nil {
-		return responses.InternalServer(ctx, customerror.InternalServerError(err))
+		return err
 	}
 	return ctx.JSON(http.StatusOK, workspace)
 }

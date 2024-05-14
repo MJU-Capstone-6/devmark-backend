@@ -38,7 +38,7 @@ func (app *Application) InitUserRoutes() {
 
 	userService := user.InitUserService(&app.Repository)
 	userController := user.InitController().WithUserService(userService)
-	e.GET("/:name", userController.ViewOneUser)
+	e.GET("/:id/workspace", userController.ViewUserWorkspace)
 }
 
 func (app *Application) InitAuthRoutes() {

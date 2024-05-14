@@ -116,4 +116,5 @@ RETURNING *;
 -- name: DeleteBookmark :exec
 DELETE FROM bookmark WHERE id = $1;
 
-
+-- name: FindUserWorkspace :one
+SELECT * FROM user_workspace_view WHERE id = $1;

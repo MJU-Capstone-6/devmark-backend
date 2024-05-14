@@ -13,6 +13,7 @@ type IRepository interface {
 	CreateRefreshToken(context.Context, repository.CreateRefreshTokenParams) (repository.RefreshToken, error)
 	FindRefreshTokenByUserID(context.Context, *int32) (repository.RefreshToken, error)
 	UpdateRefreshToken(context.Context, repository.UpdateRefreshTokenParams) (repository.RefreshToken, error)
+	FindUserWorkspace(context.Context, *int64) (repository.UserWorkspaceView, error)
 	CreateUser(context.Context, repository.CreateUserParams) (repository.User, error)
 	UpdateUser(context.Context, repository.UpdateUserParams) (repository.User, error)
 	CreateWorkspace(context.Context, *string) (repository.Workspace, error)

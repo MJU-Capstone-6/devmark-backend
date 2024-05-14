@@ -11,8 +11,8 @@ CREATE TABLE "refresh_token" (
   "id" bigserial PRIMARY KEY,
   "token" varchar,
   "user_id" int UNIQUE,
-  "created_at" timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
-  "updated_at" timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
+  "created_at" timestamptz DEFAULT CURRENT_TIMESTAMP NOT NULL,
+  "updated_at" timestamptz DEFAULT CURRENT_TIMESTAMP NOT NULL,
   FOREIGN KEY ("user_id") REFERENCES "user" ("id")
 );
 
@@ -21,8 +21,8 @@ ALTER TABLE "user" ADD FOREIGN KEY ("refresh_token") REFERENCES "refresh_token" 
 CREATE TABLE "workspace" (
   "id" bigserial PRIMARY KEY,
   "name" varchar,
-  "created_at" timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
-  "updated_at" timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL
+  "created_at" timestamptz DEFAULT CURRENT_TIMESTAMP NOT NULL,
+  "updated_at" timestamptz DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 CREATE TABLE "invite_code" (
@@ -89,4 +89,13 @@ CREATE TABLE "comment" (
   FOREIGN KEY ("bookmark_id") REFERENCES "bookmark" ("id"),
   FOREIGN KEY ("user_id") REFERENCES "user" ("id")
 );
+
+
+CREATE VIEW user_workspace_view AS
+SELECT u.id, JSON_AGG(DISTINCT w.*) AS workspaces 
+from workspace w
+LEFT JOIN workspace_user wu ON w.id = wu.workspace_id
+LEFT JOIN "user" u ON wu.user_id = u.id
+GROUP BY u.id;
+
 

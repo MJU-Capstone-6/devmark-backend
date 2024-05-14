@@ -18,5 +18,5 @@ run:
 
 swag:
 	swag fmt
-	swag init -d internal/auth,internal/category,internal/inviteCode,internal/workspace -g ../../main.go --parseDependency
+	swag init -d internal/auth,internal/category,internal/inviteCode,internal/workspace,internal/user -g ../../main.go --parseDependency
 	

@@ -302,6 +302,17 @@ func (q *Queries) FindUserByUsername(ctx context.Context, username *string) (Use
 	return i, err
 }
 
+const findUserWorkspace = `-- name: FindUserWorkspace :one
+SELECT id, workspaces FROM user_workspace_view WHERE id = $1
+`
+
+func (q *Queries) FindUserWorkspace(ctx context.Context, id *int64) (UserWorkspaceView, error) {
+	row := q.db.QueryRow(ctx, findUserWorkspace, id)
+	var i UserWorkspaceView
+	err := row.Scan(&i.ID, &i.Workspaces)
+	return i, err
+}
+
 const findWorkspace = `-- name: FindWorkspace :one
 SELECT id, name, created_at, updated_at, categories, users FROM workspace_user_category WHERE id = $1
 `

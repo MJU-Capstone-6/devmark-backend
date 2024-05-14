@@ -289,6 +289,35 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/user/:id/workspace": {
+            "get": {
+                "description": "유저가 참가한 워크스페이스의 리스트를 조회합니다.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "유저가 참가한 워크스페이스의 리스트를 조회합니다.",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/repository.UserWorkspaceView"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/customerror.CustomError"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/workspace": {
             "post": {
                 "description": "워크스페이스를 생성합니다.",
@@ -593,21 +622,6 @@ const docTemplate = `{
                 "NegativeInfinity"
             ]
         },
-        "pgtype.Timestamp": {
-            "type": "object",
-            "properties": {
-                "infinityModifier": {
-                    "$ref": "#/definitions/pgtype.InfinityModifier"
-                },
-                "time": {
-                    "description": "Time zone will be ignored when encoding to PostgreSQL.",
-                    "type": "string"
-                },
-                "valid": {
-                    "type": "boolean"
-                }
-            }
-        },
         "pgtype.Timestamptz": {
             "type": "object",
             "properties": {
@@ -695,11 +709,25 @@ const docTemplate = `{
                 }
             }
         },
+        "repository.UserWorkspaceView": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "workspaces": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/repository.Workspace"
+                    }
+                }
+            }
+        },
         "repository.Workspace": {
             "type": "object",
             "properties": {
                 "created_at": {
-                    "$ref": "#/definitions/pgtype.Timestamp"
+                    "$ref": "#/definitions/pgtype.Timestamptz"
                 },
                 "id": {
                     "type": "integer"
@@ -708,7 +736,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "updated_at": {
-                    "$ref": "#/definitions/pgtype.Timestamp"
+                    "$ref": "#/definitions/pgtype.Timestamptz"
                 }
             }
         },

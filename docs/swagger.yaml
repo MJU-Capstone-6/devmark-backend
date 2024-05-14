@@ -25,16 +25,6 @@ definitions:
     - Infinity
     - Finite
     - NegativeInfinity
-  pgtype.Timestamp:
-    properties:
-      infinityModifier:
-        $ref: '#/definitions/pgtype.InfinityModifier'
-      time:
-        description: Time zone will be ignored when encoding to PostgreSQL.
-        type: string
-      valid:
-        type: boolean
-    type: object
   pgtype.Timestamptz:
     properties:
       infinityModifier:
@@ -91,16 +81,25 @@ definitions:
       name:
         type: string
     type: object
+  repository.UserWorkspaceView:
+    properties:
+      id:
+        type: integer
+      workspaces:
+        items:
+          $ref: '#/definitions/repository.Workspace'
+        type: array
+    type: object
   repository.Workspace:
     properties:
       created_at:
-        $ref: '#/definitions/pgtype.Timestamp'
+        $ref: '#/definitions/pgtype.Timestamptz'
       id:
         type: integer
       name:
         type: string
       updated_at:
-        $ref: '#/definitions/pgtype.Timestamp'
+        $ref: '#/definitions/pgtype.Timestamptz'
     type: object
   responses.GetKakaoInfoResponse:
     properties:
@@ -308,6 +307,25 @@ paths:
       summary: Generate Invite Code from workspace
       tags:
       - invitecode
+  /api/v1/user/:id/workspace:
+    get:
+      consumes:
+      - application/json
+      description: 유저가 참가한 워크스페이스의 리스트를 조회합니다.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/repository.UserWorkspaceView'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/customerror.CustomError'
+      summary: 유저가 참가한 워크스페이스의 리스트를 조회합니다.
+      tags:
+      - user
   /api/v1/workspace:
     post:
       consumes:

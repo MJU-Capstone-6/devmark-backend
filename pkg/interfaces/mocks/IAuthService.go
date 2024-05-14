@@ -3,8 +3,7 @@
 package mocks
 
 import (
-	echo "github.com/labstack/echo/v4"
-
+	responses "github.com/MJU-Capstone-6/devmark-backend/internal/responses"
 	mock "github.com/stretchr/testify/mock"
 )
 
@@ -13,22 +12,34 @@ type IAuthService struct {
 	mock.Mock
 }
 
-// KakaoSignUp provides a mock function with given fields: _a0, _a1, _a2
-func (_m *IAuthService) KakaoSignUp(_a0 string, _a1 string, _a2 echo.Context) error {
-	ret := _m.Called(_a0, _a1, _a2)
+// KakaoSignUp provides a mock function with given fields: _a0, _a1
+func (_m *IAuthService) KakaoSignUp(_a0 string, _a1 string) (*responses.GetKakaoInfoResponse, error) {
+	ret := _m.Called(_a0, _a1)
 
 	if len(ret) == 0 {
 		panic("no return value specified for KakaoSignUp")
 	}
 
-	var r0 error
-	if rf, ok := ret.Get(0).(func(string, string, echo.Context) error); ok {
-		r0 = rf(_a0, _a1, _a2)
+	var r0 *responses.GetKakaoInfoResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(string, string) (*responses.GetKakaoInfoResponse, error)); ok {
+		return rf(_a0, _a1)
+	}
+	if rf, ok := ret.Get(0).(func(string, string) *responses.GetKakaoInfoResponse); ok {
+		r0 = rf(_a0, _a1)
 	} else {
-		r0 = ret.Error(0)
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*responses.GetKakaoInfoResponse)
+		}
 	}
 
-	return r0
+	if rf, ok := ret.Get(1).(func(string, string) error); ok {
+		r1 = rf(_a0, _a1)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
 
 // NewIAuthService creates a new instance of IAuthService. It also registers a testing interface on the mock and a cleanup function to assert the mocks expectations.
