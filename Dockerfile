@@ -22,6 +22,7 @@ COPY --from=build /app/devmark .
 COPY --from=build /app/config config
 
 RUN chmod +x ./devmark
+RUN make migrate
 
 EXPOSE 8080 
 # 어플리케이션 실행
