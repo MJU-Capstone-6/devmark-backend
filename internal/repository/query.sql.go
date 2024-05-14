@@ -347,6 +347,21 @@ func (q *Queries) JoinWorkspace(ctx context.Context, arg JoinWorkspaceParams) er
 	return err
 }
 
+const joinWorkspaceWithoutCode = `-- name: JoinWorkspaceWithoutCode :exec
+INSERT INTO workspace_user (workspace_id, user_id)
+VALUES ($1, $2)
+`
+
+type JoinWorkspaceWithoutCodeParams struct {
+	WorkspaceID int64 `db:"workspace_id" json:"workspace_id"`
+	UserID      int64 `db:"user_id" json:"user_id"`
+}
+
+func (q *Queries) JoinWorkspaceWithoutCode(ctx context.Context, arg JoinWorkspaceWithoutCodeParams) error {
+	_, err := q.db.Exec(ctx, joinWorkspaceWithoutCode, arg.WorkspaceID, arg.UserID)
+	return err
+}
+
 const registerCategoryToWorkspace = `-- name: RegisterCategoryToWorkspace :exec
 INSERT INTO workspace_category (workspace_id, category_id)
 VALUES ($1, $2)

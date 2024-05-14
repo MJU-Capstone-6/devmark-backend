@@ -127,7 +127,12 @@ func (w *WorkspaceController) CreateWorkspaceController(ctx echo.Context) error 
 		return customerror.InternalServerError(err)
 	}
 
-	workspace, err := w.WorkspaceService.Create(param.Name)
+	user, err := utils.GetAuthUser(ctx)
+	if err != nil {
+		return err
+	}
+
+	workspace, err := w.WorkspaceService.Create(int(user.ID), param.Name)
 	if err != nil {
 		return err
 	}

@@ -14,10 +14,18 @@ type WorkspaceService struct {
 	InviteCodeService interfaces.IInviteCodeService
 }
 
-func (w *WorkspaceService) Create(name string) (*repository.Workspace, error) {
+func (w *WorkspaceService) Create(userId int, name string) (*repository.Workspace, error) {
 	workspace, err := w.Repository.CreateWorkspace(context.Background(), &name)
 	if err != nil {
 		return nil, customerror.WorkspaceCreateFail(err)
+	}
+	param := repository.JoinWorkspaceWithoutCodeParams{
+		WorkspaceID: workspace.ID,
+		UserID:      int64(userId),
+	}
+	err = w.Repository.JoinWorkspaceWithoutCode(context.Background(), param)
+	if err != nil {
+		return nil, customerror.WorkspaceJoinFailErr(err)
 	}
 	return &workspace, nil
 }

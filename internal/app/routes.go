@@ -38,7 +38,10 @@ func (app *Application) InitUserRoutes() {
 
 	userService := user.InitUserService(&app.Repository)
 	userController := user.InitController().WithUserService(userService)
-	e.GET("/:id/workspace", userController.ViewUserWorkspace)
+
+	jwtService := jwtToken.InitJWTService(app.PubKey, app.PrivateKey, app.Config.App.FooterKey)
+	customMiddleware := middlewares.InitMiddleware().WithUserService(userService).WithJwtTokenService(jwtService)
+	e.GET("/:id/workspace", userController.ViewUserWorkspace, customMiddleware.Auth)
 }
 
 func (app *Application) InitAuthRoutes() {

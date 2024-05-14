@@ -32,7 +32,7 @@ func (u *UserService) FindJoinedWorkspace(id int) (*repository.UserWorkspaceView
 	userId := int64(id)
 	workspaceRow, err := u.Repository.FindUserWorkspace(context.Background(), &userId)
 	if err != nil {
-		return nil, customerror.InternalServerError(err)
+		return nil, customerror.WorkspaceNotFoundErr(err)
 	}
 	return &workspaceRow, nil
 }

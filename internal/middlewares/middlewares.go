@@ -52,7 +52,7 @@ func (cm *CustomMiddleware) Auth(next echo.HandlerFunc) echo.HandlerFunc {
 			}
 			c.Set(constants.USER_CONTEXT_KEY, user)
 			if err := next(c); err != nil {
-				return customerror.InternalServerError(err)
+				return err
 			}
 			return nil
 		} else {
