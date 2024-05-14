@@ -50,3 +50,12 @@ services:
       - traefik.tcp.routers.postgres.entrypoints=postgres
       - traefik.tcp.routers.postgres.service=postgres
       - traefik.tcp.services.postgres.loadbalancer.server.port=5432
+
+  devmark-backend:
+    image: devmark-backend_devmark
+    restart: always
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.hey-backend.rule=Host(`dev.${DOMAINNAME}`)
+      - traefik.http.routers.hey-backend.entrypoints=websecure
+      - traefik.http.routers.hey-backend.tls.certresolver=letsencryptresolver
