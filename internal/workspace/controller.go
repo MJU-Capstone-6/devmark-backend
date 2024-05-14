@@ -28,7 +28,7 @@ func (w *WorkspaceController) TestController(ctx echo.Context) error {
 //	@accept			json
 //	@produce		json
 //	@param			id	path		int	true	"Workspace id"
-//	@success		200	{object}	repository.Workspace
+//	@success		200	{object}	repository.WorkspaceUserCategory
 //	@failure		401	{object}	customerror.CustomError
 //	@failure		404	{object}	customerror.CustomError
 //	@failure		500	{object}	customerror.CustomError
