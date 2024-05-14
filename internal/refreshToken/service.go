@@ -6,6 +6,7 @@ import (
 	"strconv"
 
 	"github.com/MJU-Capstone-6/devmark-backend/internal/constants"
+	customerror "github.com/MJU-Capstone-6/devmark-backend/internal/customError"
 	"github.com/MJU-Capstone-6/devmark-backend/internal/repository"
 	"github.com/MJU-Capstone-6/devmark-backend/pkg/interfaces"
 )
@@ -23,7 +24,7 @@ func (r *RefreshTokenService) CreateToken(token string) (*repository.RefreshToke
 	}
 	parsedValue, err := strconv.Atoi(parsedToken.Get(constants.TOKEN_DATA_KEY))
 	if err != nil {
-		return nil, err
+		return nil, customerror.TokenNotValidError(err)
 	}
 	userId := int32(parsedValue)
 
@@ -33,7 +34,7 @@ func (r *RefreshTokenService) CreateToken(token string) (*repository.RefreshToke
 	}
 	refreshToken, err := r.Repository.CreateRefreshToken(context.Background(), params)
 	if err != nil {
-		return nil, err
+		return nil, customerror.RefreshTokenCreationFailed(err)
 	}
 	return &refreshToken, nil
 }
@@ -41,7 +42,7 @@ func (r *RefreshTokenService) CreateToken(token string) (*repository.RefreshToke
 func (r *RefreshTokenService) UpdateToken(params repository.UpdateRefreshTokenParams) (*repository.RefreshToken, error) {
 	updatedRefreshToken, err := r.Repository.UpdateRefreshToken(context.Background(), params)
 	if err != nil {
-		return nil, err
+		return nil, customerror.RefreshTokenUpdateFailed(err)
 	}
 	return &updatedRefreshToken, nil
 }
@@ -50,7 +51,7 @@ func (r *RefreshTokenService) FindOneByUserId(id int) (*repository.RefreshToken,
 	userId := int32(id)
 	refreshToken, err := r.Repository.FindRefreshTokenByUserID(context.Background(), &userId)
 	if err != nil {
-		return nil, err
+		return nil, customerror.RefreshTokenNotFound(err)
 	}
 	return &refreshToken, nil
 }

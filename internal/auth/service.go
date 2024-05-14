@@ -2,7 +2,6 @@ package auth
 
 import (
 	"github.com/MJU-Capstone-6/devmark-backend/internal/constants"
-	customerror "github.com/MJU-Capstone-6/devmark-backend/internal/customError"
 	"github.com/MJU-Capstone-6/devmark-backend/internal/repository"
 	"github.com/MJU-Capstone-6/devmark-backend/internal/responses"
 	"github.com/MJU-Capstone-6/devmark-backend/pkg/interfaces"
@@ -26,16 +25,16 @@ func (a *AuthService) KakaoSignUp(nickname string, provider string) (*responses.
 		user, err = a.UserService.CreateUser(params)
 		userId = int(user.ID)
 		if err != nil {
-			return nil, customerror.UserCreationFail(err)
+			return nil, err
 		}
 
 		tokenString, err := a.JWTService.GenerateToken(userId, constants.REFRESH_TOKEN_EXPIRED_TIME)
 		if err != nil {
-			return nil, customerror.TokenCreationFailed(err)
+			return nil, err
 		}
 		refreshToken, err = a.RefreshService.CreateToken(tokenString)
 		if err != nil {
-			return nil, customerror.TokenCreationFailed(err)
+			return nil, err
 		}
 		refreshTokenId := int32(refreshToken.ID)
 
@@ -44,11 +43,11 @@ func (a *AuthService) KakaoSignUp(nickname string, provider string) (*responses.
 		userId = int(user.ID)
 		tokenString, err := a.JWTService.GenerateToken(userId, constants.REFRESH_TOKEN_EXPIRED_TIME)
 		if err != nil {
-			return nil, customerror.TokenCreationFailed(err)
+			return nil, err
 		}
 		refreshToken, err = a.RefreshService.FindOneByUserId(int(user.ID))
 		if err != nil {
-			return nil, customerror.TokenNotFound(err)
+			return nil, err
 		}
 		updateRefreshTokenParam := repository.UpdateRefreshTokenParams{
 			Token: &tokenString,
@@ -56,12 +55,12 @@ func (a *AuthService) KakaoSignUp(nickname string, provider string) (*responses.
 		}
 		refreshToken, err = a.RefreshService.UpdateToken(updateRefreshTokenParam)
 		if err != nil {
-			return nil, customerror.TokenUpdateFailed(err)
+			return nil, err
 		}
 	}
 	accessToken, err := a.JWTService.GenerateToken(userId, constants.ACCESSTOKEN_EXPIRED_TIME)
 	if err != nil {
-		return nil, customerror.TokenCreationFailed(err)
+		return nil, err
 	}
 	refreshTokenID := int32(refreshToken.ID)
 	updateUserParam := repository.UpdateUserParams{
@@ -71,7 +70,7 @@ func (a *AuthService) KakaoSignUp(nickname string, provider string) (*responses.
 	}
 	_, err = a.UserService.UpdateUser(updateUserParam)
 	if err != nil {
-		return nil, customerror.UserUpdateFail(err)
+		return nil, err
 	}
 	return &responses.GetKakaoInfoResponse{AccessToken: accessToken, RefreshToken: *refreshToken.Token}, nil
 }
