@@ -56,9 +56,14 @@ func (w *WorkspaceService) Delete(id int) error {
 }
 
 func (w *WorkspaceService) Join(code string, param repository.JoinWorkspaceParams) error {
+	inviteCode, err := w.InviteCodeService.FindByCode(code)
+	if err != nil {
+		return err
+	}
+
 	verifyParam := utils.VerifyCodeParam{
 		Code:        code,
-		WorkspaceId: int(param.WorkspaceID),
+		WorkspaceId: int(*inviteCode.WorkspaceID),
 	}
 	if ok, err := w.InviteCodeService.VerifyCode(verifyParam); !ok {
 		if err != nil {
@@ -67,7 +72,9 @@ func (w *WorkspaceService) Join(code string, param repository.JoinWorkspaceParam
 		return customerror.CodeVerifyFailedErr(nil)
 	}
 
-	err := w.Repository.JoinWorkspace(context.Background(), param)
+	param.WorkspaceID = int64(*inviteCode.WorkspaceID)
+
+	err = w.Repository.JoinWorkspace(context.Background(), param)
 	if err != nil {
 		return customerror.WorkspaceJoinFailErr(err)
 	}

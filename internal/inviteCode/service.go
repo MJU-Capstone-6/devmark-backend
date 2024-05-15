@@ -9,6 +9,7 @@ import (
 	"github.com/MJU-Capstone-6/devmark-backend/internal/constants"
 	customerror "github.com/MJU-Capstone-6/devmark-backend/internal/customError"
 	"github.com/MJU-Capstone-6/devmark-backend/internal/repository"
+	"github.com/MJU-Capstone-6/devmark-backend/internal/request"
 	"github.com/MJU-Capstone-6/devmark-backend/internal/utils"
 	"github.com/MJU-Capstone-6/devmark-backend/pkg/interfaces"
 )
@@ -29,16 +30,28 @@ func (i *InviteCodeService) CreateCode(length int) *string {
 	return &generatedString
 }
 
-func (i *InviteCodeService) CreateInviteCode(param repository.CreateInviteCodeParams) (*repository.InviteCode, error) {
+func (i *InviteCodeService) CreateInviteCode(param request.CreateInviteCodeParam) (*repository.InviteCode, error) {
 	code := i.CreateCode(constants.CODE_LENGTH)
-	param.Code = code
-	_, err := i.WorkspaceService.FindById(int(*param.WorkspaceID))
+	_, err := i.WorkspaceService.FindById(param.WorkspaceID)
 	if err != nil {
 		return nil, customerror.WorkspaceNotFoundErr(err)
 	}
-	inviteCode, err := i.Repository.CreateInviteCode(context.Background(), param)
+	workspaceId := int32(param.WorkspaceID)
+	inviteCodeParam := repository.CreateInviteCodeParams{
+		WorkspaceID: &workspaceId,
+		Code:        code,
+	}
+	inviteCode, err := i.Repository.CreateInviteCode(context.Background(), inviteCodeParam)
 	if err != nil {
 		return nil, customerror.CodeCreationFail(err)
+	}
+	return &inviteCode, nil
+}
+
+func (i *InviteCodeService) FindByCode(code string) (*repository.InviteCode, error) {
+	inviteCode, err := i.Repository.FindInviteCodeByCode(context.Background(), &code)
+	if err != nil {
+		return nil, customerror.CodeNotFound(err)
 	}
 	return &inviteCode, nil
 }

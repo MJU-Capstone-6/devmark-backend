@@ -29,7 +29,7 @@ CREATE TABLE "workspace" (
 CREATE TABLE "invite_code" (
   "id" bigserial PRIMARY KEY,
   "workspace_id" int UNIQUE,
-  "code" varchar,
+  "code" varchar UNIQUE,
   "expired_at" timestamptz DEFAULT (CURRENT_TIMESTAMP + INTERVAL '1 day'),
   "created_at" timestamptz DEFAULT CURRENT_TIMESTAMP NOT NULL,
   "updated_at" timestamptz DEFAULT CURRENT_TIMESTAMP NOT NULL,

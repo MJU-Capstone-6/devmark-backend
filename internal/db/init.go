@@ -49,11 +49,11 @@ func InitDBbyURL(ctx context.Context, dbURL string) (*pgx.Conn, error) {
 
 func setDBByConfig(ctx context.Context, c config.DB) (*pgx.Conn, error) {
 	dbURL := fmt.Sprintf(BASE_URL, c.Username, c.Password, c.Host, c.Port, c.Name)
-
-	err := Migration(dbURL)
-	if err != nil {
-		log.Println(err)
-	}
+	/*
+		err := Migration(dbURL)
+		if err != nil {
+			log.Println(err)
+		}*/
 	conn, err := pgx.Connect(ctx, dbURL)
 	if err != nil {
 		return nil, err

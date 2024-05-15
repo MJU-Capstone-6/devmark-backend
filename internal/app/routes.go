@@ -72,7 +72,7 @@ func (app *Application) InitWorkspaceRoutes() {
 	e.GET("/:id", workspaceController.ViewWorkspaceController, customMiddleware.Auth)
 	e.PUT("/:id", workspaceController.UpdateWorkspaceController, customMiddleware.Auth)
 	e.POST("", workspaceController.CreateWorkspaceController, customMiddleware.Auth)
-	e.POST("/:id/join", workspaceController.JoinWorkspaceController, customMiddleware.Auth)
+	e.POST("/join", workspaceController.JoinWorkspaceController, customMiddleware.Auth)
 	e.DELETE("/:id", workspaceController.DeleteWorkspaceController, customMiddleware.Auth)
 }
 

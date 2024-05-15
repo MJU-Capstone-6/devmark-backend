@@ -3,6 +3,7 @@ package workspace
 import (
 	"net/http"
 
+	"github.com/MJU-Capstone-6/devmark-backend/internal/constants"
 	customerror "github.com/MJU-Capstone-6/devmark-backend/internal/customError"
 	"github.com/MJU-Capstone-6/devmark-backend/internal/repository"
 	"github.com/MJU-Capstone-6/devmark-backend/internal/responses"
@@ -40,7 +41,7 @@ func (w *WorkspaceController) ViewWorkspaceController(ctx echo.Context) error {
 	}
 	workspaceInfo, err := w.WorkspaceService.FindById(*id)
 	if err != nil {
-		return responses.NotFound(ctx, customerror.WorkspaceNotFoundErr(err))
+		return customerror.WorkspaceNotFoundErr(err)
 	}
 
 	return ctx.JSON(http.StatusOK, workspaceInfo)
@@ -148,27 +149,21 @@ func (w *WorkspaceController) CreateWorkspaceController(ctx echo.Context) error 
 //	@accept			json
 //	@produce		json
 //	@param			body	body		JoinWorkspaceParam	true	"Workspace join info"
-//	@param			id		path		int					true	"Workspace id"
 //	@success		200		{object}	repository.Workspace
 //	@failure		401		{object}	customerror.CustomError
 //	@failure		404		{object}	customerror.CustomError
 //	@failure		500		{object}	customerror.CustomError
-//	@router			/api/v1/workspace/:id/join [POST]
+//	@router			/api/v1/workspace/join [POST]
 func (w *WorkspaceController) JoinWorkspaceController(ctx echo.Context) error {
 	var param JoinWorkspaceParam
-	id, err := utils.ParseURLParam(ctx, "id")
+	err := ctx.Bind(&param)
 	if err != nil {
-		return err
-	}
-	err = ctx.Bind(&param)
-	if err != nil {
-		return responses.BadRequest(ctx, customerror.TokenNotProvidedError(err))
+		return customerror.CodeNotProvide(err)
 	}
 
-	if user, ok := ctx.Get("user").(*repository.User); ok {
+	if user, ok := ctx.Get(constants.USER_CONTEXT_KEY).(*repository.User); ok {
 		joinWorkspaceParam := repository.JoinWorkspaceParams{
-			WorkspaceID: int64(*id),
-			UserID:      user.ID,
+			UserID: user.ID,
 		}
 		err = w.WorkspaceService.Join(param.Code, joinWorkspaceParam)
 		if err != nil {
