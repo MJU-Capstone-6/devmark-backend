@@ -437,6 +437,180 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/comment": {
+            "post": {
+                "description": "댓글을 생성합니다.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "comment"
+                ],
+                "summary": "댓글을 생성합니다.",
+                "parameters": [
+                    {
+                        "description": "comment param",
+                        "name": "param",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.CreateCommentParam"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/repository.Comment"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/customerror.CustomError"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/customerror.CustomError"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/customerror.CustomError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/customerror.CustomError"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/comment/:id": {
+            "put": {
+                "description": "댓글을 업데이트 합니다.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "comment"
+                ],
+                "summary": "댓글을 업데이트 합니다.",
+                "parameters": [
+                    {
+                        "description": "comment param",
+                        "name": "param",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.UpdateCommentParam"
+                        }
+                    },
+                    {
+                        "type": "integer",
+                        "description": "comment id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/repository.Comment"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/customerror.CustomError"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/customerror.CustomError"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/customerror.CustomError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/customerror.CustomError"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "댓글을 삭제합니다.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "comment"
+                ],
+                "summary": "댓글을 삭제합니다.",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "comment id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/customerror.CustomError"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/customerror.CustomError"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/customerror.CustomError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/customerror.CustomError"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/invitecode": {
             "post": {
                 "description": "워크스페이스의 초대코드를 생성합니다.",
@@ -907,6 +1081,29 @@ const docTemplate = `{
                 }
             }
         },
+        "repository.Comment": {
+            "type": "object",
+            "properties": {
+                "bookmark_id": {
+                    "type": "integer"
+                },
+                "comment_context": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "$ref": "#/definitions/pgtype.Timestamptz"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "updated_at": {
+                    "$ref": "#/definitions/pgtype.Timestamptz"
+                },
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
         "repository.CreateBookmarkParams": {
             "type": "object",
             "properties": {
@@ -1093,11 +1290,30 @@ const docTemplate = `{
                 }
             }
         },
+        "request.CreateCommentParam": {
+            "type": "object",
+            "properties": {
+                "bookmark_id": {
+                    "type": "integer"
+                },
+                "context": {
+                    "type": "string"
+                }
+            }
+        },
         "request.CreateInviteCodeParam": {
             "type": "object",
             "properties": {
                 "workspace_id": {
                     "type": "integer"
+                }
+            }
+        },
+        "request.UpdateCommentParam": {
+            "type": "object",
+            "properties": {
+                "comment_context": {
+                    "type": "string"
                 }
             }
         },

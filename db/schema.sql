@@ -125,7 +125,7 @@ CREATE TABLE "comment" (
   "id" bigserial PRIMARY KEY,
   "bookmark_id" bigint,
   "user_id" bigint,
-  "context" bigint,
+  "context" text,
   "created_at" timestamptz DEFAULT CURRENT_TIMESTAMP NOT NULL,
   "updated_at" timestamptz DEFAULT CURRENT_TIMESTAMP NOT NULL,
   FOREIGN KEY ("bookmark_id") REFERENCES "bookmark" ("id"),
@@ -139,4 +139,8 @@ LEFT JOIN workspace_user wu ON w.id = wu.workspace_id
 LEFT JOIN "user" u ON wu.user_id = u.id
 GROUP BY u.id;
 
-
+CREATE VIEW bookmark_comment AS
+SELECT b.*, JSON_AGG(DISTINCT c.*) AS comments, 
+FROM bookmark b
+LEFT JOIN "comment" c ON c.bookmark_id = bookmark.id
+GROUP BY b.id;
