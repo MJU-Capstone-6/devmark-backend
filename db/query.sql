@@ -149,6 +149,9 @@ DELETE FROM "comment" WHERE id = $1;
 -- name: FindBookmarkComment :one
 SELECT comments FROM bookmark_comment WHERE id = $1;
 
+-- name: FindWorkspaceCategory :one
+SELECT categories FROM workspace_category_list WHERE id = $1;
+
 
 
 

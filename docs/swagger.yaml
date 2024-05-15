@@ -873,6 +873,41 @@ paths:
       summary: 워크스페이스 업데이트
       tags:
       - workspace
+  /api/v1/workspace/:id/category:
+    get:
+      consumes:
+      - application/json
+      description: 워크스페이스의 카테고리를 조회합니다.
+      parameters:
+      - description: Workspace id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/repository.Category'
+            type: array
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/customerror.CustomError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/customerror.CustomError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/customerror.CustomError'
+      summary: 워크스페이스 카테고리 조회
+      tags:
+      - workspace
   /api/v1/workspace/join:
     post:
       consumes:

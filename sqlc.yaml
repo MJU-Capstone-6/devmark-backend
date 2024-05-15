@@ -28,3 +28,7 @@ sql:
             go_type:
               type: "Comment"
               slice: true
+          - column: "workspace_category_list.categories"
+            go_type:
+              type: "Category"
+              slice: true
