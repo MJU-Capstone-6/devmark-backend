@@ -483,7 +483,7 @@
                 }
             }
         },
-        "/api/v1/user/:id/workspace": {
+        "/api/v1/user/workspace": {
             "get": {
                 "description": "유저가 참가한 워크스페이스의 리스트를 조회합니다.",
                 "consumes": [

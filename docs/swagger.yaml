@@ -528,7 +528,7 @@ paths:
       summary: Generate Invite Code from workspace
       tags:
       - invitecode
-  /api/v1/user/:id/workspace:
+  /api/v1/user/workspace:
     get:
       consumes:
       - application/json
