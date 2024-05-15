@@ -144,3 +144,10 @@ SELECT b.*, JSON_AGG(DISTINCT c.*) AS comments,
 FROM bookmark b
 LEFT JOIN "comment" c ON c.bookmark_id = bookmark.id
 GROUP BY b.id;
+
+CREATE VIEW workspace_category_list AS
+SELECT w.*, JSON_AGG(DISTINCT c.*) AS categories, 
+FROM workspace w
+LEFT JOIN workspace_category wc ON wc.workspace_id = w.id
+LEFT JOIN category c ON wc.category_id = c.id
+GROUP BY w.id;
