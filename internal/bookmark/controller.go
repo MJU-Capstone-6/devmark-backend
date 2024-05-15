@@ -68,6 +68,30 @@ func (b *BookmarkController) FindBookmarkController(ctx echo.Context) error {
 	return ctx.JSON(http.StatusOK, bookmark)
 }
 
+// FindBookmarkCommentsController godoc
+//
+//	@summary	북마크 댓글 조회
+//	@schemes
+//	@description	북마크의 댓글을 조회합니다.
+//	@tags			bookmark
+//	@accept			json
+//	@produce		json
+//	@param			id	path		int	true	"Bookmark id"
+//	@success		200	{object}	[]repository.Comment
+//	@failure		401	{object}	customerror.CustomError
+//	@failure		404	{object}	customerror.CustomError
+//	@failure		500	{object}	customerror.CustomError
+//	@router			/api/v1/bookmark/:id/comments [GET]
+func (b *BookmarkController) FindBookmarkCommentsController(ctx echo.Context) error {
+	id, err := utils.ParseURLParam(ctx, "id")
+	if err != nil {
+		return err
+	}
+	comments, _ := b.BookmarkService.FindComments(*id)
+
+	return ctx.JSON(http.StatusOK, comments)
+}
+
 // UpdateBookmarkController godoc
 //
 //	@summary	북마크 업데이트

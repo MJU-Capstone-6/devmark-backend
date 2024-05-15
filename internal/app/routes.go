@@ -120,6 +120,7 @@ func (app *Application) InitBookmarkRoutes() {
 	bookmarkController := bookmark.InitBookmarkController().WithBookmarkService(&bookmarkService)
 
 	e.GET("/:id", bookmarkController.FindBookmarkController)
+	e.GET("/:id/comments", bookmarkController.FindBookmarkCommentsController)
 	e.POST("", bookmarkController.CreateBookmarkController)
 	e.PUT("/:id", bookmarkController.UpdateBookmarkController)
 	e.DELETE("/:id", bookmarkController.DeleteBookmarkController)
