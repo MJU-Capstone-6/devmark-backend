@@ -14,11 +14,10 @@ down:
 
 generate:
 	sqlc generate
-	make migrate
+	make up
 
 run:
-	sqlc generate
-	make migrate
+	make generate
 	air
 
 swag:

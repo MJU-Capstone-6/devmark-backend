@@ -73,13 +73,6 @@ definitions:
       workspace_id:
         type: integer
     type: object
-  repository.CreateInviteCodeParams:
-    properties:
-      code:
-        type: string
-      workspace_id:
-        type: integer
-    type: object
   repository.InviteCode:
     properties:
       code:
@@ -189,6 +182,11 @@ definitions:
         items:
           $ref: '#/definitions/repository.User'
         type: array
+    type: object
+  request.CreateInviteCodeParam:
+    properties:
+      workspace_id:
+        type: integer
     type: object
   responses.GetKakaoInfoResponse:
     properties:
@@ -505,7 +503,7 @@ paths:
         name: body
         required: true
         schema:
-          $ref: '#/definitions/repository.CreateInviteCodeParams'
+          $ref: '#/definitions/request.CreateInviteCodeParam'
       produces:
       - application/json
       responses:
@@ -684,7 +682,7 @@ paths:
       summary: 워크스페이스 업데이트
       tags:
       - workspace
-  /api/v1/workspace/:id/join:
+  /api/v1/workspace/join:
     post:
       consumes:
       - application/json
@@ -696,11 +694,6 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/workspace.JoinWorkspaceParam'
-      - description: Workspace id
-        in: path
-        name: id
-        required: true
-        type: integer
       produces:
       - application/json
       responses:

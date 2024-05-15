@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	customerror "github.com/MJU-Capstone-6/devmark-backend/internal/customError"
-	"github.com/MJU-Capstone-6/devmark-backend/internal/repository"
+	"github.com/MJU-Capstone-6/devmark-backend/internal/request"
 	"github.com/MJU-Capstone-6/devmark-backend/pkg/interfaces"
 	"github.com/labstack/echo/v4"
 )
@@ -21,14 +21,14 @@ type InviteCodeController struct {
 //	@tags			invitecode
 //	@accept			json
 //	@produce		json
-//	@param			body	body		repository.CreateInviteCodeParams	true	"body to Generate Invite code"
+//	@param			body	body		request.CreateInviteCodeParam	true	"body to Generate Invite code"
 //	@success		200		{object}	repository.InviteCode
 //	@failure		401		{object}	customerror.CustomError
 //	@failure		404		{object}	customerror.CustomError
 //	@failure		500		{object}	customerror.CustomError
 //	@router			/api/v1/invitecode [POST]
 func (i *InviteCodeController) GenerateInviteCodeController(ctx echo.Context) error {
-	var param repository.CreateInviteCodeParams
+	var param request.CreateInviteCodeParam
 	err := ctx.Bind(&param)
 	if err != nil {
 		return customerror.InternalServerError(err)

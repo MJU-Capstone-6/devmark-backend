@@ -457,7 +457,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/repository.CreateInviteCodeParams"
+                            "$ref": "#/definitions/request.CreateInviteCodeParam"
                         }
                     }
                 ],
@@ -725,7 +725,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/workspace/:id/join": {
+        "/api/v1/workspace/join": {
             "post": {
                 "description": "워크스페이스에 참가합니다.",
                 "consumes": [
@@ -747,13 +747,6 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/workspace.JoinWorkspaceParam"
                         }
-                    },
-                    {
-                        "type": "integer",
-                        "description": "Workspace id",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
                     }
                 ],
                 "responses": {
@@ -889,17 +882,6 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "summary": {
-                    "type": "string"
-                },
-                "workspace_id": {
-                    "type": "integer"
-                }
-            }
-        },
-        "repository.CreateInviteCodeParams": {
-            "type": "object",
-            "properties": {
-                "code": {
                     "type": "string"
                 },
                 "workspace_id": {
@@ -1073,6 +1055,14 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/repository.User"
                     }
+                }
+            }
+        },
+        "request.CreateInviteCodeParam": {
+            "type": "object",
+            "properties": {
+                "workspace_id": {
+                    "type": "integer"
                 }
             }
         },

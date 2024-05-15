@@ -156,7 +156,6 @@ func (w *WorkspaceController) CreateWorkspaceController(ctx echo.Context) error 
 //	@router			/api/v1/workspace/join [POST]
 func (w *WorkspaceController) JoinWorkspaceController(ctx echo.Context) error {
 	var param JoinWorkspaceParam
-
 	err := ctx.Bind(&param)
 	if err != nil {
 		return customerror.CodeNotProvide(err)
