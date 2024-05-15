@@ -18,7 +18,7 @@ sql:
               slice: true
           - column: "workspace_user_category.users"
             go_type:
-              type: "User"
+              type: "FindUserByIdRow"
               slice: true
           - column: "user_workspace_view.workspaces"
             go_type:

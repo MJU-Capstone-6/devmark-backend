@@ -9,7 +9,7 @@ import (
 //go:generate mockery --name IRepository
 type IRepository interface {
 	FindUserByUsername(context.Context, *string) (repository.User, error)
-	FindUserById(context.Context, int64) (repository.User, error)
+	FindUserById(context.Context, int64) (repository.FindUserByIdRow, error)
 	CreateRefreshToken(context.Context, repository.CreateRefreshTokenParams) (repository.RefreshToken, error)
 	FindRefreshTokenByUserID(context.Context, *int32) (repository.RefreshToken, error)
 	UpdateRefreshToken(context.Context, repository.UpdateRefreshTokenParams) (repository.RefreshToken, error)
@@ -17,7 +17,7 @@ type IRepository interface {
 	CreateUser(context.Context, repository.CreateUserParams) (repository.User, error)
 	UpdateUser(context.Context, repository.UpdateUserParams) (repository.User, error)
 	CreateWorkspace(context.Context, repository.CreateWorkspaceParams) (repository.Workspace, error)
-	FindWorkspace(context.Context, int64) (repository.WorkspaceUserCategory, error)
+	FindWorkspace(context.Context, int64) (repository.FindWorkspaceRow, error)
 	UpdateWorkspace(context.Context, repository.UpdateWorkspaceParams) (repository.Workspace, error)
 	DeleteWorkspace(context.Context, int64) error
 	FindInviteCodeByCode(context.Context, *string) (repository.InviteCode, error)

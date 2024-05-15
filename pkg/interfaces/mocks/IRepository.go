@@ -482,22 +482,22 @@ func (_m *IRepository) FindRefreshTokenByUserID(_a0 context.Context, _a1 *int32)
 }
 
 // FindUserById provides a mock function with given fields: _a0, _a1
-func (_m *IRepository) FindUserById(_a0 context.Context, _a1 int64) (repository.User, error) {
+func (_m *IRepository) FindUserById(_a0 context.Context, _a1 int64) (repository.FindUserByIdRow, error) {
 	ret := _m.Called(_a0, _a1)
 
 	if len(ret) == 0 {
 		panic("no return value specified for FindUserById")
 	}
 
-	var r0 repository.User
+	var r0 repository.FindUserByIdRow
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, int64) (repository.User, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, int64) (repository.FindUserByIdRow, error)); ok {
 		return rf(_a0, _a1)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, int64) repository.User); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, int64) repository.FindUserByIdRow); ok {
 		r0 = rf(_a0, _a1)
 	} else {
-		r0 = ret.Get(0).(repository.User)
+		r0 = ret.Get(0).(repository.FindUserByIdRow)
 	}
 
 	if rf, ok := ret.Get(1).(func(context.Context, int64) error); ok {
@@ -566,22 +566,22 @@ func (_m *IRepository) FindUserWorkspace(_a0 context.Context, _a1 *int64) (repos
 }
 
 // FindWorkspace provides a mock function with given fields: _a0, _a1
-func (_m *IRepository) FindWorkspace(_a0 context.Context, _a1 int64) (repository.WorkspaceUserCategory, error) {
+func (_m *IRepository) FindWorkspace(_a0 context.Context, _a1 int64) (repository.FindWorkspaceRow, error) {
 	ret := _m.Called(_a0, _a1)
 
 	if len(ret) == 0 {
 		panic("no return value specified for FindWorkspace")
 	}
 
-	var r0 repository.WorkspaceUserCategory
+	var r0 repository.FindWorkspaceRow
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, int64) (repository.WorkspaceUserCategory, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, int64) (repository.FindWorkspaceRow, error)); ok {
 		return rf(_a0, _a1)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, int64) repository.WorkspaceUserCategory); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, int64) repository.FindWorkspaceRow); ok {
 		r0 = rf(_a0, _a1)
 	} else {
-		r0 = ret.Get(0).(repository.WorkspaceUserCategory)
+		r0 = ret.Get(0).(repository.FindWorkspaceRow)
 	}
 
 	if rf, ok := ret.Get(1).(func(context.Context, int64) error); ok {

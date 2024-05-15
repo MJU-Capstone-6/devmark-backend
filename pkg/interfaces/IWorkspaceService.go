@@ -6,7 +6,7 @@ import "github.com/MJU-Capstone-6/devmark-backend/internal/repository"
 
 type IWorkspaceService interface {
 	Create(int, repository.CreateWorkspaceParams) (*repository.Workspace, error)
-	FindById(int) (*repository.WorkspaceUserCategory, error)
+	FindById(int) (*repository.FindWorkspaceRow, error)
 	Update(repository.UpdateWorkspaceParams) (*repository.Workspace, error)
 	Delete(int) error
 	Join(string, repository.JoinWorkspaceParams) error

@@ -30,11 +30,11 @@ func (w *WorkspaceService) Create(userId int, createWorkspaceParam repository.Cr
 	return &workspace, nil
 }
 
-func (w *WorkspaceService) FindById(id int) (*repository.WorkspaceUserCategory, error) {
+func (w *WorkspaceService) FindById(id int) (*repository.FindWorkspaceRow, error) {
 	workspaceId := int64(id)
 	workspace, err := w.Repository.FindWorkspace(context.Background(), workspaceId)
 	if err != nil {
-		return nil, customerror.WorkspaceNotFoundErr(err)
+		return &repository.FindWorkspaceRow{ID: workspaceId, Categories: []repository.Category{}, Users: []repository.FindUserByIdRow{}}, nil
 	}
 	return &workspace, nil
 }

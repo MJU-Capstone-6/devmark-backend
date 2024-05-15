@@ -105,5 +105,5 @@ type WorkspaceUserCategory struct {
 	BookmarkCount *int32             `db:"bookmark_count" json:"bookmark_count"`
 	UserCount     *int32             `db:"user_count" json:"user_count"`
 	Categories    []Category         `db:"categories" json:"categories"`
-	Users         []User             `db:"users" json:"users"`
+	Users         []FindUserByIdRow  `db:"users" json:"users"`
 }

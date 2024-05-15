@@ -20,7 +20,7 @@ func (u *UserService) FindUserByUserName(username *string) (*repository.User, er
 	return &user, nil
 }
 
-func (u *UserService) FindUserById(id int) (*repository.User, error) {
+func (u *UserService) FindUserById(id int) (*repository.FindUserByIdRow, error) {
 	user, err := u.Repository.FindUserById(context.Background(), int64(id))
 	if err != nil {
 		return nil, customerror.UserNotFound(err)
@@ -32,7 +32,7 @@ func (u *UserService) FindJoinedWorkspace(id int) (*repository.UserWorkspaceView
 	userId := int64(id)
 	workspaceRow, err := u.Repository.FindUserWorkspace(context.Background(), &userId)
 	if err != nil {
-		return nil, customerror.WorkspaceNotFoundErr(err)
+		return &repository.UserWorkspaceView{ID: &userId, Workspaces: []repository.Workspace{}}, nil
 	}
 	return &workspaceRow, nil
 }
