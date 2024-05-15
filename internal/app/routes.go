@@ -31,6 +31,7 @@ func (app *Application) InitRoutes() {
 	app.InitInviteCodeRoutes()
 	app.InitCategoryRoutes()
 	app.InitBookmarkRoutes()
+	app.InitRefreshTokenRoutes()
 }
 
 func (app *Application) InitUserRoutes() {
@@ -120,4 +121,13 @@ func (app *Application) InitBookmarkRoutes() {
 	e.POST("", bookmarkController.CreateBookmarkController)
 	e.PUT("/:id", bookmarkController.UpdateBookmarkController)
 	e.DELETE("/:id", bookmarkController.DeleteBookmarkController)
+}
+
+func (app *Application) InitRefreshTokenRoutes() {
+	e := app.Handler.Group(fmt.Sprintf("%s/refresh", V1))
+	jwtTokenService := jwtToken.InitJWTService(app.PubKey, app.PrivateKey, app.Config.App.FooterKey)
+	refreshTokenService := refreshtoken.InitRefreshTokenService(&app.Repository, jwtTokenService)
+	refreshTokenController := refreshtoken.InitRefreshTokenController().WithRefreshTokenService(refreshTokenService)
+
+	e.POST("", refreshTokenController.RefreshAccessTokenController)
 }

@@ -11,6 +11,10 @@ type GetKakaoInfoResponse struct {
 	RefreshToken string `json:"refresh_token"`
 }
 
+type RefreshAccessTokenResponse struct {
+	AccessToken string `json:"access_token"`
+}
+
 func Unauthorized(ctx echo.Context, data interface{}) error {
 	return ctx.JSON(http.StatusUnauthorized, data)
 }

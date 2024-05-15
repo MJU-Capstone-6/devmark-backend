@@ -483,6 +483,41 @@
                 }
             }
         },
+        "/api/v1/refresh": {
+            "post": {
+                "description": "RefreshToken으로 AccessToken을 재발급 합니다.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "refreshToken"
+                ],
+                "summary": "RefreshToken으로 AccessToken을 재발급 합니다.",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/responses.RefreshAccessTokenResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/customerror.CustomError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/customerror.CustomError"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/user/workspace": {
             "get": {
                 "description": "유저가 참가한 워크스페이스의 리스트를 조회합니다.",
@@ -1067,6 +1102,14 @@
                     "type": "string"
                 },
                 "refresh_token": {
+                    "type": "string"
+                }
+            }
+        },
+        "responses.RefreshAccessTokenResponse": {
+            "type": "object",
+            "properties": {
+                "access_token": {
                     "type": "string"
                 }
             }
