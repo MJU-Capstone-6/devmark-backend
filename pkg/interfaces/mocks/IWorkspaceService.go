@@ -61,23 +61,23 @@ func (_m *IWorkspaceService) Delete(_a0 int) error {
 }
 
 // FindById provides a mock function with given fields: _a0
-func (_m *IWorkspaceService) FindById(_a0 int) (*repository.WorkspaceUserCategory, error) {
+func (_m *IWorkspaceService) FindById(_a0 int) (*repository.FindWorkspaceRow, error) {
 	ret := _m.Called(_a0)
 
 	if len(ret) == 0 {
 		panic("no return value specified for FindById")
 	}
 
-	var r0 *repository.WorkspaceUserCategory
+	var r0 *repository.FindWorkspaceRow
 	var r1 error
-	if rf, ok := ret.Get(0).(func(int) (*repository.WorkspaceUserCategory, error)); ok {
+	if rf, ok := ret.Get(0).(func(int) (*repository.FindWorkspaceRow, error)); ok {
 		return rf(_a0)
 	}
-	if rf, ok := ret.Get(0).(func(int) *repository.WorkspaceUserCategory); ok {
+	if rf, ok := ret.Get(0).(func(int) *repository.FindWorkspaceRow); ok {
 		r0 = rf(_a0)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*repository.WorkspaceUserCategory)
+			r0 = ret.Get(0).(*repository.FindWorkspaceRow)
 		}
 	}
 

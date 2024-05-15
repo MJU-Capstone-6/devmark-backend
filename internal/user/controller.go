@@ -39,12 +39,7 @@ func (u *UserController) ViewUserWorkspace(ctx echo.Context) error {
 		return err
 	}
 
-	log.Println(user)
-
-	workspace, err := u.UserService.FindJoinedWorkspace(int(user.ID))
-	if err != nil {
-		return err
-	}
+	workspace, _ := u.UserService.FindJoinedWorkspace(int(user.ID))
 
 	return ctx.JSON(http.StatusOK, workspace)
 }

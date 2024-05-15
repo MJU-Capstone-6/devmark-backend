@@ -88,6 +88,32 @@ definitions:
       workspace_id:
         type: integer
     type: object
+  repository.FindUserByIdRow:
+    properties:
+      created_at:
+        $ref: '#/definitions/pgtype.Timestamptz'
+      id:
+        type: integer
+      provider:
+        type: string
+      updated_at:
+        $ref: '#/definitions/pgtype.Timestamptz'
+      username:
+        type: string
+    type: object
+  repository.FindWorkspaceRow:
+    properties:
+      categories:
+        items:
+          $ref: '#/definitions/repository.Category'
+        type: array
+      id:
+        type: integer
+      users:
+        items:
+          $ref: '#/definitions/repository.FindUserByIdRow'
+        type: array
+    type: object
   repository.InviteCode:
     properties:
       code:
@@ -132,21 +158,6 @@ definitions:
       name:
         type: string
     type: object
-  repository.User:
-    properties:
-      created_at:
-        $ref: '#/definitions/pgtype.Timestamptz'
-      id:
-        type: integer
-      provider:
-        type: string
-      refresh_token:
-        type: integer
-      updated_at:
-        $ref: '#/definitions/pgtype.Timestamptz'
-      username:
-        type: string
-    type: object
   repository.UserWorkspaceView:
     properties:
       id:
@@ -172,31 +183,6 @@ definitions:
         $ref: '#/definitions/pgtype.Timestamptz'
       user_count:
         type: integer
-    type: object
-  repository.WorkspaceUserCategory:
-    properties:
-      bookmark_count:
-        type: integer
-      categories:
-        items:
-          $ref: '#/definitions/repository.Category'
-        type: array
-      created_at:
-        $ref: '#/definitions/pgtype.Timestamptz'
-      description:
-        type: string
-      id:
-        type: integer
-      name:
-        type: string
-      updated_at:
-        $ref: '#/definitions/pgtype.Timestamptz'
-      user_count:
-        type: integer
-      users:
-        items:
-          $ref: '#/definitions/repository.User'
-        type: array
     type: object
   request.CreateCommentParam:
     properties:
@@ -833,7 +819,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/repository.WorkspaceUserCategory'
+            $ref: '#/definitions/repository.FindWorkspaceRow'
         "401":
           description: Unauthorized
           schema:

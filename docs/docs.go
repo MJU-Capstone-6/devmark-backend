@@ -858,7 +858,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/repository.WorkspaceUserCategory"
+                            "$ref": "#/definitions/repository.FindWorkspaceRow"
                         }
                     },
                     "401": {
@@ -1227,6 +1227,46 @@ const docTemplate = `{
                 }
             }
         },
+        "repository.FindUserByIdRow": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "$ref": "#/definitions/pgtype.Timestamptz"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "provider": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "$ref": "#/definitions/pgtype.Timestamptz"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "repository.FindWorkspaceRow": {
+            "type": "object",
+            "properties": {
+                "categories": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/repository.Category"
+                    }
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "users": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/repository.FindUserByIdRow"
+                    }
+                }
+            }
+        },
         "repository.InviteCode": {
             "type": "object",
             "properties": {
@@ -1295,29 +1335,6 @@ const docTemplate = `{
                 }
             }
         },
-        "repository.User": {
-            "type": "object",
-            "properties": {
-                "created_at": {
-                    "$ref": "#/definitions/pgtype.Timestamptz"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "provider": {
-                    "type": "string"
-                },
-                "refresh_token": {
-                    "type": "integer"
-                },
-                "updated_at": {
-                    "$ref": "#/definitions/pgtype.Timestamptz"
-                },
-                "username": {
-                    "type": "string"
-                }
-            }
-        },
         "repository.UserWorkspaceView": {
             "type": "object",
             "properties": {
@@ -1355,44 +1372,6 @@ const docTemplate = `{
                 },
                 "user_count": {
                     "type": "integer"
-                }
-            }
-        },
-        "repository.WorkspaceUserCategory": {
-            "type": "object",
-            "properties": {
-                "bookmark_count": {
-                    "type": "integer"
-                },
-                "categories": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/repository.Category"
-                    }
-                },
-                "created_at": {
-                    "$ref": "#/definitions/pgtype.Timestamptz"
-                },
-                "description": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "updated_at": {
-                    "$ref": "#/definitions/pgtype.Timestamptz"
-                },
-                "user_count": {
-                    "type": "integer"
-                },
-                "users": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/repository.User"
-                    }
                 }
             }
         },

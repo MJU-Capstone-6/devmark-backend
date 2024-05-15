@@ -112,7 +112,7 @@ FOR EACH ROW EXECUTE FUNCTION update_workspace_user_count();
 
 
 CREATE VIEW workspace_user_category AS
-SELECT w.*, JSON_AGG(DISTINCT c.*) AS categories, JSON_AGG(DISTINCT u.*) AS users
+SELECT w.*, JSON_AGG(DISTINCT c.*) AS categories, JSON_AGG(DISTINCT JSON_BUILD_OBJECT('id', u.id, 'username', u.username, 'created_at', u.created_at, 'updated_at', u.updated_at)) AS users
 from workspace w
 LEFT JOIN workspace_category wc ON w.id = wc.workspace_id
 LEFT JOIN category c ON wc.category_id = c.id

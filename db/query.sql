@@ -2,7 +2,7 @@
 SELECT * FROM "user" WHERE "username" = $1 LIMIT 1;
 
 -- name: FindUserById :one
-SELECT * FROM "user" WHERE "id" = $1 LIMIT 1;
+SELECT "user".id, "user".username, "user".provider, "user".created_at, "user".updated_at  FROM "user" WHERE "id" = $1 LIMIT 1;
 
 
 -- name: CreateUser :one
@@ -53,7 +53,7 @@ RETURNING *;
 DELETE FROM workspace WHERE id = $1;
 
 -- name: FindWorkspace :one
-SELECT * FROM workspace_user_category WHERE id = $1;
+SELECT id,categories,users FROM workspace_user_category WHERE id = $1;
 
 -- name: FindInviteCodeByCode :one
 SELECT * FROM invite_code WHERE code = $1;

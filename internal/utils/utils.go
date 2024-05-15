@@ -18,8 +18,8 @@ func ParseURLParam(ctx echo.Context, paramName string) (*int, error) {
 	return &param, nil
 }
 
-func GetAuthUser(ctx echo.Context) (*repository.User, error) {
-	if user, ok := ctx.Get(constants.USER_CONTEXT_KEY).(*repository.User); ok {
+func GetAuthUser(ctx echo.Context) (*repository.FindUserByIdRow, error) {
+	if user, ok := ctx.Get(constants.USER_CONTEXT_KEY).(*repository.FindUserByIdRow); ok {
 		return user, nil
 	}
 	return nil, customerror.UserNotFound(errors.New(""))

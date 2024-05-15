@@ -7,6 +7,8 @@ package repository
 
 import (
 	"context"
+
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 const createBookmark = `-- name: CreateBookmark :one
@@ -360,17 +362,24 @@ func (q *Queries) FindRefreshTokenByUserID(ctx context.Context, userID *int32) (
 }
 
 const findUserById = `-- name: FindUserById :one
-SELECT id, username, provider, refresh_token, created_at, updated_at FROM "user" WHERE "id" = $1 LIMIT 1
+SELECT "user".id, "user".username, "user".provider, "user".created_at, "user".updated_at  FROM "user" WHERE "id" = $1 LIMIT 1
 `
 
-func (q *Queries) FindUserById(ctx context.Context, id int64) (User, error) {
+type FindUserByIdRow struct {
+	ID        int64              `db:"id" json:"id"`
+	Username  *string            `db:"username" json:"username"`
+	Provider  *string            `db:"provider" json:"provider"`
+	CreatedAt pgtype.Timestamptz `db:"created_at" json:"created_at"`
+	UpdatedAt pgtype.Timestamptz `db:"updated_at" json:"updated_at"`
+}
+
+func (q *Queries) FindUserById(ctx context.Context, id int64) (FindUserByIdRow, error) {
 	row := q.db.QueryRow(ctx, findUserById, id)
-	var i User
+	var i FindUserByIdRow
 	err := row.Scan(
 		&i.ID,
 		&i.Username,
 		&i.Provider,
-		&i.RefreshToken,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
@@ -407,23 +416,19 @@ func (q *Queries) FindUserWorkspace(ctx context.Context, id *int64) (UserWorkspa
 }
 
 const findWorkspace = `-- name: FindWorkspace :one
-SELECT id, name, description, created_at, updated_at, bookmark_count, user_count, categories, users FROM workspace_user_category WHERE id = $1
+SELECT id,categories,users FROM workspace_user_category WHERE id = $1
 `
 
-func (q *Queries) FindWorkspace(ctx context.Context, id int64) (WorkspaceUserCategory, error) {
+type FindWorkspaceRow struct {
+	ID         int64             `db:"id" json:"id"`
+	Categories []Category        `db:"categories" json:"categories"`
+	Users      []FindUserByIdRow `db:"users" json:"users"`
+}
+
+func (q *Queries) FindWorkspace(ctx context.Context, id int64) (FindWorkspaceRow, error) {
 	row := q.db.QueryRow(ctx, findWorkspace, id)
-	var i WorkspaceUserCategory
-	err := row.Scan(
-		&i.ID,
-		&i.Name,
-		&i.Description,
-		&i.CreatedAt,
-		&i.UpdatedAt,
-		&i.BookmarkCount,
-		&i.UserCount,
-		&i.Categories,
-		&i.Users,
-	)
+	var i FindWorkspaceRow
+	err := row.Scan(&i.ID, &i.Categories, &i.Users)
 	return i, err
 }
 
