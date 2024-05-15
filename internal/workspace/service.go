@@ -81,6 +81,14 @@ func (w *WorkspaceService) Join(code string, param repository.JoinWorkspaceParam
 	return nil
 }
 
+func (w *WorkspaceService) FindCategoriesById(id int) (*[]repository.Category, error) {
+	categories, err := w.Repository.FindWorkspaceCategory(context.Background(), int64(id))
+	if err != nil {
+		return &[]repository.Category{}, nil
+	}
+	return &categories, nil
+}
+
 func InitWorkspaceService(repo interfaces.IRepository) *WorkspaceService {
 	return &WorkspaceService{Repository: repo}
 }

@@ -73,6 +73,7 @@ func (app *Application) InitWorkspaceRoutes() {
 	customMiddleware := middlewares.InitMiddleware().WithUserService(userService).WithJwtTokenService(jwtService)
 
 	e.GET("/:id", workspaceController.ViewWorkspaceController, customMiddleware.Auth)
+	e.GET("/:id/category", workspaceController.FindWorkspaceCategoriesController, customMiddleware.Auth)
 	e.PUT("/:id", workspaceController.UpdateWorkspaceController, customMiddleware.Auth)
 	e.POST("", workspaceController.CreateWorkspaceController, customMiddleware.Auth)
 	e.POST("/join", workspaceController.JoinWorkspaceController, customMiddleware.Auth)

@@ -177,6 +177,29 @@ func (w *WorkspaceController) JoinWorkspaceController(ctx echo.Context) error {
 	return nil
 }
 
+// FindWorkspaceCategoriesController godoc
+//
+//	@summary	워크스페이스 카테고리 조회
+//	@schemes
+//	@description	워크스페이스의 카테고리를 조회합니다.
+//	@tags			workspace
+//	@accept			json
+//	@produce		json
+//	@param			id	path		int	true	"Workspace id"
+//	@success		200	{object}	[]repository.Category
+//	@failure		401	{object}	customerror.CustomError
+//	@failure		404	{object}	customerror.CustomError
+//	@failure		500	{object}	customerror.CustomError
+//	@router			/api/v1/workspace/:id/category [GET]
+func (w *WorkspaceController) FindWorkspaceCategoriesController(ctx echo.Context) error {
+	id, err := utils.ParseURLParam(ctx, "id")
+	if err != nil {
+		return err
+	}
+	categories, _ := w.WorkspaceService.FindCategoriesById(*id)
+	return ctx.JSON(http.StatusOK, categories)
+}
+
 func InitWorkspaceController() *WorkspaceController {
 	return &WorkspaceController{}
 }

@@ -427,6 +427,17 @@ func (q *Queries) FindWorkspace(ctx context.Context, id int64) (WorkspaceUserCat
 	return i, err
 }
 
+const findWorkspaceCategory = `-- name: FindWorkspaceCategory :one
+SELECT categories FROM workspace_category_list WHERE id = $1
+`
+
+func (q *Queries) FindWorkspaceCategory(ctx context.Context, id int64) ([]Category, error) {
+	row := q.db.QueryRow(ctx, findWorkspaceCategory, id)
+	var categories []Category
+	err := row.Scan(&categories)
+	return categories, err
+}
+
 const joinWorkspace = `-- name: JoinWorkspace :exec
 INSERT INTO workspace_user (workspace_id, user_id)
 VALUES ($1, $2)

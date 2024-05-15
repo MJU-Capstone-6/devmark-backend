@@ -42,17 +42,17 @@ func (_m *ICommentService) Create(_a0 repository.CreateCommentParams) (*reposito
 	return r0, r1
 }
 
-// Delete provides a mock function with given fields: _a0
-func (_m *ICommentService) Delete(_a0 int) error {
-	ret := _m.Called(_a0)
+// Delete provides a mock function with given fields: _a0, _a1
+func (_m *ICommentService) Delete(_a0 int, _a1 int) error {
+	ret := _m.Called(_a0, _a1)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Delete")
 	}
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(int) error); ok {
-		r0 = rf(_a0)
+	if rf, ok := ret.Get(0).(func(int, int) error); ok {
+		r0 = rf(_a0, _a1)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -60,20 +60,20 @@ func (_m *ICommentService) Delete(_a0 int) error {
 	return r0
 }
 
-// Update provides a mock function with given fields: _a0
-func (_m *ICommentService) Update(_a0 repository.UpdateCategoryParams) (*repository.Comment, error) {
+// FindById provides a mock function with given fields: _a0
+func (_m *ICommentService) FindById(_a0 int) (*repository.Comment, error) {
 	ret := _m.Called(_a0)
 
 	if len(ret) == 0 {
-		panic("no return value specified for Update")
+		panic("no return value specified for FindById")
 	}
 
 	var r0 *repository.Comment
 	var r1 error
-	if rf, ok := ret.Get(0).(func(repository.UpdateCategoryParams) (*repository.Comment, error)); ok {
+	if rf, ok := ret.Get(0).(func(int) (*repository.Comment, error)); ok {
 		return rf(_a0)
 	}
-	if rf, ok := ret.Get(0).(func(repository.UpdateCategoryParams) *repository.Comment); ok {
+	if rf, ok := ret.Get(0).(func(int) *repository.Comment); ok {
 		r0 = rf(_a0)
 	} else {
 		if ret.Get(0) != nil {
@@ -81,8 +81,38 @@ func (_m *ICommentService) Update(_a0 repository.UpdateCategoryParams) (*reposit
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(repository.UpdateCategoryParams) error); ok {
+	if rf, ok := ret.Get(1).(func(int) error); ok {
 		r1 = rf(_a0)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// Update provides a mock function with given fields: _a0, _a1
+func (_m *ICommentService) Update(_a0 int, _a1 repository.UpdateCommentParams) (*repository.Comment, error) {
+	ret := _m.Called(_a0, _a1)
+
+	if len(ret) == 0 {
+		panic("no return value specified for Update")
+	}
+
+	var r0 *repository.Comment
+	var r1 error
+	if rf, ok := ret.Get(0).(func(int, repository.UpdateCommentParams) (*repository.Comment, error)); ok {
+		return rf(_a0, _a1)
+	}
+	if rf, ok := ret.Get(0).(func(int, repository.UpdateCommentParams) *repository.Comment); ok {
+		r0 = rf(_a0, _a1)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*repository.Comment)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(int, repository.UpdateCommentParams) error); ok {
+		r1 = rf(_a0, _a1)
 	} else {
 		r1 = ret.Error(1)
 	}
