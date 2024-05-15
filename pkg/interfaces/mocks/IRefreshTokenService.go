@@ -4,6 +4,7 @@ package mocks
 
 import (
 	repository "github.com/MJU-Capstone-6/devmark-backend/internal/repository"
+	responses "github.com/MJU-Capstone-6/devmark-backend/internal/responses"
 	mock "github.com/stretchr/testify/mock"
 )
 
@@ -64,6 +65,36 @@ func (_m *IRefreshTokenService) FindOneByUserId(_a0 int) (*repository.RefreshTok
 	}
 
 	if rf, ok := ret.Get(1).(func(int) error); ok {
+		r1 = rf(_a0)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// RefreshAccesstoken provides a mock function with given fields: _a0
+func (_m *IRefreshTokenService) RefreshAccesstoken(_a0 string) (*responses.RefreshAccessTokenResponse, error) {
+	ret := _m.Called(_a0)
+
+	if len(ret) == 0 {
+		panic("no return value specified for RefreshAccesstoken")
+	}
+
+	var r0 *responses.RefreshAccessTokenResponse
+	var r1 error
+	if rf, ok := ret.Get(0).(func(string) (*responses.RefreshAccessTokenResponse, error)); ok {
+		return rf(_a0)
+	}
+	if rf, ok := ret.Get(0).(func(string) *responses.RefreshAccessTokenResponse); ok {
+		r0 = rf(_a0)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*responses.RefreshAccessTokenResponse)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(string) error); ok {
 		r1 = rf(_a0)
 	} else {
 		r1 = ret.Error(1)

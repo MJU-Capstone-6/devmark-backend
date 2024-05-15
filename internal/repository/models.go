@@ -18,6 +18,17 @@ type Bookmark struct {
 	UpdatedAt   pgtype.Timestamptz `db:"updated_at" json:"updated_at"`
 }
 
+type BookmarkComment struct {
+	ID          int64              `db:"id" json:"id"`
+	Link        *string            `db:"link" json:"link"`
+	CategoryID  *int64             `db:"category_id" json:"category_id"`
+	WorkspaceID *int64             `db:"workspace_id" json:"workspace_id"`
+	Summary     *string            `db:"summary" json:"summary"`
+	CreatedAt   pgtype.Timestamptz `db:"created_at" json:"created_at"`
+	UpdatedAt   pgtype.Timestamptz `db:"updated_at" json:"updated_at"`
+	Comments    []Comment          `db:"comments" json:"comments"`
+}
+
 type Category struct {
 	ID        int64              `db:"id" json:"id"`
 	Name      *string            `db:"name" json:"name"`
@@ -26,12 +37,12 @@ type Category struct {
 }
 
 type Comment struct {
-	ID         int64              `db:"id" json:"id"`
-	BookmarkID *int64             `db:"bookmark_id" json:"bookmark_id"`
-	UserID     *int64             `db:"user_id" json:"user_id"`
-	Context    *int64             `db:"context" json:"context"`
-	CreatedAt  pgtype.Timestamptz `db:"created_at" json:"created_at"`
-	UpdatedAt  pgtype.Timestamptz `db:"updated_at" json:"updated_at"`
+	ID             int64              `db:"id" json:"id"`
+	BookmarkID     *int64             `db:"bookmark_id" json:"bookmark_id"`
+	UserID         *int64             `db:"user_id" json:"user_id"`
+	CommentContext *string            `db:"comment_context" json:"comment_context"`
+	CreatedAt      pgtype.Timestamptz `db:"created_at" json:"created_at"`
+	UpdatedAt      pgtype.Timestamptz `db:"updated_at" json:"updated_at"`
 }
 
 type InviteCode struct {

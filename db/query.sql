@@ -127,4 +127,28 @@ SELECT * FROM user_workspace_view WHERE id = $1;
 INSERT INTO workspace_user (workspace_id, user_id)
 VALUES ($1, $2);
 
+-- name: FindComment :one
+SELECT * FROM "comment" WHERE id = $1;
+
+-- name: CreateComment :one
+INSERT INTO "comment" (bookmark_id, user_id, comment_context)
+VALUES ($1, $2, $3)
+RETURNING *;
+
+-- name: UpdateComment :one
+UPDATE "comment"
+SET
+  comment_context = $1,
+  updated_at = CURRENT_TIMESTAMP
+WHERE id = $2
+RETURNING *;
+
+-- name: DeleteComment :exec
+DELETE FROM "comment" WHERE id = $1;
+
+-- name: FindBookmarkComment :one
+SELECT comments FROM bookmark_comment WHERE id = $1;
+
+
+
 

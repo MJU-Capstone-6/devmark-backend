@@ -71,6 +71,34 @@ func (_m *IRepository) CreateCategory(_a0 context.Context, _a1 *string) (reposit
 	return r0, r1
 }
 
+// CreateComment provides a mock function with given fields: _a0, _a1
+func (_m *IRepository) CreateComment(_a0 context.Context, _a1 repository.CreateCommentParams) (repository.Comment, error) {
+	ret := _m.Called(_a0, _a1)
+
+	if len(ret) == 0 {
+		panic("no return value specified for CreateComment")
+	}
+
+	var r0 repository.Comment
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, repository.CreateCommentParams) (repository.Comment, error)); ok {
+		return rf(_a0, _a1)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, repository.CreateCommentParams) repository.Comment); ok {
+		r0 = rf(_a0, _a1)
+	} else {
+		r0 = ret.Get(0).(repository.Comment)
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, repository.CreateCommentParams) error); ok {
+		r1 = rf(_a0, _a1)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // CreateInviteCode provides a mock function with given fields: _a0, _a1
 func (_m *IRepository) CreateInviteCode(_a0 context.Context, _a1 repository.CreateInviteCodeParams) (repository.InviteCode, error) {
 	ret := _m.Called(_a0, _a1)
@@ -219,6 +247,24 @@ func (_m *IRepository) DeleteCategory(_a0 context.Context, _a1 int64) error {
 	return r0
 }
 
+// DeleteComment provides a mock function with given fields: _a0, _a1
+func (_m *IRepository) DeleteComment(_a0 context.Context, _a1 int64) error {
+	ret := _m.Called(_a0, _a1)
+
+	if len(ret) == 0 {
+		panic("no return value specified for DeleteComment")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, int64) error); ok {
+		r0 = rf(_a0, _a1)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
 // DeleteWorkspace provides a mock function with given fields: _a0, _a1
 func (_m *IRepository) DeleteWorkspace(_a0 context.Context, _a1 int64) error {
 	ret := _m.Called(_a0, _a1)
@@ -265,6 +311,36 @@ func (_m *IRepository) FindBookmark(_a0 context.Context, _a1 int64) (repository.
 	return r0, r1
 }
 
+// FindBookmarkComment provides a mock function with given fields: _a0, _a1
+func (_m *IRepository) FindBookmarkComment(_a0 context.Context, _a1 int64) ([]repository.Comment, error) {
+	ret := _m.Called(_a0, _a1)
+
+	if len(ret) == 0 {
+		panic("no return value specified for FindBookmarkComment")
+	}
+
+	var r0 []repository.Comment
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, int64) ([]repository.Comment, error)); ok {
+		return rf(_a0, _a1)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, int64) []repository.Comment); ok {
+		r0 = rf(_a0, _a1)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]repository.Comment)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, int64) error); ok {
+		r1 = rf(_a0, _a1)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // FindCategoryById provides a mock function with given fields: _a0, _a1
 func (_m *IRepository) FindCategoryById(_a0 context.Context, _a1 int64) (repository.Category, error) {
 	ret := _m.Called(_a0, _a1)
@@ -282,6 +358,34 @@ func (_m *IRepository) FindCategoryById(_a0 context.Context, _a1 int64) (reposit
 		r0 = rf(_a0, _a1)
 	} else {
 		r0 = ret.Get(0).(repository.Category)
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, int64) error); ok {
+		r1 = rf(_a0, _a1)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// FindComment provides a mock function with given fields: _a0, _a1
+func (_m *IRepository) FindComment(_a0 context.Context, _a1 int64) (repository.Comment, error) {
+	ret := _m.Called(_a0, _a1)
+
+	if len(ret) == 0 {
+		panic("no return value specified for FindComment")
+	}
+
+	var r0 repository.Comment
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, int64) (repository.Comment, error)); ok {
+		return rf(_a0, _a1)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, int64) repository.Comment); ok {
+		r0 = rf(_a0, _a1)
+	} else {
+		r0 = ret.Get(0).(repository.Comment)
 	}
 
 	if rf, ok := ret.Get(1).(func(context.Context, int64) error); ok {
@@ -591,6 +695,34 @@ func (_m *IRepository) UpdateCategory(_a0 context.Context, _a1 repository.Update
 	}
 
 	if rf, ok := ret.Get(1).(func(context.Context, repository.UpdateCategoryParams) error); ok {
+		r1 = rf(_a0, _a1)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// UpdateComment provides a mock function with given fields: _a0, _a1
+func (_m *IRepository) UpdateComment(_a0 context.Context, _a1 repository.UpdateCommentParams) (repository.Comment, error) {
+	ret := _m.Called(_a0, _a1)
+
+	if len(ret) == 0 {
+		panic("no return value specified for UpdateComment")
+	}
+
+	var r0 repository.Comment
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, repository.UpdateCommentParams) (repository.Comment, error)); ok {
+		return rf(_a0, _a1)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, repository.UpdateCommentParams) repository.Comment); ok {
+		r0 = rf(_a0, _a1)
+	} else {
+		r0 = ret.Get(0).(repository.Comment)
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, repository.UpdateCommentParams) error); ok {
 		r1 = rf(_a0, _a1)
 	} else {
 		r1 = ret.Error(1)

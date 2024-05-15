@@ -60,6 +60,32 @@ func (q *Queries) CreateCategory(ctx context.Context, name *string) (Category, e
 	return i, err
 }
 
+const createComment = `-- name: CreateComment :one
+INSERT INTO "comment" (bookmark_id, user_id, comment_context)
+VALUES ($1, $2, $3)
+RETURNING id, bookmark_id, user_id, comment_context, created_at, updated_at
+`
+
+type CreateCommentParams struct {
+	BookmarkID     *int64  `db:"bookmark_id" json:"bookmark_id"`
+	UserID         *int64  `db:"user_id" json:"user_id"`
+	CommentContext *string `db:"comment_context" json:"comment_context"`
+}
+
+func (q *Queries) CreateComment(ctx context.Context, arg CreateCommentParams) (Comment, error) {
+	row := q.db.QueryRow(ctx, createComment, arg.BookmarkID, arg.UserID, arg.CommentContext)
+	var i Comment
+	err := row.Scan(
+		&i.ID,
+		&i.BookmarkID,
+		&i.UserID,
+		&i.CommentContext,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
 const createInviteCode = `-- name: CreateInviteCode :one
 INSERT INTO invite_code (workspace_id, code)
 VALUES ($1, $2)
@@ -178,6 +204,15 @@ func (q *Queries) DeleteCategory(ctx context.Context, id int64) error {
 	return err
 }
 
+const deleteComment = `-- name: DeleteComment :exec
+DELETE FROM "comment" WHERE id = $1
+`
+
+func (q *Queries) DeleteComment(ctx context.Context, id int64) error {
+	_, err := q.db.Exec(ctx, deleteComment, id)
+	return err
+}
+
 const deleteWorkspace = `-- name: DeleteWorkspace :exec
 DELETE FROM workspace WHERE id = $1
 `
@@ -226,6 +261,17 @@ func (q *Queries) FindBookmark(ctx context.Context, id int64) (FindBookmarkRow, 
 	return i, err
 }
 
+const findBookmarkComment = `-- name: FindBookmarkComment :one
+SELECT comments FROM bookmark_comment WHERE id = $1
+`
+
+func (q *Queries) FindBookmarkComment(ctx context.Context, id int64) ([]Comment, error) {
+	row := q.db.QueryRow(ctx, findBookmarkComment, id)
+	var comments []Comment
+	err := row.Scan(&comments)
+	return comments, err
+}
+
 const findCategoryById = `-- name: FindCategoryById :one
 SELECT id, name, created_at, updated_at FROM category WHERE id = $1
 `
@@ -236,6 +282,24 @@ func (q *Queries) FindCategoryById(ctx context.Context, id int64) (Category, err
 	err := row.Scan(
 		&i.ID,
 		&i.Name,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
+const findComment = `-- name: FindComment :one
+SELECT id, bookmark_id, user_id, comment_context, created_at, updated_at FROM "comment" WHERE id = $1
+`
+
+func (q *Queries) FindComment(ctx context.Context, id int64) (Comment, error) {
+	row := q.db.QueryRow(ctx, findComment, id)
+	var i Comment
+	err := row.Scan(
+		&i.ID,
+		&i.BookmarkID,
+		&i.UserID,
+		&i.CommentContext,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
@@ -471,6 +535,34 @@ func (q *Queries) UpdateCategory(ctx context.Context, arg UpdateCategoryParams) 
 	err := row.Scan(
 		&i.ID,
 		&i.Name,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
+const updateComment = `-- name: UpdateComment :one
+UPDATE "comment"
+SET
+  comment_context = $1,
+  updated_at = CURRENT_TIMESTAMP
+WHERE id = $2
+RETURNING id, bookmark_id, user_id, comment_context, created_at, updated_at
+`
+
+type UpdateCommentParams struct {
+	CommentContext *string `db:"comment_context" json:"comment_context"`
+	ID             int64   `db:"id" json:"id"`
+}
+
+func (q *Queries) UpdateComment(ctx context.Context, arg UpdateCommentParams) (Comment, error) {
+	row := q.db.QueryRow(ctx, updateComment, arg.CommentContext, arg.ID)
+	var i Comment
+	err := row.Scan(
+		&i.ID,
+		&i.BookmarkID,
+		&i.UserID,
+		&i.CommentContext,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)

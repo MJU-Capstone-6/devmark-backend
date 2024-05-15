@@ -1,8 +1,6 @@
 package app
 
 import (
-	"errors"
-	"log"
 	"net/http"
 
 	customerror "github.com/MJU-Capstone-6/devmark-backend/internal/customError"
@@ -10,15 +8,16 @@ import (
 )
 
 func CustomHTTPErrorHandler(err error, c echo.Context) {
-	log.Println(err)
 	code := http.StatusInternalServerError
 	if customError, ok := err.(*customerror.CustomError); ok {
-		log.Println(customError)
 		code = customError.StatusCode
 		c.JSON(code, customError)
-	} else {
-		if c.Response().Status == 404 {
-			c.JSON(c.Response().Status, customerror.PageNotFound(errors.New("")))
+	} else if echoError, ok := err.(*echo.HTTPError); ok {
+		switch echoError.Code {
+		case http.StatusNotFound:
+			c.JSON(echoError.Code, customerror.PageNotFound(echoError))
+		case http.StatusInternalServerError:
+			c.JSON(echoError.Code, customerror.InternalServerError(echoError))
 		}
 	}
 }

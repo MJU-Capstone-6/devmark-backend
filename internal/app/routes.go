@@ -6,6 +6,7 @@ import (
 	"github.com/MJU-Capstone-6/devmark-backend/internal/auth"
 	"github.com/MJU-Capstone-6/devmark-backend/internal/bookmark"
 	"github.com/MJU-Capstone-6/devmark-backend/internal/category"
+	"github.com/MJU-Capstone-6/devmark-backend/internal/comment"
 	invitecode "github.com/MJU-Capstone-6/devmark-backend/internal/inviteCode"
 	"github.com/MJU-Capstone-6/devmark-backend/internal/jwtToken"
 	"github.com/MJU-Capstone-6/devmark-backend/internal/middlewares"
@@ -32,6 +33,7 @@ func (app *Application) InitRoutes() {
 	app.InitCategoryRoutes()
 	app.InitBookmarkRoutes()
 	app.InitRefreshTokenRoutes()
+	app.InitCommentRoutes()
 }
 
 func (app *Application) InitUserRoutes() {
@@ -130,4 +132,18 @@ func (app *Application) InitRefreshTokenRoutes() {
 	refreshTokenController := refreshtoken.InitRefreshTokenController().WithRefreshTokenService(refreshTokenService)
 
 	e.POST("", refreshTokenController.RefreshAccessTokenController)
+}
+
+func (app *Application) InitCommentRoutes() {
+	e := app.Handler.Group(fmt.Sprintf("%s/comment", V1))
+
+	commentService := comment.InitCommentService().WithRepository(&app.Repository)
+	commentController := comment.InitCommentController().WithCommentService(&commentService)
+
+	userService := user.InitUserService(&app.Repository)
+	jwtService := jwtToken.InitJWTService(app.PubKey, app.PrivateKey, app.Config.App.FooterKey)
+	customMiddleware := middlewares.InitMiddleware().WithUserService(userService).WithJwtTokenService(jwtService)
+	e.POST("", commentController.CreateCommentController, customMiddleware.Auth)
+	e.PUT("/:id", commentController.UpdateCommentController, customMiddleware.Auth)
+	e.DELETE("/:id", commentController.DeleteCommentController, customMiddleware.Auth)
 }
