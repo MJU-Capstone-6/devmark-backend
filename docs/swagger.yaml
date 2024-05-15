@@ -195,6 +195,11 @@ definitions:
       refresh_token:
         type: string
     type: object
+  responses.RefreshAccessTokenResponse:
+    properties:
+      access_token:
+        type: string
+    type: object
   workspace.CreateWorkspaceParam:
     properties:
       name:
@@ -526,6 +531,29 @@ paths:
       summary: Generate Invite Code from workspace
       tags:
       - invitecode
+  /api/v1/refresh:
+    post:
+      consumes:
+      - application/json
+      description: RefreshToken으로 AccessToken을 재발급 합니다.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.RefreshAccessTokenResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/customerror.CustomError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/customerror.CustomError'
+      summary: RefreshToken으로 AccessToken을 재발급 합니다.
+      tags:
+      - refreshToken
   /api/v1/user/workspace:
     get:
       consumes:

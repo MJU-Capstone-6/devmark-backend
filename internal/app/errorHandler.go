@@ -1,6 +1,7 @@
 package app
 
 import (
+	"errors"
 	"log"
 	"net/http"
 
@@ -15,5 +16,9 @@ func CustomHTTPErrorHandler(err error, c echo.Context) {
 		log.Println(customError)
 		code = customError.StatusCode
 		c.JSON(code, customError)
+	} else {
+		if c.Response().Status == 404 {
+			c.JSON(c.Response().Status, customerror.PageNotFound(errors.New("")))
+		}
 	}
 }

@@ -8,6 +8,7 @@ import (
 	"github.com/MJU-Capstone-6/devmark-backend/internal/constants"
 	customerror "github.com/MJU-Capstone-6/devmark-backend/internal/customError"
 	"github.com/MJU-Capstone-6/devmark-backend/internal/repository"
+	"github.com/MJU-Capstone-6/devmark-backend/internal/responses"
 	"github.com/MJU-Capstone-6/devmark-backend/pkg/interfaces"
 )
 
@@ -54,6 +55,24 @@ func (r *RefreshTokenService) FindOneByUserId(id int) (*repository.RefreshToken,
 		return nil, customerror.RefreshTokenNotFound(err)
 	}
 	return &refreshToken, nil
+}
+
+func (r *RefreshTokenService) RefreshAccesstoken(token string) (*responses.RefreshAccessTokenResponse, error) {
+	if refreshToken, err := r.JwtService.VerifyToken(token); err != nil {
+		return nil, customerror.TokenNotValidError(err)
+	} else {
+		userID, err := strconv.Atoi(refreshToken.Get(constants.TOKEN_DATA_KEY))
+		if err != nil {
+			return nil, customerror.InternalServerError(err)
+		}
+		accessToken, err := r.JwtService.GenerateToken(userID, constants.ACCESSTOKEN_EXPIRED_TIME)
+		if err != nil {
+			return nil, customerror.TokenSignFail(err)
+		}
+		return &responses.RefreshAccessTokenResponse{
+			AccessToken: accessToken,
+		}, nil
+	}
 }
 
 func InitRefreshTokenService(repo interfaces.IRepository, service interfaces.IJWTService) *RefreshTokenService {
