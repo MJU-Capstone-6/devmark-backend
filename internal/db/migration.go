@@ -2,6 +2,7 @@ package db
 
 import (
 	"context"
+	"log"
 	"os"
 
 	"ariga.io/atlas-go-sdk/atlasexec"
@@ -22,12 +23,13 @@ func Migration(dbURL string) error {
 	if err != nil {
 		return err
 	}
-
-	_, err = client.SchemaApply(context.Background(), &atlasexec.SchemaApplyParams{
+	_, err = client.MigrateApply(context.Background(), &atlasexec.MigrateApplyParams{
 		URL: dbURL,
 	})
 	if err != nil {
+		log.Println(err)
 		return err
 	}
+
 	return nil
 }

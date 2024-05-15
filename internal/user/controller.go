@@ -32,13 +32,16 @@ func (u *UserController) ViewOneUser(ctx echo.Context) error {
 //	@produce		json
 //	@success		200	{object}	repository.UserWorkspaceView
 //	@failure		500	{object}	customerror.CustomError
-//	@router			/api/v1/user/:id/workspace [GET]
+//	@router			/api/v1/user/workspace [GET]
 func (u *UserController) ViewUserWorkspace(ctx echo.Context) error {
-	id, err := utils.ParseURLParam(ctx, "id")
+	user, err := utils.GetAuthUser(ctx)
 	if err != nil {
 		return err
 	}
-	workspace, err := u.UserService.FindJoinedWorkspace(*id)
+
+	log.Println(user)
+
+	workspace, err := u.UserService.FindJoinedWorkspace(int(user.ID))
 	if err != nil {
 		return err
 	}
