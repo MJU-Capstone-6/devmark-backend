@@ -16,5 +16,5 @@ jobs:
           key: ${{ secrets.REMOTE_SSH_KEY }}
           port: ${{ secrets.REMOTE_SSH_PORT }}
           script: |
-            cd ~/devmark-backend && git pull origin dev && docker-compose build && make up
+            cd ~/devmark-backend && git pull origin dev && docker-compose build && make up &&
             cd ~/devmark-backend/traefik && docker rollout devmark-backend
