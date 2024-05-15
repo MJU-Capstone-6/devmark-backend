@@ -12,6 +12,7 @@ func CustomHTTPErrorHandler(err error, c echo.Context) {
 	log.Println(err)
 	code := http.StatusInternalServerError
 	if customError, ok := err.(*customerror.CustomError); ok {
+		log.Println(customError)
 		code = customError.StatusCode
 		c.JSON(code, customError)
 	}

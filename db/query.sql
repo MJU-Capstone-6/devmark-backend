@@ -55,6 +55,9 @@ DELETE FROM workspace WHERE id = $1;
 -- name: FindWorkspace :one
 SELECT * FROM workspace_user_category WHERE id = $1;
 
+-- name: FindInviteCodeByCode :one
+SELECT * FROM invite_code WHERE code = $1;
+
 -- name: FindInviteCodeByWorkspaceID :one
 SELECT * FROM invite_code WHERE workspace_id = $1;
 

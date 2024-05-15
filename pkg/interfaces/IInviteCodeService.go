@@ -10,5 +10,6 @@ type IInviteCodeService interface {
 	CreateCode(int) *string
 	CreateInviteCode(repository.CreateInviteCodeParams) (*repository.InviteCode, error)
 	FindByWorkspaceID(int) (*repository.InviteCode, error)
+	FindByCode(string) (*repository.InviteCode, error)
 	VerifyCode(utils.VerifyCodeParam) (bool, error)
 }

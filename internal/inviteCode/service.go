@@ -43,6 +43,14 @@ func (i *InviteCodeService) CreateInviteCode(param repository.CreateInviteCodePa
 	return &inviteCode, nil
 }
 
+func (i *InviteCodeService) FindByCode(code string) (*repository.InviteCode, error) {
+	inviteCode, err := i.Repository.FindInviteCodeByCode(context.Background(), &code)
+	if err != nil {
+		return nil, customerror.CodeNotFound(err)
+	}
+	return &inviteCode, nil
+}
+
 func (i *InviteCodeService) FindByWorkspaceID(id int) (*repository.InviteCode, error) {
 	parsedId := int32(id)
 	_, err := i.WorkspaceService.FindById(id)
