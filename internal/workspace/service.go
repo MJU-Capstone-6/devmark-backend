@@ -104,6 +104,18 @@ func (w *WorkspaceService) FindCategoryBookmark(param repository.FindWorkspaceCa
 	return &bookmarks, nil
 }
 
+func (w *WorkspaceService) SearchBookmark(param repository.SearchWorkspaceBookmarkParams) (*[]repository.Bookmark, error) {
+	bookmarks, err := w.Repository.SearchWorkspaceBookmark(context.Background(), param)
+	if err != nil {
+		return nil, customerror.InternalServerError(err)
+	}
+	if bookmarks != nil {
+		return &bookmarks, nil
+	} else {
+		return &[]repository.Bookmark{}, nil
+	}
+}
+
 func (w *WorkspaceService) RegisterCategory(param repository.RegisterCategoryToWorkspaceParams) error {
 	err := w.Repository.RegisterCategoryToWorkspace(context.Background(), param)
 	if err != nil {

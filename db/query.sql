@@ -102,8 +102,8 @@ JOIN category on category.id = bookmark.workspace_id
 WHERE bookmark.id = $1;
 
 -- name: CreateBookmark :one
-INSERT INTO bookmark (link, workspace_id, category_id, summary)
-VALUES ($1, $2, $3, $4)
+INSERT INTO bookmark (link, workspace_id, category_id, summary, user_id)
+VALUES ($1, $2, $3, $4, $5)
 RETURNING *;
 
 -- name: UpdateBookmark :one
@@ -157,3 +157,6 @@ SELECT * FROM bookmark WHERE workspace_id = $1 AND category_id = $2;
 
 -- name: CheckWorkspaceExists :one
 SELECT * FROM workspace WHERE id = $1;
+
+-- name: SearchWorkspaceBookmark :many
+SELECT * FROM bookmark WHERE workspace_id = $1 AND user_id = ANY(@user_ids::bigint[]) OR category_id = ANY(@category_ids::bigint[]);

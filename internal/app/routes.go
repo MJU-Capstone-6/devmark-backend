@@ -75,6 +75,7 @@ func (app *Application) InitWorkspaceRoutes() {
 	e.GET("/:id", workspaceController.ViewWorkspaceController, customMiddleware.Auth)
 	e.GET("/:id/category", workspaceController.FindWorkspaceCategoriesController, customMiddleware.Auth)
 	e.GET("/:workspace_id/category/:category_id", workspaceController.FindWorkspaceCategoryBookmark, customMiddleware.Auth)
+	e.GET("/:id/bookmark", workspaceController.SearchBookmarkController, customMiddleware.Auth)
 	e.PUT("/:id", workspaceController.UpdateWorkspaceController, customMiddleware.Auth)
 	e.POST("", workspaceController.CreateWorkspaceController, customMiddleware.Auth)
 	e.POST("/join", workspaceController.JoinWorkspaceController, customMiddleware.Auth)
@@ -121,12 +122,16 @@ func (app *Application) InitBookmarkRoutes() {
 		WithWorkspaceService(workspaceService).
 		WithCategoryService(&categoryService)
 	bookmarkController := bookmark.InitBookmarkController().WithBookmarkService(&bookmarkService)
+	userService := user.InitUserService(&app.Repository)
+	jwtService := jwtToken.InitJWTService(app.PubKey, app.PrivateKey, app.Config.App.FooterKey)
 
-	e.GET("/:id", bookmarkController.FindBookmarkController)
-	e.GET("/:id/comments", bookmarkController.FindBookmarkCommentsController)
-	e.POST("", bookmarkController.CreateBookmarkController)
-	e.PUT("/:id", bookmarkController.UpdateBookmarkController)
-	e.DELETE("/:id", bookmarkController.DeleteBookmarkController)
+	customMiddleware := middlewares.InitMiddleware().WithUserService(userService).WithJwtTokenService(jwtService)
+
+	e.GET("/:id", bookmarkController.FindBookmarkController, customMiddleware.Auth)
+	e.GET("/:id/comments", bookmarkController.FindBookmarkCommentsController, customMiddleware.Auth)
+	e.POST("", bookmarkController.CreateBookmarkController, customMiddleware.Auth)
+	e.PUT("/:id", bookmarkController.UpdateBookmarkController, customMiddleware.Auth)
+	e.DELETE("/:id", bookmarkController.DeleteBookmarkController, customMiddleware.Auth)
 }
 
 func (app *Application) InitRefreshTokenRoutes() {

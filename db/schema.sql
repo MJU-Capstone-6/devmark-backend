@@ -64,11 +64,13 @@ CREATE TABLE "bookmark" (
   "link" varchar,
   "category_id" bigint,
   "workspace_id" bigint,
+  "user_id" bigint,
   "summary" varchar NULL,
   "created_at" timestamptz DEFAULT CURRENT_TIMESTAMP NOT NULL,
   "updated_at" timestamptz DEFAULT CURRENT_TIMESTAMP NOT NULL,
   FOREIGN KEY ("workspace_id") REFERENCES "workspace" ("id"),
-  FOREIGN KEY ("category_id") REFERENCES "category" ("id")
+  FOREIGN KEY ("category_id") REFERENCES "category" ("id"),
+  FOREIGN KEY ("user_id") REFERENCES "user" ("id")
 );
 
 ALTER TABLE "workspace" ADD COLUMN "bookmark_count" integer DEFAULT 0;

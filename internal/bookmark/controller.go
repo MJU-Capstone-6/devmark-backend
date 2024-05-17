@@ -5,6 +5,7 @@ import (
 
 	customerror "github.com/MJU-Capstone-6/devmark-backend/internal/customError"
 	"github.com/MJU-Capstone-6/devmark-backend/internal/repository"
+	"github.com/MJU-Capstone-6/devmark-backend/internal/request"
 	"github.com/MJU-Capstone-6/devmark-backend/internal/responses"
 	"github.com/MJU-Capstone-6/devmark-backend/internal/utils"
 	"github.com/MJU-Capstone-6/devmark-backend/pkg/interfaces"
@@ -30,12 +31,24 @@ type BookmarkController struct {
 //	@failure		500		{object}	customerror.CustomError
 //	@router			/api/v1/bookmark [POST]
 func (b *BookmarkController) CreateBookmarkController(ctx echo.Context) error {
-	var body repository.CreateBookmarkParams
+	var body request.CreateBookmarkParam
 	err := ctx.Bind(&body)
 	if err != nil {
 		return responses.InternalServer(ctx, customerror.InternalServerError(err))
 	}
-	bookmark, err := b.BookmarkService.Create(body)
+	user, err := utils.GetAuthUser(ctx)
+	if err != nil {
+		return err
+	}
+	param := repository.CreateBookmarkParams{
+		Summary:     &body.Summary,
+		Link:        &body.Link,
+		WorkspaceID: &body.WorkspaceID,
+		CategoryID:  &body.CategoryID,
+		UserID:      &user.ID,
+	}
+
+	bookmark, err := b.BookmarkService.Create(param)
 	if err != nil {
 		return err
 	}

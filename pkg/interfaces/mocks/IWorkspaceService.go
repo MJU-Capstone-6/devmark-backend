@@ -186,6 +186,36 @@ func (_m *IWorkspaceService) RegisterCategory(_a0 repository.RegisterCategoryToW
 	return r0
 }
 
+// SearchBookmark provides a mock function with given fields: _a0
+func (_m *IWorkspaceService) SearchBookmark(_a0 repository.SearchWorkspaceBookmarkParams) (*[]repository.Bookmark, error) {
+	ret := _m.Called(_a0)
+
+	if len(ret) == 0 {
+		panic("no return value specified for SearchBookmark")
+	}
+
+	var r0 *[]repository.Bookmark
+	var r1 error
+	if rf, ok := ret.Get(0).(func(repository.SearchWorkspaceBookmarkParams) (*[]repository.Bookmark, error)); ok {
+		return rf(_a0)
+	}
+	if rf, ok := ret.Get(0).(func(repository.SearchWorkspaceBookmarkParams) *[]repository.Bookmark); ok {
+		r0 = rf(_a0)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*[]repository.Bookmark)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(repository.SearchWorkspaceBookmarkParams) error); ok {
+		r1 = rf(_a0)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // Update provides a mock function with given fields: _a0
 func (_m *IWorkspaceService) Update(_a0 repository.UpdateWorkspaceParams) (*repository.Workspace, error) {
 	ret := _m.Called(_a0)

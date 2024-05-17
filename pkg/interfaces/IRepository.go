@@ -42,4 +42,5 @@ type IRepository interface {
 	FindWorkspaceCategory(context.Context, int64) ([]*repository.Category, error)
 	FindWorkspaceCategoryBookmark(context.Context, repository.FindWorkspaceCategoryBookmarkParams) ([]repository.Bookmark, error)
 	CheckWorkspaceExists(context.Context, int64) (repository.Workspace, error)
+	SearchWorkspaceBookmark(context.Context, repository.SearchWorkspaceBookmarkParams) ([]repository.Bookmark, error)
 }

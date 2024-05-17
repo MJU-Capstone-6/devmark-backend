@@ -16,6 +16,7 @@ type Bookmark struct {
 	Summary     *string            `db:"summary" json:"summary"`
 	CreatedAt   pgtype.Timestamptz `db:"created_at" json:"created_at"`
 	UpdatedAt   pgtype.Timestamptz `db:"updated_at" json:"updated_at"`
+	UserID      *int64             `db:"user_id" json:"user_id"`
 }
 
 type BookmarkComment struct {
