@@ -17,13 +17,14 @@ type RefreshTokenController struct {
 //
 //	@summary	RefreshToken으로 AccessToken을 재발급 합니다.
 //	@schemes
-//	@description RefreshToken으로 AccessToken을 재발급 합니다.
+//	@description	RefreshToken으로 AccessToken을 재발급 합니다.
 //	@tags			refreshToken
 //	@accept			json
 //	@produce		json
-//	@success		200	{object}	responses.RefreshAccessTokenResponse
-//	@failure		401	{object}	customerror.CustomError
-//	@failure		500 {object}	customerror.CustomError
+//	@param			body	body		request.RefreshAccessTokenParam	true	"Refresh Access Token Param"
+//	@success		200		{object}	responses.RefreshAccessTokenResponse
+//	@failure		401		{object}	customerror.CustomError
+//	@failure		500		{object}	customerror.CustomError
 //	@router			/api/v1/refresh [POST]
 func (r *RefreshTokenController) RefreshAccessTokenController(ctx echo.Context) error {
 	var param request.RefreshAccessTokenParam
@@ -31,11 +32,11 @@ func (r *RefreshTokenController) RefreshAccessTokenController(ctx echo.Context) 
 	if err != nil {
 		return customerror.InvalidParamError(err)
 	}
-	accessToken, err := r.RefreshTokenService.RefreshAccesstoken(param.RefreshToken)
+	tokens, err := r.RefreshTokenService.RefreshTokens(param.RefreshToken)
 	if err != nil {
 		return err
 	}
-	return ctx.JSON(http.StatusOK, accessToken)
+	return ctx.JSON(http.StatusOK, tokens)
 }
 
 func InitRefreshTokenController() *RefreshTokenController {

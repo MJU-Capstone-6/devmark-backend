@@ -13,8 +13,9 @@ import (
 )
 
 type RefreshTokenService struct {
-	Repository interfaces.IRepository
-	JwtService interfaces.IJWTService
+	Repository  interfaces.IRepository
+	JwtService  interfaces.IJWTService
+	UserService interfaces.IUserService
 }
 
 func (r *RefreshTokenService) CreateToken(token string) (*repository.RefreshToken, error) {
@@ -57,7 +58,7 @@ func (r *RefreshTokenService) FindOneByUserId(id int) (*repository.RefreshToken,
 	return &refreshToken, nil
 }
 
-func (r *RefreshTokenService) RefreshAccesstoken(token string) (*responses.RefreshAccessTokenResponse, error) {
+func (r *RefreshTokenService) RefreshTokens(token string) (*responses.RefreshAccessTokenResponse, error) {
 	if refreshToken, err := r.JwtService.VerifyToken(token); err != nil {
 		return nil, customerror.TokenNotValidError(err)
 	} else {
@@ -69,8 +70,26 @@ func (r *RefreshTokenService) RefreshAccesstoken(token string) (*responses.Refre
 		if err != nil {
 			return nil, customerror.TokenSignFail(err)
 		}
+		newRefreshToken, err := r.JwtService.GenerateToken(userID, constants.REFRESH_TOKEN_EXPIRED_TIME)
+		if err != nil {
+			return nil, err
+		}
+		findRefreshToken, err := r.FindOneByUserId(userID)
+		if err != nil {
+			return nil, err
+		}
+		param := repository.UpdateRefreshTokenParams{
+			Token: &newRefreshToken,
+			ID:    findRefreshToken.ID,
+		}
+		_, err = r.UpdateToken(param)
+		if err != nil {
+			return nil, err
+		}
+
 		return &responses.RefreshAccessTokenResponse{
-			AccessToken: accessToken,
+			AccessToken:  accessToken,
+			RefreshToken: newRefreshToken,
 		}, nil
 	}
 }
@@ -88,5 +107,10 @@ func (r RefreshTokenService) WithRepository(repo interfaces.IRepository) Refresh
 
 func (r RefreshTokenService) WithJWTService(service interfaces.IJWTService) RefreshTokenService {
 	r.JwtService = service
+	return r
+}
+
+func (r RefreshTokenService) WithUserService(service interfaces.IUserService) RefreshTokenService {
+	r.UserService = service
 	return r
 }

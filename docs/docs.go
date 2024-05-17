@@ -732,6 +732,17 @@ const docTemplate = `{
                     "refreshToken"
                 ],
                 "summary": "RefreshToken으로 AccessToken을 재발급 합니다.",
+                "parameters": [
+                    {
+                        "description": "Refresh Access Token Param",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.RefreshAccessTokenParam"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -1500,6 +1511,14 @@ const docTemplate = `{
                 }
             }
         },
+        "request.RefreshAccessTokenParam": {
+            "type": "object",
+            "properties": {
+                "refresh_token": {
+                    "type": "string"
+                }
+            }
+        },
         "request.UpdateCommentParam": {
             "type": "object",
             "properties": {
@@ -1531,6 +1550,9 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "access_token": {
+                    "type": "string"
+                },
+                "refresh_token": {
                     "type": "string"
                 }
             }
