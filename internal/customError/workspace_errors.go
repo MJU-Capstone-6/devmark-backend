@@ -10,7 +10,9 @@ var WORKSPACE_UPDATE_FAIL = NewError(http.StatusUnprocessableEntity, "Workspace 
 
 var WORKSPACE_DELETE_FAIL = NewError(http.StatusUnprocessableEntity, "Workspace delete fail", "404")
 
-var WORKSPACE_CREATE_FAIL = NewError(http.StatusUnprocessableEntity, "Workspace delete fail", "404")
+var WORKSPACE_CREATE_FAIL = NewError(http.StatusUnprocessableEntity, "Workspace delete fail", "405")
+
+var WORKSPACE_CATEGORY_RESIGTER_FAIL = NewError(http.StatusBadRequest, "Register category to workspace fail", "406")
 
 func WorkspaceNotFoundErr(err error) error {
 	workspaceNotFound := WORKSPACE_NOT_FOUND
@@ -40,4 +42,10 @@ func WorkspaceDeleteFail(err error) error {
 	workspaceDeleteFail := WORKSPACE_DELETE_FAIL
 	workspaceDeleteFail.Data = err
 	return workspaceDeleteFail
+}
+
+func WorkspaceRegisterCategoryFail(err error) error {
+	categoryRegisterFail := WORKSPACE_CATEGORY_RESIGTER_FAIL
+	categoryRegisterFail.Data = err
+	return categoryRegisterFail
 }

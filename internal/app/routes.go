@@ -74,9 +74,11 @@ func (app *Application) InitWorkspaceRoutes() {
 
 	e.GET("/:id", workspaceController.ViewWorkspaceController, customMiddleware.Auth)
 	e.GET("/:id/category", workspaceController.FindWorkspaceCategoriesController, customMiddleware.Auth)
+	e.GET("/:workspace_id/category/:category_id", workspaceController.FindWorkspaceCategoryBookmark, customMiddleware.Auth)
 	e.PUT("/:id", workspaceController.UpdateWorkspaceController, customMiddleware.Auth)
 	e.POST("", workspaceController.CreateWorkspaceController, customMiddleware.Auth)
 	e.POST("/join", workspaceController.JoinWorkspaceController, customMiddleware.Auth)
+	e.POST("/:workspace_id/category/:category_id", workspaceController.RegisterCategoryToWorkspaceController, customMiddleware.Auth)
 	e.DELETE("/:id", workspaceController.DeleteWorkspaceController, customMiddleware.Auth)
 }
 

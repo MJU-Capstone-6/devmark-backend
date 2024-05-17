@@ -443,6 +443,43 @@ func (q *Queries) FindWorkspaceCategory(ctx context.Context, id int64) ([]Catego
 	return categories, err
 }
 
+const findWorkspaceCategoryBookmark = `-- name: FindWorkspaceCategoryBookmark :many
+SELECT id, link, category_id, workspace_id, summary, created_at, updated_at FROM bookmark WHERE workspace_id = $1 AND category_id = $2
+`
+
+type FindWorkspaceCategoryBookmarkParams struct {
+	WorkspaceID *int64 `db:"workspace_id" json:"workspace_id"`
+	CategoryID  *int64 `db:"category_id" json:"category_id"`
+}
+
+func (q *Queries) FindWorkspaceCategoryBookmark(ctx context.Context, arg FindWorkspaceCategoryBookmarkParams) ([]Bookmark, error) {
+	rows, err := q.db.Query(ctx, findWorkspaceCategoryBookmark, arg.WorkspaceID, arg.CategoryID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Bookmark
+	for rows.Next() {
+		var i Bookmark
+		if err := rows.Scan(
+			&i.ID,
+			&i.Link,
+			&i.CategoryID,
+			&i.WorkspaceID,
+			&i.Summary,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const joinWorkspace = `-- name: JoinWorkspace :exec
 INSERT INTO workspace_user (workspace_id, user_id)
 VALUES ($1, $2)

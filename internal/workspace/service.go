@@ -89,6 +89,22 @@ func (w *WorkspaceService) FindCategoriesById(id int) (*[]repository.Category, e
 	return &categories, nil
 }
 
+func (w *WorkspaceService) FindCategoryBookmark(param repository.FindWorkspaceCategoryBookmarkParams) (*[]repository.Bookmark, error) {
+	bookmarks, err := w.Repository.FindWorkspaceCategoryBookmark(context.Background(), param)
+	if err != nil {
+		return &[]repository.Bookmark{}, nil
+	}
+	return &bookmarks, nil
+}
+
+func (w *WorkspaceService) RegisterCategory(param repository.RegisterCategoryToWorkspaceParams) error {
+	err := w.Repository.RegisterCategoryToWorkspace(context.Background(), param)
+	if err != nil {
+		return customerror.WorkspaceRegisterCategoryFail(err)
+	}
+	return nil
+}
+
 func InitWorkspaceService(repo interfaces.IRepository) *WorkspaceService {
 	return &WorkspaceService{Repository: repo}
 }

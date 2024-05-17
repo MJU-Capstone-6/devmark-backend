@@ -40,4 +40,5 @@ type IRepository interface {
 	DeleteComment(context.Context, int64) error
 	UpdateComment(context.Context, repository.UpdateCommentParams) (repository.Comment, error)
 	FindWorkspaceCategory(context.Context, int64) ([]repository.Category, error)
+	FindWorkspaceCategoryBookmark(context.Context, repository.FindWorkspaceCategoryBookmarkParams) ([]repository.Bookmark, error)
 }

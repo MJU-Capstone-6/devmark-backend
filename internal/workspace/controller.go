@@ -188,7 +188,6 @@ func (w *WorkspaceController) JoinWorkspaceController(ctx echo.Context) error {
 //	@param			id	path		int	true	"Workspace id"
 //	@success		200	{object}	[]repository.Category
 //	@failure		401	{object}	customerror.CustomError
-//	@failure		404	{object}	customerror.CustomError
 //	@failure		500	{object}	customerror.CustomError
 //	@router			/api/v1/workspace/:id/category [GET]
 func (w *WorkspaceController) FindWorkspaceCategoriesController(ctx echo.Context) error {
@@ -198,6 +197,83 @@ func (w *WorkspaceController) FindWorkspaceCategoriesController(ctx echo.Context
 	}
 	categories, _ := w.WorkspaceService.FindCategoriesById(*id)
 	return ctx.JSON(http.StatusOK, categories)
+}
+
+// FindWorkspaceCategoryBookmark godoc
+//
+//	@summary	워크스페이스 카테고리 - 북마크 조회
+//	@schemes
+//	@description	워크스페이스의 카테고리내의 북마크를  조회합니다.
+//	@tags			workspace
+//	@accept			json
+//	@produce		json
+//	@param			workspace_id	path		int	true	"Workspace id"
+//	@param			category_id		path		int	true	"Category id"
+//	@success		200				{object}	[]repository.Bookmark
+//	@failure		401				{object}	customerror.CustomError
+//	@failure		500				{object}	customerror.CustomError
+//	@router			/api/v1/workspace/:workspace_id/category/:category_id [GET]
+func (w *WorkspaceController) FindWorkspaceCategoryBookmark(ctx echo.Context) error {
+	workspace_id, err := utils.ParseURLParam(ctx, "workspace_id")
+	if err != nil {
+		return err
+	}
+	parsed_workspace_id := int64(*workspace_id)
+
+	category_id, err := utils.ParseURLParam(ctx, "category_id")
+	if err != nil {
+		return err
+	}
+
+	parsed_category_id := int64(*category_id)
+	param := repository.FindWorkspaceCategoryBookmarkParams{
+		WorkspaceID: &parsed_workspace_id,
+		CategoryID:  &parsed_category_id,
+	}
+	bookmarks, _ := w.WorkspaceService.FindCategoryBookmark(param)
+	return ctx.JSON(http.StatusOK, bookmarks)
+}
+
+// RegisterCategoryToWorkspaceController godoc
+//
+//	@summary	워크스페이스 카테고리 등록
+//	@schemes
+//	@description	워크스페이스에 카테고리를 등록합니다.
+//	@tags			workspace
+//	@accept			json
+//	@produce		json
+//	@param			workspace_id	path		int	true	"Workspace id"
+//	@param			category_id		path		int	true	"Category id"
+//	@success		200				{object}	responses.OkResponse
+//	@failure		400				{object}	customerror.CustomError
+//	@failure		401				{object}	customerror.CustomError
+//	@failure		500				{object}	customerror.CustomError
+//	@router			/api/v1/workspace/:workspace_id/category/:category_id [POST]
+func (w *WorkspaceController) RegisterCategoryToWorkspaceController(ctx echo.Context) error {
+	workspace_id, err := utils.ParseURLParam(ctx, "workspace_id")
+	if err != nil {
+		return err
+	}
+	parsed_workspace_id := int64(*workspace_id)
+
+	category_id, err := utils.ParseURLParam(ctx, "category_id")
+	if err != nil {
+		return err
+	}
+
+	parsed_category_id := int64(*category_id)
+
+	param := repository.RegisterCategoryToWorkspaceParams{
+		WorkspaceID: parsed_workspace_id,
+		CategoryID:  parsed_category_id,
+	}
+
+	err = w.WorkspaceService.RegisterCategory(param)
+	if err != nil {
+		return err
+	}
+
+	return ctx.JSON(http.StatusOK, responses.OkResponse{Ok: true})
 }
 
 func InitWorkspaceController() *WorkspaceController {
