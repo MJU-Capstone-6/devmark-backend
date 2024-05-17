@@ -8,6 +8,6 @@ type IBookmarkService interface {
 	Create(repository.CreateBookmarkParams) (*repository.Bookmark, error)
 	Update(repository.UpdateBookmarkParams) (*repository.Bookmark, error)
 	FindById(int) (*repository.FindBookmarkRow, error)
-	FindComments(int) (*[]repository.Comment, error)
+	FindComments(int) (*[]*repository.Comment, error)
 	Delete(int) error
 }

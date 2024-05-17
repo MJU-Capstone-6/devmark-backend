@@ -2,6 +2,7 @@ package workspace
 
 import (
 	"context"
+	"log"
 
 	customerror "github.com/MJU-Capstone-6/devmark-backend/internal/customError"
 	"github.com/MJU-Capstone-6/devmark-backend/internal/repository"
@@ -32,9 +33,15 @@ func (w *WorkspaceService) Create(userId int, createWorkspaceParam repository.Cr
 
 func (w *WorkspaceService) FindById(id int) (*repository.FindWorkspaceRow, error) {
 	workspaceId := int64(id)
+	_, err := w.Repository.CheckWorkspaceExists(context.Background(), workspaceId)
+	if err != nil {
+		log.Println(err)
+		return nil, customerror.WorkspaceNotFoundErr(err)
+	}
+
 	workspace, err := w.Repository.FindWorkspace(context.Background(), workspaceId)
 	if err != nil {
-		return &repository.FindWorkspaceRow{ID: workspaceId, Categories: []repository.Category{}, Users: []repository.FindUserByIdRow{}}, nil
+		return &repository.FindWorkspaceRow{ID: workspaceId, Categories: []*repository.Category{}, Users: []*repository.FindUserByIdRow{}}, nil
 	}
 	return &workspace, nil
 }
@@ -81,10 +88,10 @@ func (w *WorkspaceService) Join(code string, param repository.JoinWorkspaceParam
 	return nil
 }
 
-func (w *WorkspaceService) FindCategoriesById(id int) (*[]repository.Category, error) {
+func (w *WorkspaceService) FindCategoriesById(id int) (*[]*repository.Category, error) {
 	categories, err := w.Repository.FindWorkspaceCategory(context.Background(), int64(id))
 	if err != nil {
-		return &[]repository.Category{}, nil
+		return &[]*repository.Category{}, nil
 	}
 	return &categories, nil
 }

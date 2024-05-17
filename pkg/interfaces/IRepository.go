@@ -34,11 +34,12 @@ type IRepository interface {
 	CreateBookmark(context.Context, repository.CreateBookmarkParams) (repository.Bookmark, error)
 	DeleteBookmark(context.Context, int64) error
 	UpdateBookmark(context.Context, repository.UpdateBookmarkParams) (repository.Bookmark, error)
-	FindBookmarkComment(context.Context, int64) ([]repository.Comment, error)
+	FindBookmarkComment(context.Context, int64) ([]*repository.Comment, error)
 	FindComment(context.Context, int64) (repository.Comment, error)
 	CreateComment(context.Context, repository.CreateCommentParams) (repository.Comment, error)
 	DeleteComment(context.Context, int64) error
 	UpdateComment(context.Context, repository.UpdateCommentParams) (repository.Comment, error)
-	FindWorkspaceCategory(context.Context, int64) ([]repository.Category, error)
+	FindWorkspaceCategory(context.Context, int64) ([]*repository.Category, error)
 	FindWorkspaceCategoryBookmark(context.Context, repository.FindWorkspaceCategoryBookmarkParams) ([]repository.Bookmark, error)
+	CheckWorkspaceExists(context.Context, int64) (repository.Workspace, error)
 }
