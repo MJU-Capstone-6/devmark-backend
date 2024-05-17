@@ -10,5 +10,5 @@ type IRefreshTokenService interface {
 	CreateToken(string) (*repository.RefreshToken, error)
 	UpdateToken(repository.UpdateRefreshTokenParams) (*repository.RefreshToken, error)
 	FindOneByUserId(int) (*repository.RefreshToken, error)
-	RefreshAccesstoken(string) (*responses.RefreshAccessTokenResponse, error)
+	RefreshTokens(string) (*responses.RefreshAccessTokenResponse, error)
 }
