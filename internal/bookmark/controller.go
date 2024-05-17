@@ -129,7 +129,7 @@ func (b *BookmarkController) UpdateBookmarkController(ctx echo.Context) error {
 //	@accept			json
 //	@produce		json
 //	@param			id	path		int	true	"Bookmark id"
-//	@success		200	{object}	repository.Bookmark
+//	@success		200	{object}	responses.OkResponse
 //	@failure		401	{object}	customerror.CustomError
 //	@failure		404	{object}	customerror.CustomError
 //	@failure		500	{object}	customerror.CustomError
@@ -143,7 +143,7 @@ func (b *BookmarkController) DeleteBookmarkController(ctx echo.Context) error {
 	if err != nil {
 		return err
 	}
-	return nil
+	return ctx.JSON(http.StatusOK, responses.OkResponse{Ok: true})
 }
 
 func InitBookmarkController() *BookmarkController {

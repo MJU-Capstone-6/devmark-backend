@@ -236,7 +236,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/repository.Bookmark"
+                            "$ref": "#/definitions/responses.OkResponse"
                         }
                     },
                     "401": {
@@ -460,7 +460,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/repository.Category"
+                            "$ref": "#/definitions/responses.OkResponse"
                         }
                     },
                     "400": {
@@ -635,7 +635,10 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK"
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/responses.OkResponse"
+                        }
                     },
                     "400": {
                         "description": "Bad Request",
@@ -963,7 +966,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/repository.Workspace"
+                            "$ref": "#/definitions/responses.OkResponse"
                         }
                     },
                     "401": {
@@ -1410,6 +1413,14 @@ const docTemplate = `{
                 },
                 "refresh_token": {
                     "type": "string"
+                }
+            }
+        },
+        "responses.OkResponse": {
+            "type": "object",
+            "properties": {
+                "ok": {
+                    "type": "boolean"
                 }
             }
         },

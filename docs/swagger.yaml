@@ -208,6 +208,11 @@ definitions:
       refresh_token:
         type: string
     type: object
+  responses.OkResponse:
+    properties:
+      ok:
+        type: boolean
+    type: object
   responses.RefreshAccessTokenResponse:
     properties:
       access_token:
@@ -312,7 +317,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/repository.Bookmark'
+            $ref: '#/definitions/responses.OkResponse'
         "401":
           description: Unauthorized
           schema:
@@ -483,7 +488,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/repository.Category'
+            $ref: '#/definitions/responses.OkResponse'
         "400":
           description: Bad Request
           schema:
@@ -599,6 +604,8 @@ paths:
       responses:
         "200":
           description: OK
+          schema:
+            $ref: '#/definitions/responses.OkResponse'
         "400":
           description: Bad Request
           schema:
@@ -787,7 +794,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/repository.Workspace'
+            $ref: '#/definitions/responses.OkResponse'
         "401":
           description: Unauthorized
           schema:
