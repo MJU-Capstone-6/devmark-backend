@@ -90,7 +90,7 @@ func (w *WorkspaceController) UpdateWorkspaceController(ctx echo.Context) error 
 //	@accept			json
 //	@produce		json
 //	@param			id	path		int	true	"Workspace id"
-//	@success		200	{object}	repository.Workspace
+//	@success		200	{object}	responses.OkResponse
 //	@failure		401	{object}	customerror.CustomError
 //	@failure		404	{object}	customerror.CustomError
 //	@failure		500	{object}	customerror.CustomError
@@ -104,7 +104,7 @@ func (w *WorkspaceController) DeleteWorkspaceController(ctx echo.Context) error 
 	if err != nil {
 		return responses.InternalServer(ctx, customerror.InternalServerError(err))
 	}
-	return nil
+	return ctx.JSON(http.StatusOK, responses.OkResponse{Ok: true})
 }
 
 // CreateWorkspace godoc

@@ -15,6 +15,10 @@ type RefreshAccessTokenResponse struct {
 	AccessToken string `json:"access_token"`
 }
 
+type OkResponse struct {
+	Ok bool `json:"ok"`
+}
+
 func Unauthorized(ctx echo.Context, data interface{}) error {
 	return ctx.JSON(http.StatusUnauthorized, data)
 }

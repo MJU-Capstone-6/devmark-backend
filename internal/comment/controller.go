@@ -6,6 +6,7 @@ import (
 	customerror "github.com/MJU-Capstone-6/devmark-backend/internal/customError"
 	"github.com/MJU-Capstone-6/devmark-backend/internal/repository"
 	"github.com/MJU-Capstone-6/devmark-backend/internal/request"
+	"github.com/MJU-Capstone-6/devmark-backend/internal/responses"
 	"github.com/MJU-Capstone-6/devmark-backend/internal/utils"
 	"github.com/MJU-Capstone-6/devmark-backend/pkg/interfaces"
 	"github.com/labstack/echo/v4"
@@ -107,7 +108,7 @@ func (c *CommentController) UpdateCommentController(ctx echo.Context) error {
 //	@accept			json
 //	@produce		json
 //	@param			id	path		int	true	"comment id"
-//	@success		200	{object}	nil
+//	@success		200	{object}	responses.OkResponse
 //	@failure		400	{object}	customerror.CustomError
 //	@failure		401	{object}	customerror.CustomError
 //	@failure		422	{object}	customerror.CustomError
@@ -127,7 +128,7 @@ func (c *CommentController) DeleteCommentController(ctx echo.Context) error {
 	if err != nil {
 		return err
 	}
-	return nil
+	return ctx.JSON(http.StatusOK, responses.OkResponse{Ok: true})
 }
 
 func InitCommentController() *CommentController {

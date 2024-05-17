@@ -230,7 +230,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/repository.Bookmark"
+                            "$ref": "#/definitions/responses.OkResponse"
                         }
                     },
                     "401": {
@@ -454,7 +454,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/repository.Category"
+                            "$ref": "#/definitions/responses.OkResponse"
                         }
                     },
                     "400": {
@@ -629,7 +629,10 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK"
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/responses.OkResponse"
+                        }
                     },
                     "400": {
                         "description": "Bad Request",
@@ -957,7 +960,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/repository.Workspace"
+                            "$ref": "#/definitions/responses.OkResponse"
                         }
                     },
                     "401": {
@@ -1404,6 +1407,14 @@
                 },
                 "refresh_token": {
                     "type": "string"
+                }
+            }
+        },
+        "responses.OkResponse": {
+            "type": "object",
+            "properties": {
+                "ok": {
+                    "type": "boolean"
                 }
             }
         },
