@@ -41,7 +41,7 @@ func (w *WorkspaceController) ViewWorkspaceController(ctx echo.Context) error {
 	}
 	workspaceInfo, err := w.WorkspaceService.FindById(*id)
 	if err != nil {
-		return customerror.WorkspaceNotFoundErr(err)
+		return err
 	}
 
 	return ctx.JSON(http.StatusOK, workspaceInfo)

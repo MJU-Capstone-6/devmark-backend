@@ -15,6 +15,34 @@ type IRepository struct {
 	mock.Mock
 }
 
+// CheckWorkspaceExists provides a mock function with given fields: _a0, _a1
+func (_m *IRepository) CheckWorkspaceExists(_a0 context.Context, _a1 int64) (repository.Workspace, error) {
+	ret := _m.Called(_a0, _a1)
+
+	if len(ret) == 0 {
+		panic("no return value specified for CheckWorkspaceExists")
+	}
+
+	var r0 repository.Workspace
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, int64) (repository.Workspace, error)); ok {
+		return rf(_a0, _a1)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, int64) repository.Workspace); ok {
+		r0 = rf(_a0, _a1)
+	} else {
+		r0 = ret.Get(0).(repository.Workspace)
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, int64) error); ok {
+		r1 = rf(_a0, _a1)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // CreateBookmark provides a mock function with given fields: _a0, _a1
 func (_m *IRepository) CreateBookmark(_a0 context.Context, _a1 repository.CreateBookmarkParams) (repository.Bookmark, error) {
 	ret := _m.Called(_a0, _a1)
@@ -312,23 +340,23 @@ func (_m *IRepository) FindBookmark(_a0 context.Context, _a1 int64) (repository.
 }
 
 // FindBookmarkComment provides a mock function with given fields: _a0, _a1
-func (_m *IRepository) FindBookmarkComment(_a0 context.Context, _a1 int64) ([]repository.Comment, error) {
+func (_m *IRepository) FindBookmarkComment(_a0 context.Context, _a1 int64) ([]*repository.Comment, error) {
 	ret := _m.Called(_a0, _a1)
 
 	if len(ret) == 0 {
 		panic("no return value specified for FindBookmarkComment")
 	}
 
-	var r0 []repository.Comment
+	var r0 []*repository.Comment
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, int64) ([]repository.Comment, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, int64) ([]*repository.Comment, error)); ok {
 		return rf(_a0, _a1)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, int64) []repository.Comment); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, int64) []*repository.Comment); ok {
 		r0 = rf(_a0, _a1)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]repository.Comment)
+			r0 = ret.Get(0).([]*repository.Comment)
 		}
 	}
 
@@ -594,23 +622,23 @@ func (_m *IRepository) FindWorkspace(_a0 context.Context, _a1 int64) (repository
 }
 
 // FindWorkspaceCategory provides a mock function with given fields: _a0, _a1
-func (_m *IRepository) FindWorkspaceCategory(_a0 context.Context, _a1 int64) ([]repository.Category, error) {
+func (_m *IRepository) FindWorkspaceCategory(_a0 context.Context, _a1 int64) ([]*repository.Category, error) {
 	ret := _m.Called(_a0, _a1)
 
 	if len(ret) == 0 {
 		panic("no return value specified for FindWorkspaceCategory")
 	}
 
-	var r0 []repository.Category
+	var r0 []*repository.Category
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, int64) ([]repository.Category, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, int64) ([]*repository.Category, error)); ok {
 		return rf(_a0, _a1)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, int64) []repository.Category); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, int64) []*repository.Category); ok {
 		r0 = rf(_a0, _a1)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]repository.Category)
+			r0 = ret.Get(0).([]*repository.Category)
 		}
 	}
 

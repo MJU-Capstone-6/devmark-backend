@@ -155,4 +155,5 @@ SELECT categories FROM workspace_category_list WHERE id = $1;
 -- name: FindWorkspaceCategoryBookmark :many
 SELECT * FROM bookmark WHERE workspace_id = $1 AND category_id = $2;
 
-
+-- name: CheckWorkspaceExists :one
+SELECT * FROM workspace WHERE id = $1;

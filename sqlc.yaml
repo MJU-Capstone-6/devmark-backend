@@ -13,22 +13,33 @@ sql:
         sql_package: "pgx/v5"
         overrides:
           - column: "workspace_user_category.categories"
+            nullable: true
             go_type:
               type: "Category"
+              pointer: true
               slice: true
           - column: "workspace_user_category.users"
+            nullable: true
             go_type:
               type: "FindUserByIdRow"
+              pointer: true
               slice: true
           - column: "user_workspace_view.workspaces"
+            nullable: true
             go_type:
               type: "Workspace"
               slice: true
+              pointer: true
+
           - column: "bookmark_comment.comments"
+            nullable: true
             go_type:
               type: "Comment"
               slice: true
+              pointer: true
           - column: "workspace_category_list.categories"
+            nullable: true
             go_type:
               type: "Category"
               slice: true
+              pointer: true

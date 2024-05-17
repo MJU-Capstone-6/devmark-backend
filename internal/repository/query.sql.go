@@ -11,6 +11,25 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
+const checkWorkspaceExists = `-- name: CheckWorkspaceExists :one
+SELECT id, name, description, created_at, updated_at, bookmark_count, user_count FROM workspace WHERE id = $1
+`
+
+func (q *Queries) CheckWorkspaceExists(ctx context.Context, id int64) (Workspace, error) {
+	row := q.db.QueryRow(ctx, checkWorkspaceExists, id)
+	var i Workspace
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Description,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.BookmarkCount,
+		&i.UserCount,
+	)
+	return i, err
+}
+
 const createBookmark = `-- name: CreateBookmark :one
 INSERT INTO bookmark (link, workspace_id, category_id, summary)
 VALUES ($1, $2, $3, $4)
@@ -267,9 +286,9 @@ const findBookmarkComment = `-- name: FindBookmarkComment :one
 SELECT comments FROM bookmark_comment WHERE id = $1
 `
 
-func (q *Queries) FindBookmarkComment(ctx context.Context, id int64) ([]Comment, error) {
+func (q *Queries) FindBookmarkComment(ctx context.Context, id int64) ([]*Comment, error) {
 	row := q.db.QueryRow(ctx, findBookmarkComment, id)
-	var comments []Comment
+	var comments []*Comment
 	err := row.Scan(&comments)
 	return comments, err
 }
@@ -420,9 +439,9 @@ SELECT id,categories,users FROM workspace_user_category WHERE id = $1
 `
 
 type FindWorkspaceRow struct {
-	ID         int64             `db:"id" json:"id"`
-	Categories []Category        `db:"categories" json:"categories"`
-	Users      []FindUserByIdRow `db:"users" json:"users"`
+	ID         int64              `db:"id" json:"id"`
+	Categories []*Category        `db:"categories" json:"categories"`
+	Users      []*FindUserByIdRow `db:"users" json:"users"`
 }
 
 func (q *Queries) FindWorkspace(ctx context.Context, id int64) (FindWorkspaceRow, error) {
@@ -436,9 +455,9 @@ const findWorkspaceCategory = `-- name: FindWorkspaceCategory :one
 SELECT categories FROM workspace_category_list WHERE id = $1
 `
 
-func (q *Queries) FindWorkspaceCategory(ctx context.Context, id int64) ([]Category, error) {
+func (q *Queries) FindWorkspaceCategory(ctx context.Context, id int64) ([]*Category, error) {
 	row := q.db.QueryRow(ctx, findWorkspaceCategory, id)
-	var categories []Category
+	var categories []*Category
 	err := row.Scan(&categories)
 	return categories, err
 }

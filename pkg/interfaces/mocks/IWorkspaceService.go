@@ -91,27 +91,57 @@ func (_m *IWorkspaceService) FindById(_a0 int) (*repository.FindWorkspaceRow, er
 }
 
 // FindCategoriesById provides a mock function with given fields: _a0
-func (_m *IWorkspaceService) FindCategoriesById(_a0 int) (*[]repository.Category, error) {
+func (_m *IWorkspaceService) FindCategoriesById(_a0 int) (*[]*repository.Category, error) {
 	ret := _m.Called(_a0)
 
 	if len(ret) == 0 {
 		panic("no return value specified for FindCategoriesById")
 	}
 
-	var r0 *[]repository.Category
+	var r0 *[]*repository.Category
 	var r1 error
-	if rf, ok := ret.Get(0).(func(int) (*[]repository.Category, error)); ok {
+	if rf, ok := ret.Get(0).(func(int) (*[]*repository.Category, error)); ok {
 		return rf(_a0)
 	}
-	if rf, ok := ret.Get(0).(func(int) *[]repository.Category); ok {
+	if rf, ok := ret.Get(0).(func(int) *[]*repository.Category); ok {
 		r0 = rf(_a0)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*[]repository.Category)
+			r0 = ret.Get(0).(*[]*repository.Category)
 		}
 	}
 
 	if rf, ok := ret.Get(1).(func(int) error); ok {
+		r1 = rf(_a0)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// FindCategoryBookmark provides a mock function with given fields: _a0
+func (_m *IWorkspaceService) FindCategoryBookmark(_a0 repository.FindWorkspaceCategoryBookmarkParams) (*[]repository.Bookmark, error) {
+	ret := _m.Called(_a0)
+
+	if len(ret) == 0 {
+		panic("no return value specified for FindCategoryBookmark")
+	}
+
+	var r0 *[]repository.Bookmark
+	var r1 error
+	if rf, ok := ret.Get(0).(func(repository.FindWorkspaceCategoryBookmarkParams) (*[]repository.Bookmark, error)); ok {
+		return rf(_a0)
+	}
+	if rf, ok := ret.Get(0).(func(repository.FindWorkspaceCategoryBookmarkParams) *[]repository.Bookmark); ok {
+		r0 = rf(_a0)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*[]repository.Bookmark)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(repository.FindWorkspaceCategoryBookmarkParams) error); ok {
 		r1 = rf(_a0)
 	} else {
 		r1 = ret.Error(1)
@@ -131,6 +161,24 @@ func (_m *IWorkspaceService) Join(_a0 string, _a1 repository.JoinWorkspaceParams
 	var r0 error
 	if rf, ok := ret.Get(0).(func(string, repository.JoinWorkspaceParams) error); ok {
 		r0 = rf(_a0, _a1)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// RegisterCategory provides a mock function with given fields: _a0
+func (_m *IWorkspaceService) RegisterCategory(_a0 repository.RegisterCategoryToWorkspaceParams) error {
+	ret := _m.Called(_a0)
+
+	if len(ret) == 0 {
+		panic("no return value specified for RegisterCategory")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(repository.RegisterCategoryToWorkspaceParams) error); ok {
+		r0 = rf(_a0)
 	} else {
 		r0 = ret.Error(0)
 	}

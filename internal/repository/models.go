@@ -26,7 +26,7 @@ type BookmarkComment struct {
 	Summary     *string            `db:"summary" json:"summary"`
 	CreatedAt   pgtype.Timestamptz `db:"created_at" json:"created_at"`
 	UpdatedAt   pgtype.Timestamptz `db:"updated_at" json:"updated_at"`
-	Comments    []Comment          `db:"comments" json:"comments"`
+	Comments    []*Comment         `db:"comments" json:"comments"`
 }
 
 type Category struct {
@@ -72,8 +72,8 @@ type User struct {
 }
 
 type UserWorkspaceView struct {
-	ID         *int64      `db:"id" json:"id"`
-	Workspaces []Workspace `db:"workspaces" json:"workspaces"`
+	ID         *int64       `db:"id" json:"id"`
+	Workspaces []*Workspace `db:"workspaces" json:"workspaces"`
 }
 
 type Workspace struct {
@@ -99,7 +99,7 @@ type WorkspaceCategoryList struct {
 	UpdatedAt     pgtype.Timestamptz `db:"updated_at" json:"updated_at"`
 	BookmarkCount *int32             `db:"bookmark_count" json:"bookmark_count"`
 	UserCount     *int32             `db:"user_count" json:"user_count"`
-	Categories    []Category         `db:"categories" json:"categories"`
+	Categories    []*Category        `db:"categories" json:"categories"`
 }
 
 type WorkspaceUser struct {
@@ -115,6 +115,6 @@ type WorkspaceUserCategory struct {
 	UpdatedAt     pgtype.Timestamptz `db:"updated_at" json:"updated_at"`
 	BookmarkCount *int32             `db:"bookmark_count" json:"bookmark_count"`
 	UserCount     *int32             `db:"user_count" json:"user_count"`
-	Categories    []Category         `db:"categories" json:"categories"`
-	Users         []FindUserByIdRow  `db:"users" json:"users"`
+	Categories    []*Category        `db:"categories" json:"categories"`
+	Users         []*FindUserByIdRow `db:"users" json:"users"`
 }
