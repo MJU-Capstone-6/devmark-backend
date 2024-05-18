@@ -46,6 +46,8 @@ definitions:
         type: string
       summary:
         type: string
+      title:
+        type: string
       updated_at:
         $ref: '#/definitions/pgtype.Timestamptz'
       user_id:
@@ -905,6 +907,54 @@ paths:
           schema:
             $ref: '#/definitions/customerror.CustomError'
       summary: 워크스페이스 업데이트
+      tags:
+      - workspace
+  /api/v1/workspace/:id/bookmark:
+    get:
+      consumes:
+      - application/json
+      description: 워크스페이스의 북마크를 검색합니다.
+      parameters:
+      - description: Workspace id
+        in: path
+        name: workspace_id
+        required: true
+        type: integer
+      - description: Category id
+        in: path
+        name: category_id
+        required: true
+        type: integer
+      - description: users id
+        in: query
+        name: users
+        type: string
+      - description: categories id
+        in: query
+        name: categories
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/repository.Bookmark'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/customerror.CustomError'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/customerror.CustomError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/customerror.CustomError'
+      summary: 워크스페이스 북마크 검색
       tags:
       - workspace
   /api/v1/workspace/:id/category:

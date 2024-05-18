@@ -425,6 +425,34 @@ func (_m *IRepository) FindComment(_a0 context.Context, _a1 int64) (repository.C
 	return r0, r1
 }
 
+// FindDuplicateBookmark provides a mock function with given fields: _a0, _a1
+func (_m *IRepository) FindDuplicateBookmark(_a0 context.Context, _a1 repository.FindDuplicateBookmarkParams) (int64, error) {
+	ret := _m.Called(_a0, _a1)
+
+	if len(ret) == 0 {
+		panic("no return value specified for FindDuplicateBookmark")
+	}
+
+	var r0 int64
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, repository.FindDuplicateBookmarkParams) (int64, error)); ok {
+		return rf(_a0, _a1)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, repository.FindDuplicateBookmarkParams) int64); ok {
+		r0 = rf(_a0, _a1)
+	} else {
+		r0 = ret.Get(0).(int64)
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, repository.FindDuplicateBookmarkParams) error); ok {
+		r1 = rf(_a0, _a1)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // FindInviteCodeByCode provides a mock function with given fields: _a0, _a1
 func (_m *IRepository) FindInviteCodeByCode(_a0 context.Context, _a1 *string) (repository.InviteCode, error) {
 	ret := _m.Called(_a0, _a1)
