@@ -47,12 +47,16 @@ func (b *BookmarkService) FindById(id int) (*repository.FindBookmarkRow, error) 
 	return &bookmark, nil
 }
 
-func (b *BookmarkService) FindComments(id int) (*[]*repository.Comment, error) {
+func (b *BookmarkService) FindComments(id int) (*[]*repository.BookmarkCommentRow, error) {
 	comments, err := b.Repository.FindBookmarkComment(context.Background(), int64(id))
 	if err != nil {
-		return &[]*repository.Comment{}, nil
+		return nil, customerror.InternalServerError(err)
 	}
-	return &comments, nil
+	if comments != nil {
+		return &comments, nil
+	} else {
+		return &[]*repository.BookmarkCommentRow{}, nil
+	}
 }
 
 func (b *BookmarkService) Delete(id int) error {

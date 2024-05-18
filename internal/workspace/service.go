@@ -65,6 +65,7 @@ func (w *WorkspaceService) Delete(id int) error {
 func (w *WorkspaceService) Join(code string, param repository.JoinWorkspaceParams) error {
 	inviteCode, err := w.InviteCodeService.FindByCode(code)
 	if err != nil {
+		log.Println(err)
 		return err
 	}
 
@@ -102,6 +103,18 @@ func (w *WorkspaceService) FindCategoryBookmark(param repository.FindWorkspaceCa
 		return &[]repository.Bookmark{}, nil
 	}
 	return &bookmarks, nil
+}
+
+func (w *WorkspaceService) SearchBookmark(param repository.SearchWorkspaceBookmarkParams) (*[]repository.Bookmark, error) {
+	bookmarks, err := w.Repository.SearchWorkspaceBookmark(context.Background(), param)
+	if err != nil {
+		return nil, customerror.InternalServerError(err)
+	}
+	if bookmarks != nil {
+		return &bookmarks, nil
+	} else {
+		return &[]repository.Bookmark{}, nil
+	}
 }
 
 func (w *WorkspaceService) RegisterCategory(param repository.RegisterCategoryToWorkspaceParams) error {

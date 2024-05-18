@@ -73,12 +73,12 @@ func (_m *IRefreshTokenService) FindOneByUserId(_a0 int) (*repository.RefreshTok
 	return r0, r1
 }
 
-// RefreshAccesstoken provides a mock function with given fields: _a0
-func (_m *IRefreshTokenService) RefreshAccesstoken(_a0 string) (*responses.RefreshAccessTokenResponse, error) {
+// RefreshTokens provides a mock function with given fields: _a0
+func (_m *IRefreshTokenService) RefreshTokens(_a0 string) (*responses.RefreshAccessTokenResponse, error) {
 	ret := _m.Called(_a0)
 
 	if len(ret) == 0 {
-		panic("no return value specified for RefreshAccesstoken")
+		panic("no return value specified for RefreshTokens")
 	}
 
 	var r0 *responses.RefreshAccessTokenResponse

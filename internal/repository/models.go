@@ -16,17 +16,19 @@ type Bookmark struct {
 	Summary     *string            `db:"summary" json:"summary"`
 	CreatedAt   pgtype.Timestamptz `db:"created_at" json:"created_at"`
 	UpdatedAt   pgtype.Timestamptz `db:"updated_at" json:"updated_at"`
+	UserID      *int64             `db:"user_id" json:"user_id"`
 }
 
 type BookmarkComment struct {
-	ID          int64              `db:"id" json:"id"`
-	Link        *string            `db:"link" json:"link"`
-	CategoryID  *int64             `db:"category_id" json:"category_id"`
-	WorkspaceID *int64             `db:"workspace_id" json:"workspace_id"`
-	Summary     *string            `db:"summary" json:"summary"`
-	CreatedAt   pgtype.Timestamptz `db:"created_at" json:"created_at"`
-	UpdatedAt   pgtype.Timestamptz `db:"updated_at" json:"updated_at"`
-	Comments    []*Comment         `db:"comments" json:"comments"`
+	ID          int64                 `db:"id" json:"id"`
+	Link        *string               `db:"link" json:"link"`
+	CategoryID  *int64                `db:"category_id" json:"category_id"`
+	WorkspaceID *int64                `db:"workspace_id" json:"workspace_id"`
+	Summary     *string               `db:"summary" json:"summary"`
+	CreatedAt   pgtype.Timestamptz    `db:"created_at" json:"created_at"`
+	UpdatedAt   pgtype.Timestamptz    `db:"updated_at" json:"updated_at"`
+	UserID      *int64                `db:"user_id" json:"user_id"`
+	Comments    []*BookmarkCommentRow `db:"comments" json:"comments"`
 }
 
 type Category struct {

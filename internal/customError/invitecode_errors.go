@@ -29,7 +29,7 @@ func CodeCreationFail(err error) error {
 }
 
 func CodeNotFound(err error) error {
-	codeNotFound := CODE_CREATION_FAIL
+	codeNotFound := CODE_NOT_FOUND
 	codeNotFound.Data = err
 	return codeNotFound
 }

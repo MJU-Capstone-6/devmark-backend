@@ -138,7 +138,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/repository.Bookmark"
+                            "$ref": "#/definitions/repository.FindBookmarkRow"
                         }
                     },
                     "401": {
@@ -1282,6 +1282,9 @@ const docTemplate = `{
                 "updated_at": {
                     "$ref": "#/definitions/pgtype.Timestamptz"
                 },
+                "user_id": {
+                    "type": "integer"
+                },
                 "workspace_id": {
                     "type": "integer"
                 }
@@ -1339,8 +1342,25 @@ const docTemplate = `{
                 "summary": {
                     "type": "string"
                 },
+                "user_id": {
+                    "type": "integer"
+                },
                 "workspace_id": {
                     "type": "integer"
+                }
+            }
+        },
+        "repository.FindBookmarkRow": {
+            "type": "object",
+            "properties": {
+                "bookmark": {
+                    "$ref": "#/definitions/repository.Bookmark"
+                },
+                "category": {
+                    "$ref": "#/definitions/repository.Category"
+                },
+                "workspace": {
+                    "$ref": "#/definitions/repository.Workspace"
                 }
             }
         },

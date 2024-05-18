@@ -2,6 +2,7 @@ package workspace
 
 import (
 	"net/http"
+	"strings"
 
 	"github.com/MJU-Capstone-6/devmark-backend/internal/constants"
 	customerror "github.com/MJU-Capstone-6/devmark-backend/internal/customError"
@@ -161,20 +162,20 @@ func (w *WorkspaceController) JoinWorkspaceController(ctx echo.Context) error {
 		return customerror.CodeNotProvide(err)
 	}
 
-	if user, ok := ctx.Get(constants.USER_CONTEXT_KEY).(*repository.User); ok {
+	if user, ok := ctx.Get(constants.USER_CONTEXT_KEY).(*repository.FindUserByIdRow); ok {
 		joinWorkspaceParam := repository.JoinWorkspaceParams{
 			UserID: user.ID,
 		}
 		err = w.WorkspaceService.Join(param.Code, joinWorkspaceParam)
 		if err != nil {
 			if _, ok := err.(*customerror.CustomError); ok {
-				return responses.NotAcceptable(ctx, err)
+				return err
 			} else {
-				return responses.InternalServer(ctx, customerror.InternalServerError(err))
+				return customerror.InternalServerError(err)
 			}
 		}
 	}
-	return nil
+	return customerror.InternalServerError(err)
 }
 
 // FindWorkspaceCategoriesController godoc
@@ -274,6 +275,44 @@ func (w *WorkspaceController) RegisterCategoryToWorkspaceController(ctx echo.Con
 	}
 
 	return ctx.JSON(http.StatusOK, responses.OkResponse{Ok: true})
+}
+
+func (w *WorkspaceController) SearchBookmarkController(ctx echo.Context) error {
+	user_ids := &[]int64{}
+	category_ids := &[]int64{}
+	workspace_id, err := utils.ParseURLParam(ctx, "id")
+	if err != nil {
+		return err
+	}
+
+	usersParam := ctx.QueryParam("users")
+	if usersParam != "" {
+		user_ids, err = utils.SliceValueIntoNum(strings.Split(usersParam, ","))
+		if err != nil {
+			return customerror.InvalidParamError(err)
+		}
+	}
+
+	categoryParam := ctx.QueryParam("category")
+	if categoryParam != "" {
+		category_ids, err = utils.SliceValueIntoNum(strings.Split(categoryParam, ","))
+		if err != nil {
+			return customerror.InvalidParamError(err)
+		}
+	}
+
+	parsedWorkspaceID := int64(*workspace_id)
+	param := repository.SearchWorkspaceBookmarkParams{
+		WorkspaceID: &parsedWorkspaceID,
+		UserIds:     *user_ids,
+		CategoryIds: *category_ids,
+	}
+
+	bookmarks, err := w.WorkspaceService.SearchBookmark(param)
+	if err != nil {
+		return err
+	}
+	return ctx.JSON(http.StatusOK, *bookmarks)
 }
 
 func InitWorkspaceController() *WorkspaceController {

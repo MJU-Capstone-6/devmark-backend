@@ -34,7 +34,7 @@ sql:
           - column: "bookmark_comment.comments"
             nullable: true
             go_type:
-              type: "Comment"
+              type: "BookmarkCommentRow"
               slice: true
               pointer: true
           - column: "workspace_category_list.categories"

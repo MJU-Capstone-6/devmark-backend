@@ -24,3 +24,15 @@ func GetAuthUser(ctx echo.Context) (*repository.FindUserByIdRow, error) {
 	}
 	return nil, customerror.UserNotFound(errors.New(""))
 }
+
+func SliceValueIntoNum(arr []string) (*[]int64, error) {
+	intSlice := make([]int64, len(arr))
+	for index, value := range arr {
+		num, err := strconv.Atoi(value)
+		if err != nil {
+			return nil, err
+		}
+		intSlice[index] = int64(num)
+	}
+	return &intSlice, nil
+}
