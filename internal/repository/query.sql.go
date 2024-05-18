@@ -249,7 +249,7 @@ func (q *Queries) DeleteWorkspace(ctx context.Context, id int64) error {
 const findBookmark = `-- name: FindBookmark :one
 SELECT bookmark.id, bookmark.link, bookmark.category_id, bookmark.workspace_id, bookmark.summary, bookmark.created_at, bookmark.updated_at, bookmark.user_id, workspace.id, workspace.name, workspace.description, workspace.created_at, workspace.updated_at, workspace.bookmark_count, workspace.user_count, category.id, category.name, category.created_at, category.updated_at FROM bookmark
 JOIN workspace on workspace.id = bookmark.workspace_id
-JOIN category on category.id = bookmark.workspace_id
+JOIN category on category.id = bookmark.category_id
 WHERE bookmark.id = $1
 `
 

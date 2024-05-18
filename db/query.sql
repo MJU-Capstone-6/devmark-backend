@@ -98,7 +98,7 @@ RETURNING *;
 -- name: FindBookmark :one
 SELECT sqlc.embed(bookmark), sqlc.embed(workspace), sqlc.embed(category) FROM bookmark
 JOIN workspace on workspace.id = bookmark.workspace_id
-JOIN category on category.id = bookmark.workspace_id
+JOIN category on category.id = bookmark.category_id
 WHERE bookmark.id = $1;
 
 -- name: CreateBookmark :one
