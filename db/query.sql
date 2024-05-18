@@ -160,3 +160,6 @@ SELECT * FROM workspace WHERE id = $1;
 
 -- name: SearchWorkspaceBookmark :many
 SELECT * FROM bookmark WHERE workspace_id = $1 AND user_id = ANY(@user_ids::bigint[]) OR category_id = ANY(@category_ids::bigint[]);
+
+-- name: FindDuplicateBookmark :one
+SELECT id FROM bookmark WHERE workspace_id = $1 AND "link" = $2;

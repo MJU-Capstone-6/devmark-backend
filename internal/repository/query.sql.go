@@ -33,7 +33,7 @@ func (q *Queries) CheckWorkspaceExists(ctx context.Context, id int64) (Workspace
 const createBookmark = `-- name: CreateBookmark :one
 INSERT INTO bookmark (link, workspace_id, category_id, summary, user_id)
 VALUES ($1, $2, $3, $4, $5)
-RETURNING id, link, category_id, workspace_id, summary, created_at, updated_at, user_id
+RETURNING id, link, category_id, workspace_id, summary, created_at, updated_at, user_id, title
 `
 
 type CreateBookmarkParams struct {
@@ -62,6 +62,7 @@ func (q *Queries) CreateBookmark(ctx context.Context, arg CreateBookmarkParams) 
 		&i.CreatedAt,
 		&i.UpdatedAt,
 		&i.UserID,
+		&i.Title,
 	)
 	return i, err
 }
@@ -247,7 +248,7 @@ func (q *Queries) DeleteWorkspace(ctx context.Context, id int64) error {
 }
 
 const findBookmark = `-- name: FindBookmark :one
-SELECT bookmark.id, bookmark.link, bookmark.category_id, bookmark.workspace_id, bookmark.summary, bookmark.created_at, bookmark.updated_at, bookmark.user_id, workspace.id, workspace.name, workspace.description, workspace.created_at, workspace.updated_at, workspace.bookmark_count, workspace.user_count, category.id, category.name, category.created_at, category.updated_at FROM bookmark
+SELECT bookmark.id, bookmark.link, bookmark.category_id, bookmark.workspace_id, bookmark.summary, bookmark.created_at, bookmark.updated_at, bookmark.user_id, bookmark.title, workspace.id, workspace.name, workspace.description, workspace.created_at, workspace.updated_at, workspace.bookmark_count, workspace.user_count, category.id, category.name, category.created_at, category.updated_at FROM bookmark
 JOIN workspace on workspace.id = bookmark.workspace_id
 JOIN category on category.id = bookmark.category_id
 WHERE bookmark.id = $1
@@ -271,6 +272,7 @@ func (q *Queries) FindBookmark(ctx context.Context, id int64) (FindBookmarkRow, 
 		&i.Bookmark.CreatedAt,
 		&i.Bookmark.UpdatedAt,
 		&i.Bookmark.UserID,
+		&i.Bookmark.Title,
 		&i.Workspace.ID,
 		&i.Workspace.Name,
 		&i.Workspace.Description,
@@ -329,6 +331,22 @@ func (q *Queries) FindComment(ctx context.Context, id int64) (Comment, error) {
 		&i.UpdatedAt,
 	)
 	return i, err
+}
+
+const findDuplicateBookmark = `-- name: FindDuplicateBookmark :one
+SELECT id FROM bookmark WHERE workspace_id = $1 AND "link" = $2
+`
+
+type FindDuplicateBookmarkParams struct {
+	WorkspaceID *int64  `db:"workspace_id" json:"workspace_id"`
+	Link        *string `db:"link" json:"link"`
+}
+
+func (q *Queries) FindDuplicateBookmark(ctx context.Context, arg FindDuplicateBookmarkParams) (int64, error) {
+	row := q.db.QueryRow(ctx, findDuplicateBookmark, arg.WorkspaceID, arg.Link)
+	var id int64
+	err := row.Scan(&id)
+	return id, err
 }
 
 const findInviteCodeByCode = `-- name: FindInviteCodeByCode :one
@@ -467,7 +485,7 @@ func (q *Queries) FindWorkspaceCategory(ctx context.Context, id int64) ([]*Categ
 }
 
 const findWorkspaceCategoryBookmark = `-- name: FindWorkspaceCategoryBookmark :many
-SELECT id, link, category_id, workspace_id, summary, created_at, updated_at, user_id FROM bookmark WHERE workspace_id = $1 AND category_id = $2
+SELECT id, link, category_id, workspace_id, summary, created_at, updated_at, user_id, title FROM bookmark WHERE workspace_id = $1 AND category_id = $2
 `
 
 type FindWorkspaceCategoryBookmarkParams struct {
@@ -493,6 +511,7 @@ func (q *Queries) FindWorkspaceCategoryBookmark(ctx context.Context, arg FindWor
 			&i.CreatedAt,
 			&i.UpdatedAt,
 			&i.UserID,
+			&i.Title,
 		); err != nil {
 			return nil, err
 		}
@@ -552,7 +571,7 @@ func (q *Queries) RegisterCategoryToWorkspace(ctx context.Context, arg RegisterC
 }
 
 const searchWorkspaceBookmark = `-- name: SearchWorkspaceBookmark :many
-SELECT id, link, category_id, workspace_id, summary, created_at, updated_at, user_id FROM bookmark WHERE workspace_id = $1 AND user_id = ANY($2::bigint[]) OR category_id = ANY($3::bigint[])
+SELECT id, link, category_id, workspace_id, summary, created_at, updated_at, user_id, title FROM bookmark WHERE workspace_id = $1 AND user_id = ANY($2::bigint[]) OR category_id = ANY($3::bigint[])
 `
 
 type SearchWorkspaceBookmarkParams struct {
@@ -579,6 +598,7 @@ func (q *Queries) SearchWorkspaceBookmark(ctx context.Context, arg SearchWorkspa
 			&i.CreatedAt,
 			&i.UpdatedAt,
 			&i.UserID,
+			&i.Title,
 		); err != nil {
 			return nil, err
 		}
@@ -599,7 +619,7 @@ SET
   summary = $5,
   updated_at = CURRENT_TIMESTAMP
 WHERE id = $1
-RETURNING id, link, category_id, workspace_id, summary, created_at, updated_at, user_id
+RETURNING id, link, category_id, workspace_id, summary, created_at, updated_at, user_id, title
 `
 
 type UpdateBookmarkParams struct {
@@ -628,6 +648,7 @@ func (q *Queries) UpdateBookmark(ctx context.Context, arg UpdateBookmarkParams) 
 		&i.CreatedAt,
 		&i.UpdatedAt,
 		&i.UserID,
+		&i.Title,
 	)
 	return i, err
 }

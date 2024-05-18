@@ -15,13 +15,21 @@ type BookmarkService struct {
 }
 
 func (b *BookmarkService) Create(param repository.CreateBookmarkParams) (*repository.Bookmark, error) {
-	_, err := b.WorkspaceService.FindById(int(*param.WorkspaceID))
+	duplicateParam := repository.FindDuplicateBookmarkParams{
+		WorkspaceID: param.WorkspaceID,
+		Link:        param.Link,
+	}
+	_, err := b.Repository.FindDuplicateBookmark(context.Background(), duplicateParam)
+	if err == nil {
+		return nil, customerror.BookmarkDuplicated(err)
+	}
+	_, err = b.WorkspaceService.FindById(int(*param.WorkspaceID))
 	if err != nil {
-		return nil, customerror.WorkspaceNotFoundErr(err)
+		return nil, err
 	}
 	_, err = b.CategoryService.FindById(int(*param.CategoryID))
 	if err != nil {
-		return nil, customerror.CategoryNotFound(err)
+		return nil, err
 	}
 
 	bookmark, err := b.Repository.CreateBookmark(context.Background(), param)

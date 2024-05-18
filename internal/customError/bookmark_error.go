@@ -10,6 +10,8 @@ var BOOKMARK_DELETE_FAIL = NewError(http.StatusUnprocessableEntity, "Bookmark De
 
 var BOOKMARK_NOT_FOUND = NewError(http.StatusNotFound, "Bookmark Not Found.", "904")
 
+var BOOKMARK_DUPLICATED = NewError(http.StatusUnprocessableEntity, "Bookmark Duplicated on workspace.", "905")
+
 func BookmarkCreationFail(err error) error {
 	bookmarkCreationFail := BOOKMARK_CREATION_FAIL
 	bookmarkCreationFail.Data = err
@@ -32,4 +34,10 @@ func BookmarkNotFound(err error) error {
 	bookmarkNotFound := BOOKMARK_NOT_FOUND
 	bookmarkNotFound.Data = err
 	return bookmarkNotFound
+}
+
+func BookmarkDuplicated(err error) error {
+	bookmarkDuplicated := BOOKMARK_DUPLICATED
+	bookmarkDuplicated.Data = err
+	return bookmarkDuplicated
 }

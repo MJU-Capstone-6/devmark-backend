@@ -277,6 +277,23 @@ func (w *WorkspaceController) RegisterCategoryToWorkspaceController(ctx echo.Con
 	return ctx.JSON(http.StatusOK, responses.OkResponse{Ok: true})
 }
 
+// SearchBookmarkController godoc
+//
+//	@summary	워크스페이스 북마크 검색
+//	@schemes
+//	@description	워크스페이스의 북마크를 검색합니다.
+//	@tags			workspace
+//	@accept			json
+//	@produce		json
+//	@param			workspace_id	path		int		true	"Workspace id"
+//	@param			category_id		path		int		true	"Category id"
+//	@param			users			query		string	false	"users id"
+//	@param			categories		query		string	false	"categories id"
+//	@success		200				{object}	[]repository.Bookmark
+//	@failure		400				{object}	customerror.CustomError
+//	@failure		401				{object}	customerror.CustomError
+//	@failure		500				{object}	customerror.CustomError
+//	@router			/api/v1/workspace/:id/bookmark [GET]
 func (w *WorkspaceController) SearchBookmarkController(ctx echo.Context) error {
 	user_ids := &[]int64{}
 	category_ids := &[]int64{}
