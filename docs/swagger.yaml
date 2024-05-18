@@ -81,19 +81,6 @@ definitions:
       user_id:
         type: integer
     type: object
-  repository.CreateBookmarkParams:
-    properties:
-      category_id:
-        type: integer
-      link:
-        type: string
-      summary:
-        type: string
-      user_id:
-        type: integer
-      workspace_id:
-        type: integer
-    type: object
   repository.FindBookmarkRow:
     properties:
       bookmark:
@@ -199,6 +186,19 @@ definitions:
       user_count:
         type: integer
     type: object
+  request.CreateBookmarkParam:
+    properties:
+      category_id:
+        type: integer
+      link:
+        type: string
+      summary:
+        type: string
+      title:
+        type: string
+      workspace_id:
+        type: integer
+    type: object
   request.CreateCommentParam:
     properties:
       bookmark_id:
@@ -299,7 +299,7 @@ paths:
         name: body
         required: true
         schema:
-          $ref: '#/definitions/repository.CreateBookmarkParams'
+          $ref: '#/definitions/request.CreateBookmarkParam'
       produces:
       - application/json
       responses:

@@ -80,7 +80,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/repository.CreateBookmarkParams"
+                            "$ref": "#/definitions/request.CreateBookmarkParam"
                         }
                     }
                 ],
@@ -1405,26 +1405,6 @@ const docTemplate = `{
                 }
             }
         },
-        "repository.CreateBookmarkParams": {
-            "type": "object",
-            "properties": {
-                "category_id": {
-                    "type": "integer"
-                },
-                "link": {
-                    "type": "string"
-                },
-                "summary": {
-                    "type": "string"
-                },
-                "user_id": {
-                    "type": "integer"
-                },
-                "workspace_id": {
-                    "type": "integer"
-                }
-            }
-        },
         "repository.FindBookmarkRow": {
             "type": "object",
             "properties": {
@@ -1583,6 +1563,26 @@ const docTemplate = `{
                     "$ref": "#/definitions/pgtype.Timestamptz"
                 },
                 "user_count": {
+                    "type": "integer"
+                }
+            }
+        },
+        "request.CreateBookmarkParam": {
+            "type": "object",
+            "properties": {
+                "category_id": {
+                    "type": "integer"
+                },
+                "link": {
+                    "type": "string"
+                },
+                "summary": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "workspace_id": {
                     "type": "integer"
                 }
             }

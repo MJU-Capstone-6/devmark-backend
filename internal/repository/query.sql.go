@@ -31,8 +31,8 @@ func (q *Queries) CheckWorkspaceExists(ctx context.Context, id int64) (Workspace
 }
 
 const createBookmark = `-- name: CreateBookmark :one
-INSERT INTO bookmark (link, workspace_id, category_id, summary, user_id)
-VALUES ($1, $2, $3, $4, $5)
+INSERT INTO bookmark (link, workspace_id, category_id, summary, user_id, title)
+VALUES ($1, $2, $3, $4, $5, $6)
 RETURNING id, link, category_id, workspace_id, summary, created_at, updated_at, user_id, title
 `
 
@@ -42,6 +42,7 @@ type CreateBookmarkParams struct {
 	CategoryID  *int64  `db:"category_id" json:"category_id"`
 	Summary     *string `db:"summary" json:"summary"`
 	UserID      *int64  `db:"user_id" json:"user_id"`
+	Title       *string `db:"title" json:"title"`
 }
 
 func (q *Queries) CreateBookmark(ctx context.Context, arg CreateBookmarkParams) (Bookmark, error) {
@@ -51,6 +52,7 @@ func (q *Queries) CreateBookmark(ctx context.Context, arg CreateBookmarkParams) 
 		arg.CategoryID,
 		arg.Summary,
 		arg.UserID,
+		arg.Title,
 	)
 	var i Bookmark
 	err := row.Scan(

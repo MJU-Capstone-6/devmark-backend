@@ -24,7 +24,7 @@ type BookmarkController struct {
 //	@tags			bookmark
 //	@accept			json
 //	@produce		json
-//	@param			body	body		repository.CreateBookmarkParams	true	"Bookmark param"
+//	@param			body	body		request.CreateBookmarkParam	true	"Bookmark param"
 //	@success		200		{object}	repository.Bookmark
 //	@failure		401		{object}	customerror.CustomError
 //	@failure		404		{object}	customerror.CustomError
@@ -46,6 +46,7 @@ func (b *BookmarkController) CreateBookmarkController(ctx echo.Context) error {
 		WorkspaceID: &body.WorkspaceID,
 		CategoryID:  &body.CategoryID,
 		UserID:      &user.ID,
+		Title:       &body.Title,
 	}
 
 	bookmark, err := b.BookmarkService.Create(param)

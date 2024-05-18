@@ -22,4 +22,5 @@ type CreateBookmarkParam struct {
 	WorkspaceID int64  `db:"workspace_id" json:"workspace_id"`
 	CategoryID  int64  `db:"category_id" json:"category_id"`
 	Summary     string `db:"summary" json:"summary"`
+	Title       string `db:"title" json:"title"`
 }
