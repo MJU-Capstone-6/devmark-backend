@@ -290,9 +290,9 @@ const findBookmarkComment = `-- name: FindBookmarkComment :one
 SELECT comments FROM bookmark_comment WHERE id = $1
 `
 
-func (q *Queries) FindBookmarkComment(ctx context.Context, id int64) ([]*Comment, error) {
+func (q *Queries) FindBookmarkComment(ctx context.Context, id int64) ([]*BookmarkCommentRow, error) {
 	row := q.db.QueryRow(ctx, findBookmarkComment, id)
-	var comments []*Comment
+	var comments []*BookmarkCommentRow
 	err := row.Scan(&comments)
 	return comments, err
 }

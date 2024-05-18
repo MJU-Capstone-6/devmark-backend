@@ -64,7 +64,7 @@ func (b *BookmarkController) CreateBookmarkController(ctx echo.Context) error {
 //	@accept			json
 //	@produce		json
 //	@param			id	path		int	true	"Bookmark id"
-//	@success		200	{object}	repository.Bookmark
+//	@success		200	{object}	repository.FindBookmarkRow
 //	@failure		401	{object}	customerror.CustomError
 //	@failure		404	{object}	customerror.CustomError
 //	@failure		500	{object}	customerror.CustomError

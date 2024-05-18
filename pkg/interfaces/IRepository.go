@@ -34,7 +34,7 @@ type IRepository interface {
 	CreateBookmark(context.Context, repository.CreateBookmarkParams) (repository.Bookmark, error)
 	DeleteBookmark(context.Context, int64) error
 	UpdateBookmark(context.Context, repository.UpdateBookmarkParams) (repository.Bookmark, error)
-	FindBookmarkComment(context.Context, int64) ([]*repository.Comment, error)
+	FindBookmarkComment(context.Context, int64) ([]*repository.BookmarkCommentRow, error)
 	FindComment(context.Context, int64) (repository.Comment, error)
 	CreateComment(context.Context, repository.CreateCommentParams) (repository.Comment, error)
 	DeleteComment(context.Context, int64) error

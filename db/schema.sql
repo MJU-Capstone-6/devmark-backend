@@ -142,9 +142,15 @@ LEFT JOIN "user" u ON wu.user_id = u.id
 GROUP BY u.id;
 
 CREATE VIEW bookmark_comment AS
-SELECT b.*, JSON_AGG(DISTINCT c.*) AS comments, 
+SELECT b.*, JSON_AGG(DISTINCT JSON_BUILD_OBJECT(
+            'comment_id', c.id,
+            'comment_text', c.comment_context,
+            'user_id', u.id,
+            'user_name', u.name
+        )) AS comments, 
 FROM bookmark b
 LEFT JOIN "comment" c ON c.bookmark_id = bookmark.id
+LEFT JOIN "user" u ON c.user_id = u.id
 GROUP BY b.id;
 
 CREATE VIEW workspace_category_list AS

@@ -48,6 +48,8 @@ definitions:
         type: string
       updated_at:
         $ref: '#/definitions/pgtype.Timestamptz'
+      user_id:
+        type: integer
       workspace_id:
         type: integer
     type: object
@@ -85,8 +87,19 @@ definitions:
         type: string
       summary:
         type: string
+      user_id:
+        type: integer
       workspace_id:
         type: integer
+    type: object
+  repository.FindBookmarkRow:
+    properties:
+      bookmark:
+        $ref: '#/definitions/repository.Bookmark'
+      category:
+        $ref: '#/definitions/repository.Category'
+      workspace:
+        $ref: '#/definitions/repository.Workspace'
     type: object
   repository.FindUserByIdRow:
     properties:
@@ -356,7 +369,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/repository.Bookmark'
+            $ref: '#/definitions/repository.FindBookmarkRow'
         "401":
           description: Unauthorized
           schema:

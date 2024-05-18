@@ -340,23 +340,23 @@ func (_m *IRepository) FindBookmark(_a0 context.Context, _a1 int64) (repository.
 }
 
 // FindBookmarkComment provides a mock function with given fields: _a0, _a1
-func (_m *IRepository) FindBookmarkComment(_a0 context.Context, _a1 int64) ([]*repository.Comment, error) {
+func (_m *IRepository) FindBookmarkComment(_a0 context.Context, _a1 int64) ([]*repository.BookmarkCommentRow, error) {
 	ret := _m.Called(_a0, _a1)
 
 	if len(ret) == 0 {
 		panic("no return value specified for FindBookmarkComment")
 	}
 
-	var r0 []*repository.Comment
+	var r0 []*repository.BookmarkCommentRow
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, int64) ([]*repository.Comment, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, int64) ([]*repository.BookmarkCommentRow, error)); ok {
 		return rf(_a0, _a1)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, int64) []*repository.Comment); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, int64) []*repository.BookmarkCommentRow); ok {
 		r0 = rf(_a0, _a1)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]*repository.Comment)
+			r0 = ret.Get(0).([]*repository.BookmarkCommentRow)
 		}
 	}
 

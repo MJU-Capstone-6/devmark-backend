@@ -65,6 +65,7 @@ func (w *WorkspaceService) Delete(id int) error {
 func (w *WorkspaceService) Join(code string, param repository.JoinWorkspaceParams) error {
 	inviteCode, err := w.InviteCodeService.FindByCode(code)
 	if err != nil {
+		log.Println(err)
 		return err
 	}
 

@@ -162,20 +162,20 @@ func (w *WorkspaceController) JoinWorkspaceController(ctx echo.Context) error {
 		return customerror.CodeNotProvide(err)
 	}
 
-	if user, ok := ctx.Get(constants.USER_CONTEXT_KEY).(*repository.User); ok {
+	if user, ok := ctx.Get(constants.USER_CONTEXT_KEY).(*repository.FindUserByIdRow); ok {
 		joinWorkspaceParam := repository.JoinWorkspaceParams{
 			UserID: user.ID,
 		}
 		err = w.WorkspaceService.Join(param.Code, joinWorkspaceParam)
 		if err != nil {
 			if _, ok := err.(*customerror.CustomError); ok {
-				return responses.NotAcceptable(ctx, err)
+				return err
 			} else {
-				return responses.InternalServer(ctx, customerror.InternalServerError(err))
+				return customerror.InternalServerError(err)
 			}
 		}
 	}
-	return nil
+	return customerror.InternalServerError(err)
 }
 
 // FindWorkspaceCategoriesController godoc
