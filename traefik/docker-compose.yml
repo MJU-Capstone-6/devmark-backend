@@ -62,8 +62,7 @@ services:
 
   devmark-ml-server:
     image: devmark-ml-server_app
-    volumes:
-      - .:/app
+    working_dir: /app
     labels:
       - traefik.enable=true
       - traefik.http.routers.hey-ml-server.rule=Host(`ml.${DOMAINNAME}`)
