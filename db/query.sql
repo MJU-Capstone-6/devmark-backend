@@ -166,3 +166,13 @@ SELECT id FROM bookmark WHERE workspace_id = $1 AND "link" = $2;
 
 -- name: FindWorkspaceJoinedUser :one
 SELECT * FROM workspace_user WHERE workspace_id = $1 AND user_id = $2;
+
+-- name: UpdateInviteCode :one
+UPDATE "invite_code"
+SET
+  code = $1,
+  updated_at = CURRENT_TIMESTAMP
+WHERE id = $2
+RETURNING *;
+
+

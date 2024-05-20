@@ -725,6 +725,34 @@ func (q *Queries) UpdateComment(ctx context.Context, arg UpdateCommentParams) (C
 	return i, err
 }
 
+const updateInviteCode = `-- name: UpdateInviteCode :one
+UPDATE "invite_code"
+SET
+  code = $1,
+  updated_at = CURRENT_TIMESTAMP
+WHERE id = $2
+RETURNING id, workspace_id, code, expired_at, created_at, updated_at
+`
+
+type UpdateInviteCodeParams struct {
+	Code *string `db:"code" json:"code"`
+	ID   int64   `db:"id" json:"id"`
+}
+
+func (q *Queries) UpdateInviteCode(ctx context.Context, arg UpdateInviteCodeParams) (InviteCode, error) {
+	row := q.db.QueryRow(ctx, updateInviteCode, arg.Code, arg.ID)
+	var i InviteCode
+	err := row.Scan(
+		&i.ID,
+		&i.WorkspaceID,
+		&i.Code,
+		&i.ExpiredAt,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
 const updateRefreshToken = `-- name: UpdateRefreshToken :one
 UPDATE refresh_token
 SET
