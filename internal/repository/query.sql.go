@@ -525,6 +525,22 @@ func (q *Queries) FindWorkspaceCategoryBookmark(ctx context.Context, arg FindWor
 	return items, nil
 }
 
+const findWorkspaceJoinedUser = `-- name: FindWorkspaceJoinedUser :one
+SELECT workspace_id, user_id FROM workspace_user WHERE workspace_id = $1 AND user_id = $2
+`
+
+type FindWorkspaceJoinedUserParams struct {
+	WorkspaceID int64 `db:"workspace_id" json:"workspace_id"`
+	UserID      int64 `db:"user_id" json:"user_id"`
+}
+
+func (q *Queries) FindWorkspaceJoinedUser(ctx context.Context, arg FindWorkspaceJoinedUserParams) (WorkspaceUser, error) {
+	row := q.db.QueryRow(ctx, findWorkspaceJoinedUser, arg.WorkspaceID, arg.UserID)
+	var i WorkspaceUser
+	err := row.Scan(&i.WorkspaceID, &i.UserID)
+	return i, err
+}
+
 const joinWorkspace = `-- name: JoinWorkspace :exec
 INSERT INTO workspace_user (workspace_id, user_id)
 VALUES ($1, $2)
@@ -703,6 +719,34 @@ func (q *Queries) UpdateComment(ctx context.Context, arg UpdateCommentParams) (C
 		&i.BookmarkID,
 		&i.UserID,
 		&i.CommentContext,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
+const updateInviteCode = `-- name: UpdateInviteCode :one
+UPDATE "invite_code"
+SET
+  code = $1,
+  updated_at = CURRENT_TIMESTAMP
+WHERE id = $2
+RETURNING id, workspace_id, code, expired_at, created_at, updated_at
+`
+
+type UpdateInviteCodeParams struct {
+	Code *string `db:"code" json:"code"`
+	ID   int64   `db:"id" json:"id"`
+}
+
+func (q *Queries) UpdateInviteCode(ctx context.Context, arg UpdateInviteCodeParams) (InviteCode, error) {
+	row := q.db.QueryRow(ctx, updateInviteCode, arg.Code, arg.ID)
+	var i InviteCode
+	err := row.Scan(
+		&i.ID,
+		&i.WorkspaceID,
+		&i.Code,
+		&i.ExpiredAt,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)

@@ -32,6 +32,17 @@ func (i *InviteCodeService) CreateCode(length int) *string {
 
 func (i *InviteCodeService) CreateInviteCode(param request.CreateInviteCodeParam) (*repository.InviteCode, error) {
 	code := i.CreateCode(constants.CODE_LENGTH)
+	if inviteCode, err := i.FindByWorkspaceID(param.WorkspaceID); err == nil {
+		updateInviteCodeParam := repository.UpdateInviteCodeParams{
+			Code: code,
+			ID:   inviteCode.ID,
+		}
+		inviteCode, err := i.Repository.UpdateInviteCode(context.Background(), updateInviteCodeParam)
+		if err != nil {
+			return nil, customerror.CodeUpdateFail(err)
+		}
+		return &inviteCode, nil
+	}
 	_, err := i.WorkspaceService.FindById(param.WorkspaceID)
 	if err != nil {
 		return nil, customerror.WorkspaceNotFoundErr(err)

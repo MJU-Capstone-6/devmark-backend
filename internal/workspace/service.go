@@ -2,6 +2,7 @@ package workspace
 
 import (
 	"context"
+	"errors"
 	"log"
 
 	customerror "github.com/MJU-Capstone-6/devmark-backend/internal/customError"
@@ -81,6 +82,15 @@ func (w *WorkspaceService) Join(code string, param repository.JoinWorkspaceParam
 	}
 
 	param.WorkspaceID = int64(*inviteCode.WorkspaceID)
+	findJoinedUserParam := repository.FindWorkspaceJoinedUserParams{
+		WorkspaceID: param.WorkspaceID,
+		UserID:      param.UserID,
+	}
+	_, err = w.Repository.FindWorkspaceJoinedUser(context.Background(), findJoinedUserParam)
+
+	if err == nil {
+		return customerror.WorkspaceAlreadyJoined(errors.New(""))
+	}
 
 	err = w.Repository.JoinWorkspace(context.Background(), param)
 	if err != nil {

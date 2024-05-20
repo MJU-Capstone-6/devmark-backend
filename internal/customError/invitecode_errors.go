@@ -10,6 +10,8 @@ var CODE_CREATION_FAIL = NewError(http.StatusUnprocessableEntity, "Code creation
 
 var CODE_NOT_FOUND = NewError(http.StatusNotFound, "Code not found.", "504")
 
+var CODE_UPDATE_FAIL = NewError(http.StatusUnprocessableEntity, "Code update fail. please try again", "505")
+
 func CodeVerifyFailedErr(err error) error {
 	codeVerifyFailErr := CODE_VERIFY_FAILED
 	codeVerifyFailErr.Data = err
@@ -26,6 +28,12 @@ func CodeCreationFail(err error) error {
 	codeCreationFail := CODE_CREATION_FAIL
 	codeCreationFail.Data = err
 	return codeCreationFail
+}
+
+func CodeUpdateFail(err error) error {
+	codeUpdateFail := CODE_UPDATE_FAIL
+	codeUpdateFail.Data = err
+	return codeUpdateFail
 }
 
 func CodeNotFound(err error) error {
