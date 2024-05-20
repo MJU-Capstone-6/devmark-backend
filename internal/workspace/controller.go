@@ -174,6 +174,7 @@ func (w *WorkspaceController) JoinWorkspaceController(ctx echo.Context) error {
 				return customerror.InternalServerError(err)
 			}
 		}
+		return ctx.JSON(http.StatusOK, responses.OkResponse{Ok: true})
 	}
 	return customerror.InternalServerError(err)
 }
