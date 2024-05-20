@@ -61,7 +61,7 @@ services:
       - traefik.http.routers.hey-backend.tls.certresolver=letsencryptresolver
 
   devmark-ml-server:
-    image: devmark-ml-server-app
+    image: devmark-ml-server_app
     restart: always
     labels:
       - traefik.enable=true
