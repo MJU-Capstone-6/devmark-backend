@@ -709,6 +709,34 @@ func (_m *IRepository) FindWorkspaceCategoryBookmark(_a0 context.Context, _a1 re
 	return r0, r1
 }
 
+// FindWorkspaceJoinedUser provides a mock function with given fields: _a0, _a1
+func (_m *IRepository) FindWorkspaceJoinedUser(_a0 context.Context, _a1 repository.FindWorkspaceJoinedUserParams) (repository.WorkspaceUser, error) {
+	ret := _m.Called(_a0, _a1)
+
+	if len(ret) == 0 {
+		panic("no return value specified for FindWorkspaceJoinedUser")
+	}
+
+	var r0 repository.WorkspaceUser
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, repository.FindWorkspaceJoinedUserParams) (repository.WorkspaceUser, error)); ok {
+		return rf(_a0, _a1)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, repository.FindWorkspaceJoinedUserParams) repository.WorkspaceUser); ok {
+		r0 = rf(_a0, _a1)
+	} else {
+		r0 = ret.Get(0).(repository.WorkspaceUser)
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, repository.FindWorkspaceJoinedUserParams) error); ok {
+		r1 = rf(_a0, _a1)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // JoinWorkspace provides a mock function with given fields: _a0, _a1
 func (_m *IRepository) JoinWorkspace(_a0 context.Context, _a1 repository.JoinWorkspaceParams) error {
 	ret := _m.Called(_a0, _a1)

@@ -525,6 +525,22 @@ func (q *Queries) FindWorkspaceCategoryBookmark(ctx context.Context, arg FindWor
 	return items, nil
 }
 
+const findWorkspaceJoinedUser = `-- name: FindWorkspaceJoinedUser :one
+SELECT workspace_id, user_id FROM workspace_user WHERE workspace_id = $1 AND user_id = $2
+`
+
+type FindWorkspaceJoinedUserParams struct {
+	WorkspaceID int64 `db:"workspace_id" json:"workspace_id"`
+	UserID      int64 `db:"user_id" json:"user_id"`
+}
+
+func (q *Queries) FindWorkspaceJoinedUser(ctx context.Context, arg FindWorkspaceJoinedUserParams) (WorkspaceUser, error) {
+	row := q.db.QueryRow(ctx, findWorkspaceJoinedUser, arg.WorkspaceID, arg.UserID)
+	var i WorkspaceUser
+	err := row.Scan(&i.WorkspaceID, &i.UserID)
+	return i, err
+}
+
 const joinWorkspace = `-- name: JoinWorkspace :exec
 INSERT INTO workspace_user (workspace_id, user_id)
 VALUES ($1, $2)

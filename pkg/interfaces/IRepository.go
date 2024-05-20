@@ -44,4 +44,5 @@ type IRepository interface {
 	CheckWorkspaceExists(context.Context, int64) (repository.Workspace, error)
 	SearchWorkspaceBookmark(context.Context, repository.SearchWorkspaceBookmarkParams) ([]repository.Bookmark, error)
 	FindDuplicateBookmark(context.Context, repository.FindDuplicateBookmarkParams) (int64, error)
+	FindWorkspaceJoinedUser(context.Context, repository.FindWorkspaceJoinedUserParams) (repository.WorkspaceUser, error)
 }

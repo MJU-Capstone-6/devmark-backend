@@ -163,3 +163,6 @@ SELECT * FROM bookmark WHERE workspace_id = $1 AND user_id = ANY(@user_ids::bigi
 
 -- name: FindDuplicateBookmark :one
 SELECT id FROM bookmark WHERE workspace_id = $1 AND "link" = $2;
+
+-- name: FindWorkspaceJoinedUser :one
+SELECT * FROM workspace_user WHERE workspace_id = $1 AND user_id = $2;

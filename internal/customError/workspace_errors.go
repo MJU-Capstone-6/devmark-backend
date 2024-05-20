@@ -14,6 +14,8 @@ var WORKSPACE_CREATE_FAIL = NewError(http.StatusUnprocessableEntity, "Workspace 
 
 var WORKSPACE_CATEGORY_RESIGTER_FAIL = NewError(http.StatusBadRequest, "Register category to workspace fail", "406")
 
+var WORKSPACE_ALREADY_JOINED = NewError(http.StatusBadRequest, "Workspace already joined", "407")
+
 func WorkspaceNotFoundErr(err error) error {
 	workspaceNotFound := WORKSPACE_NOT_FOUND
 	workspaceNotFound.Data = err
@@ -48,4 +50,10 @@ func WorkspaceRegisterCategoryFail(err error) error {
 	categoryRegisterFail := WORKSPACE_CATEGORY_RESIGTER_FAIL
 	categoryRegisterFail.Data = err
 	return categoryRegisterFail
+}
+
+func WorkspaceAlreadyJoined(err error) error {
+	workspaceAlreadyJoiend := WORKSPACE_ALREADY_JOINED
+	workspaceAlreadyJoiend.Data = err
+	return workspaceAlreadyJoiend
 }
