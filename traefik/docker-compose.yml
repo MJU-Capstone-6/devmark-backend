@@ -64,6 +64,6 @@ services:
     image: devmark-ml-server_app
     labels:
       - traefik.enable=true
-      - traefik.http.routers.hey-backend.rule=Host(`ml.${DOMAINNAME}`)
-      - traefik.http.routers.hey-backend.entrypoints=websecure
-      - traefik.http.routers.hey-backend.tls.certresolver=letsencryptresolver
+      - traefik.http.routers.hey-ml-server.rule=Host(`ml.${DOMAINNAME}`)
+      - traefik.http.routers.hey-ml-server.entrypoints=websecure
+      - traefik.http.routers.hey-ml-server.tls.certresolver=letsencryptresolver
