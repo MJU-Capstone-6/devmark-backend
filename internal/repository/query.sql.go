@@ -341,6 +341,22 @@ func (q *Queries) FindCategoryById(ctx context.Context, id int64) (Category, err
 	return i, err
 }
 
+const findCategoryByName = `-- name: FindCategoryByName :one
+SELECT id, name, created_at, updated_at FROM category WHERE name = $1
+`
+
+func (q *Queries) FindCategoryByName(ctx context.Context, name *string) (Category, error) {
+	row := q.db.QueryRow(ctx, findCategoryByName, name)
+	var i Category
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
 const findComment = `-- name: FindComment :one
 SELECT id, bookmark_id, user_id, comment_context, created_at, updated_at FROM "comment" WHERE id = $1
 `
@@ -686,10 +702,11 @@ func (q *Queries) SearchWorkspaceBookmark(ctx context.Context, arg SearchWorkspa
 const updateBookmark = `-- name: UpdateBookmark :one
 UPDATE bookmark 
 SET
-  link = $2,
-  workspace_id = $3,
-  category_id = $4,
-  summary = $5,
+  link = coalesce($2,link),
+  workspace_id = coalesce($3,workspace_id),
+  category_id = coalesce($4,category_id),
+  summary = coalesce($5,summary),
+  title = coalesce($6,summary),
   updated_at = CURRENT_TIMESTAMP
 WHERE id = $1
 RETURNING id, link, category_id, workspace_id, summary, created_at, updated_at, user_id, title
@@ -701,6 +718,7 @@ type UpdateBookmarkParams struct {
 	WorkspaceID *int64  `db:"workspace_id" json:"workspace_id"`
 	CategoryID  *int64  `db:"category_id" json:"category_id"`
 	Summary     *string `db:"summary" json:"summary"`
+	Title       *string `db:"title" json:"title"`
 }
 
 func (q *Queries) UpdateBookmark(ctx context.Context, arg UpdateBookmarkParams) (Bookmark, error) {
@@ -710,6 +728,7 @@ func (q *Queries) UpdateBookmark(ctx context.Context, arg UpdateBookmarkParams) 
 		arg.WorkspaceID,
 		arg.CategoryID,
 		arg.Summary,
+		arg.Title,
 	)
 	var i Bookmark
 	err := row.Scan(
@@ -729,7 +748,7 @@ func (q *Queries) UpdateBookmark(ctx context.Context, arg UpdateBookmarkParams) 
 const updateCategory = `-- name: UpdateCategory :one
 UPDATE category
 SET
-  name = $1,
+  name = coalesce($1,name),
   updated_at = CURRENT_TIMESTAMP
 WHERE id = $2
 RETURNING id, name, created_at, updated_at
@@ -755,7 +774,7 @@ func (q *Queries) UpdateCategory(ctx context.Context, arg UpdateCategoryParams) 
 const updateComment = `-- name: UpdateComment :one
 UPDATE "comment"
 SET
-  comment_context = $1,
+  comment_context = coalesce($1,comment_context),
   updated_at = CURRENT_TIMESTAMP
 WHERE id = $2
 RETURNING id, bookmark_id, user_id, comment_context, created_at, updated_at
@@ -783,7 +802,7 @@ func (q *Queries) UpdateComment(ctx context.Context, arg UpdateCommentParams) (C
 const updateInviteCode = `-- name: UpdateInviteCode :one
 UPDATE "invite_code"
 SET
-  code = $1,
+  code = coalesce($1,code),
   updated_at = CURRENT_TIMESTAMP
 WHERE id = $2
 RETURNING id, workspace_id, code, expired_at, created_at, updated_at
@@ -811,7 +830,7 @@ func (q *Queries) UpdateInviteCode(ctx context.Context, arg UpdateInviteCodePara
 const updateRefreshToken = `-- name: UpdateRefreshToken :one
 UPDATE refresh_token
 SET
-    token = $1,
+    token = coalesce($1,token),
     updated_at = CURRENT_TIMESTAMP
 WHERE id = $2 
 RETURNING id, token, user_id, created_at, updated_at
@@ -838,8 +857,8 @@ func (q *Queries) UpdateRefreshToken(ctx context.Context, arg UpdateRefreshToken
 const updateUser = `-- name: UpdateUser :one
 Update "user"
 SET 
-    refresh_token = $1,
-    username = $2,
+    refresh_token = coalesce($1,refresh_token),
+    username = coalesce($2,username),
     updated_at = CURRENT_TIMESTAMP
 WHERE id = $3
 RETURNING id, username, provider, refresh_token, created_at, updated_at
@@ -868,8 +887,8 @@ func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, e
 const updateWorkspace = `-- name: UpdateWorkspace :one
 UPDATE workspace
 SET
-  name = $1,
-  description = $2,
+  name = coalesce($1,name),
+  description = coalesce($2,description),
   updated_at = CURRENT_TIMESTAMP
 WHERE id = $3
 RETURNING id, name, description, created_at, updated_at, bookmark_count, user_count
@@ -899,7 +918,7 @@ func (q *Queries) UpdateWorkspace(ctx context.Context, arg UpdateWorkspaceParams
 const updateWorkspaceCode = `-- name: UpdateWorkspaceCode :one
 UPDATE workspace_code
 SET
-  code = $1,
+  code = coalesce($1,code),
   updated_at = CURRENT_TIMESTAMP
 WHERE id = $2
 RETURNING id, workspace_id, code, created_at, updated_at

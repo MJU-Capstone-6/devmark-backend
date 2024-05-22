@@ -8,6 +8,7 @@ var (
 	CATEGORY_UPDATE_FAIL      = NewError(http.StatusUnprocessableEntity, "category update fail.", "803")
 	CATEGORY_DELETE_FAIL      = NewError(http.StatusUnprocessableEntity, "category update fail.", "804")
 	CATEGORY_NOT_FOUND        = NewError(http.StatusNotFound, "category not found.", "805")
+	CATEGORY_ALREADY_EXISTS   = NewError(http.StatusBadRequest, "category already exists.", "806")
 )
 
 func CategoryBodyNotProvide(err error) error {
@@ -38,4 +39,10 @@ func CategoryDeleteFail(err error) error {
 	categoryDeleteFail := CATEGORY_DELETE_FAIL
 	categoryDeleteFail.Data = err
 	return categoryDeleteFail
+}
+
+func CategoryAlreadyExists(err error) error {
+	categoryAlreadyExists := CATEGORY_ALREADY_EXISTS
+	categoryAlreadyExists.Data = err
+	return categoryAlreadyExists
 }

@@ -20,12 +20,25 @@ func (c *CategoryService) FindById(id int) (*repository.Category, error) {
 	return &category, nil
 }
 
-func (c *CategoryService) Create(name string) (*repository.Category, error) {
-	category, err := c.Repository.CreateCategory(context.Background(), &name)
+func (c *CategoryService) FindByName(name string) (*repository.Category, error) {
+	category, err := c.Repository.FindCategoryByName(context.Background(), &name)
 	if err != nil {
-		return nil, customerror.CategoryCreationFail(err)
+		return nil, customerror.CategoryNotFound(err)
 	}
 	return &category, nil
+}
+
+func (c *CategoryService) Create(name string) (*repository.Category, error) {
+	_, err := c.FindByName(name)
+	if err != nil {
+		return nil, customerror.CategoryAlreadyExists(err)
+	} else {
+		newCategory, err := c.Repository.CreateCategory(context.Background(), &name)
+		if err != nil {
+			return nil, customerror.CategoryCreationFail(err)
+		}
+		return &newCategory, nil
+	}
 }
 
 func (c *CategoryService) Update(param repository.UpdateCategoryParams) (*repository.Category, error) {

@@ -425,6 +425,34 @@ func (_m *IRepository) FindCategoryById(_a0 context.Context, _a1 int64) (reposit
 	return r0, r1
 }
 
+// FindCategoryByName provides a mock function with given fields: _a0, _a1
+func (_m *IRepository) FindCategoryByName(_a0 context.Context, _a1 *string) (repository.Category, error) {
+	ret := _m.Called(_a0, _a1)
+
+	if len(ret) == 0 {
+		panic("no return value specified for FindCategoryByName")
+	}
+
+	var r0 repository.Category
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, *string) (repository.Category, error)); ok {
+		return rf(_a0, _a1)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, *string) repository.Category); ok {
+		r0 = rf(_a0, _a1)
+	} else {
+		r0 = ret.Get(0).(repository.Category)
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, *string) error); ok {
+		r1 = rf(_a0, _a1)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // FindComment provides a mock function with given fields: _a0, _a1
 func (_m *IRepository) FindComment(_a0 context.Context, _a1 int64) (repository.Comment, error) {
 	ret := _m.Called(_a0, _a1)
