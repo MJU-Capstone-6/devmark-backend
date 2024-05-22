@@ -5,6 +5,8 @@ import (
 
 	customerror "github.com/MJU-Capstone-6/devmark-backend/internal/customError"
 	"github.com/MJU-Capstone-6/devmark-backend/internal/repository"
+	"github.com/MJU-Capstone-6/devmark-backend/internal/request"
+	"github.com/MJU-Capstone-6/devmark-backend/internal/utils"
 	"github.com/MJU-Capstone-6/devmark-backend/pkg/interfaces"
 )
 
@@ -22,7 +24,20 @@ func (w *WorkspaceCodeService) FindByCode(code string) (*repository.FindWorkspac
 	return &workspaceCode, nil
 }
 
-func (w *WorkspaceCodeService) CreateCategoryAndBookmark(code string) (*repository.Bookmark, error) {
+func (w *WorkspaceCodeService) PredictCategory(param request.PredictCategoryParam) (*repository.Bookmark, error) {
+	workspaceCode, err := w.FindByCode(param.Code)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := utils.PredictCategory("")
+	if err != nil {
+		return nil, customerror.InternalServerError(err)
+	}
+
+	// ML 서버 요청
+	// 카테고리 생성 - 있으면 그냥 냅둠
+	// 북마크 생성
 	return nil, nil
 }
 

@@ -1,11 +1,14 @@
 package interfaces
 
-import "github.com/MJU-Capstone-6/devmark-backend/internal/repository"
+import (
+	"github.com/MJU-Capstone-6/devmark-backend/internal/repository"
+	"github.com/MJU-Capstone-6/devmark-backend/internal/request"
+)
 
 //go:generate mockery --name IWorkspaceCodeService
 type IWorkspaceCodeService interface {
 	FindByCode(string) (*repository.FindWorkspaceCodeRow, error)
-	CreateCategoryAndBookmark(string) (*repository.Bookmark, error)
+	PredictCategory(request.PredictCategoryParam) (*repository.Bookmark, error)
 	Update(repository.UpdateWorkspaceCodeParams) (*repository.WorkspaceCode, error)
 	Create(repository.CreateWorkspaceCodeParams) (*repository.WorkspaceCode, error)
 }

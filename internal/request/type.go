@@ -24,3 +24,9 @@ type CreateBookmarkParam struct {
 	Summary     string `db:"summary" json:"summary"`
 	Title       string `db:"title" json:"title"`
 }
+
+type PredictCategoryParam struct {
+	Code   string `json:"code"`
+	Link   string `json:"link"`
+	Domain string `json:"domain"`
+}
