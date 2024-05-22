@@ -1,6 +1,7 @@
 package app
 
 import (
+	"log"
 	"net/http"
 
 	customerror "github.com/MJU-Capstone-6/devmark-backend/internal/customError"
@@ -8,6 +9,7 @@ import (
 )
 
 func CustomHTTPErrorHandler(err error, c echo.Context) {
+	log.Println(err)
 	code := http.StatusInternalServerError
 	if customError, ok := err.(*customerror.CustomError); ok {
 		code = customError.StatusCode
