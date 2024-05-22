@@ -105,6 +105,14 @@ type WorkspaceCategoryList struct {
 	Categories    []*Category        `db:"categories" json:"categories"`
 }
 
+type WorkspaceCode struct {
+	ID          int64              `db:"id" json:"id"`
+	WorkspaceID *int64             `db:"workspace_id" json:"workspace_id"`
+	Code        *string            `db:"code" json:"code"`
+	CreatedAt   pgtype.Timestamptz `db:"created_at" json:"created_at"`
+	UpdatedAt   pgtype.Timestamptz `db:"updated_at" json:"updated_at"`
+}
+
 type WorkspaceUser struct {
 	WorkspaceID int64 `db:"workspace_id" json:"workspace_id"`
 	UserID      int64 `db:"user_id" json:"user_id"`

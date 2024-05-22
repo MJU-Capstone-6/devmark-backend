@@ -175,4 +175,23 @@ SET
 WHERE id = $2
 RETURNING *;
 
+-- name: FindWorkspaceCode :one
+SELECT sqlc.embed(workspace_code), sqlc.embed(workspace) FROM workspace_code
+JOIN workspace ON workspace_code.workspace_id = workspace.workspace_id
+WHERE workspace_code.code = $1;
+
+-- name: CreateWorkspaceCode :one
+INSERT INTO workspace_code (workspace_id, code)
+VALUES ($1, $2)
+RETURNING *;
+
+-- name: UpdateWorkspaceCode :one
+UPDATE workspace_code
+SET
+  code = $1,
+  updated_at = CURRENT_TIMESTAMP
+WHERE id = $2
+RETURNING *;
+
+
 

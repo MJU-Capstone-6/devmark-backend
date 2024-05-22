@@ -213,6 +213,30 @@ func (q *Queries) CreateWorkspace(ctx context.Context, arg CreateWorkspaceParams
 	return i, err
 }
 
+const createWorkspaceCode = `-- name: CreateWorkspaceCode :one
+INSERT INTO workspace_code (workspace_id, code)
+VALUES ($1, $2)
+RETURNING id, workspace_id, code, created_at, updated_at
+`
+
+type CreateWorkspaceCodeParams struct {
+	WorkspaceID *int64  `db:"workspace_id" json:"workspace_id"`
+	Code        *string `db:"code" json:"code"`
+}
+
+func (q *Queries) CreateWorkspaceCode(ctx context.Context, arg CreateWorkspaceCodeParams) (WorkspaceCode, error) {
+	row := q.db.QueryRow(ctx, createWorkspaceCode, arg.WorkspaceID, arg.Code)
+	var i WorkspaceCode
+	err := row.Scan(
+		&i.ID,
+		&i.WorkspaceID,
+		&i.Code,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
 const deleteBookmark = `-- name: DeleteBookmark :exec
 DELETE FROM bookmark WHERE id = $1
 `
@@ -523,6 +547,37 @@ func (q *Queries) FindWorkspaceCategoryBookmark(ctx context.Context, arg FindWor
 		return nil, err
 	}
 	return items, nil
+}
+
+const findWorkspaceCode = `-- name: FindWorkspaceCode :one
+SELECT workspace_code.id, workspace_code.workspace_id, workspace_code.code, workspace_code.created_at, workspace_code.updated_at, workspace.id, workspace.name, workspace.description, workspace.created_at, workspace.updated_at, workspace.bookmark_count, workspace.user_count FROM workspace_code
+JOIN workspace ON workspace_code.workspace_id = workspace.workspace_id
+WHERE workspace_code.code = $1
+`
+
+type FindWorkspaceCodeRow struct {
+	WorkspaceCode WorkspaceCode `db:"workspace_code" json:"workspace_code"`
+	Workspace     Workspace     `db:"workspace" json:"workspace"`
+}
+
+func (q *Queries) FindWorkspaceCode(ctx context.Context, code *string) (FindWorkspaceCodeRow, error) {
+	row := q.db.QueryRow(ctx, findWorkspaceCode, code)
+	var i FindWorkspaceCodeRow
+	err := row.Scan(
+		&i.WorkspaceCode.ID,
+		&i.WorkspaceCode.WorkspaceID,
+		&i.WorkspaceCode.Code,
+		&i.WorkspaceCode.CreatedAt,
+		&i.WorkspaceCode.UpdatedAt,
+		&i.Workspace.ID,
+		&i.Workspace.Name,
+		&i.Workspace.Description,
+		&i.Workspace.CreatedAt,
+		&i.Workspace.UpdatedAt,
+		&i.Workspace.BookmarkCount,
+		&i.Workspace.UserCount,
+	)
+	return i, err
 }
 
 const findWorkspaceJoinedUser = `-- name: FindWorkspaceJoinedUser :one
@@ -837,6 +892,33 @@ func (q *Queries) UpdateWorkspace(ctx context.Context, arg UpdateWorkspaceParams
 		&i.UpdatedAt,
 		&i.BookmarkCount,
 		&i.UserCount,
+	)
+	return i, err
+}
+
+const updateWorkspaceCode = `-- name: UpdateWorkspaceCode :one
+UPDATE workspace_code
+SET
+  code = $1,
+  updated_at = CURRENT_TIMESTAMP
+WHERE id = $2
+RETURNING id, workspace_id, code, created_at, updated_at
+`
+
+type UpdateWorkspaceCodeParams struct {
+	Code *string `db:"code" json:"code"`
+	ID   int64   `db:"id" json:"id"`
+}
+
+func (q *Queries) UpdateWorkspaceCode(ctx context.Context, arg UpdateWorkspaceCodeParams) (WorkspaceCode, error) {
+	row := q.db.QueryRow(ctx, updateWorkspaceCode, arg.Code, arg.ID)
+	var i WorkspaceCode
+	err := row.Scan(
+		&i.ID,
+		&i.WorkspaceID,
+		&i.Code,
+		&i.CreatedAt,
+		&i.UpdatedAt,
 	)
 	return i, err
 }

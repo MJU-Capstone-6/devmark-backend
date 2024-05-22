@@ -46,4 +46,7 @@ type IRepository interface {
 	FindDuplicateBookmark(context.Context, repository.FindDuplicateBookmarkParams) (int64, error)
 	FindWorkspaceJoinedUser(context.Context, repository.FindWorkspaceJoinedUserParams) (repository.WorkspaceUser, error)
 	UpdateInviteCode(context.Context, repository.UpdateInviteCodeParams) (repository.InviteCode, error)
+	FindWorkspaceCode(context.Context, *string) (repository.FindWorkspaceCodeRow, error)
+	CreateWorkspaceCode(context.Context, repository.CreateWorkspaceCodeParams) (repository.WorkspaceCode, error)
+	UpdateWorkspaceCode(context.Context, repository.UpdateWorkspaceCodeParams) (repository.WorkspaceCode, error)
 }

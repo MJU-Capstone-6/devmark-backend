@@ -239,6 +239,34 @@ func (_m *IRepository) CreateWorkspace(_a0 context.Context, _a1 repository.Creat
 	return r0, r1
 }
 
+// CreateWorkspaceCode provides a mock function with given fields: _a0, _a1
+func (_m *IRepository) CreateWorkspaceCode(_a0 context.Context, _a1 repository.CreateWorkspaceCodeParams) (repository.WorkspaceCode, error) {
+	ret := _m.Called(_a0, _a1)
+
+	if len(ret) == 0 {
+		panic("no return value specified for CreateWorkspaceCode")
+	}
+
+	var r0 repository.WorkspaceCode
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, repository.CreateWorkspaceCodeParams) (repository.WorkspaceCode, error)); ok {
+		return rf(_a0, _a1)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, repository.CreateWorkspaceCodeParams) repository.WorkspaceCode); ok {
+		r0 = rf(_a0, _a1)
+	} else {
+		r0 = ret.Get(0).(repository.WorkspaceCode)
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, repository.CreateWorkspaceCodeParams) error); ok {
+		r1 = rf(_a0, _a1)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // DeleteBookmark provides a mock function with given fields: _a0, _a1
 func (_m *IRepository) DeleteBookmark(_a0 context.Context, _a1 int64) error {
 	ret := _m.Called(_a0, _a1)
@@ -709,6 +737,34 @@ func (_m *IRepository) FindWorkspaceCategoryBookmark(_a0 context.Context, _a1 re
 	return r0, r1
 }
 
+// FindWorkspaceCode provides a mock function with given fields: _a0, _a1
+func (_m *IRepository) FindWorkspaceCode(_a0 context.Context, _a1 *string) (repository.FindWorkspaceCodeRow, error) {
+	ret := _m.Called(_a0, _a1)
+
+	if len(ret) == 0 {
+		panic("no return value specified for FindWorkspaceCode")
+	}
+
+	var r0 repository.FindWorkspaceCodeRow
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, *string) (repository.FindWorkspaceCodeRow, error)); ok {
+		return rf(_a0, _a1)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, *string) repository.FindWorkspaceCodeRow); ok {
+		r0 = rf(_a0, _a1)
+	} else {
+		r0 = ret.Get(0).(repository.FindWorkspaceCodeRow)
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, *string) error); ok {
+		r1 = rf(_a0, _a1)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // FindWorkspaceJoinedUser provides a mock function with given fields: _a0, _a1
 func (_m *IRepository) FindWorkspaceJoinedUser(_a0 context.Context, _a1 repository.FindWorkspaceJoinedUserParams) (repository.WorkspaceUser, error) {
 	ret := _m.Called(_a0, _a1)
@@ -1009,6 +1065,34 @@ func (_m *IRepository) UpdateWorkspace(_a0 context.Context, _a1 repository.Updat
 	}
 
 	if rf, ok := ret.Get(1).(func(context.Context, repository.UpdateWorkspaceParams) error); ok {
+		r1 = rf(_a0, _a1)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// UpdateWorkspaceCode provides a mock function with given fields: _a0, _a1
+func (_m *IRepository) UpdateWorkspaceCode(_a0 context.Context, _a1 repository.UpdateWorkspaceCodeParams) (repository.WorkspaceCode, error) {
+	ret := _m.Called(_a0, _a1)
+
+	if len(ret) == 0 {
+		panic("no return value specified for UpdateWorkspaceCode")
+	}
+
+	var r0 repository.WorkspaceCode
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, repository.UpdateWorkspaceCodeParams) (repository.WorkspaceCode, error)); ok {
+		return rf(_a0, _a1)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, repository.UpdateWorkspaceCodeParams) repository.WorkspaceCode); ok {
+		r0 = rf(_a0, _a1)
+	} else {
+		r0 = ret.Get(0).(repository.WorkspaceCode)
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, repository.UpdateWorkspaceCodeParams) error); ok {
 		r1 = rf(_a0, _a1)
 	} else {
 		r1 = ret.Error(1)
