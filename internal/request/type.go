@@ -29,4 +29,10 @@ type PredictCategoryParam struct {
 	Code   string `json:"code"`
 	Link   string `json:"link"`
 	Domain string `json:"domain"`
+	UserID int64  `json:"user_id"`
+}
+
+type PredictCategoryBody struct {
+	Code string `json:"code"`
+	Link string `json:"link"`
 }

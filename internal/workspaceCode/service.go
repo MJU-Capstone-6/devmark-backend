@@ -2,6 +2,8 @@ package workspacecode
 
 import (
 	"context"
+	"log"
+	"math/rand"
 
 	customerror "github.com/MJU-Capstone-6/devmark-backend/internal/customError"
 	"github.com/MJU-Capstone-6/devmark-backend/internal/repository"
@@ -16,9 +18,21 @@ type WorkspaceCodeService struct {
 	BookmarkService interfaces.IBookmarkService
 }
 
+const CHARSET = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+
+func (w *WorkspaceCodeService) CreateCode(length int) *string {
+	randomString := make([]byte, length)
+	for i := range randomString {
+		randomString[i] = CHARSET[rand.Intn(len(CHARSET))]
+	}
+	generatedString := string(randomString)
+	return &generatedString
+}
+
 func (w *WorkspaceCodeService) FindByCode(code string) (*repository.FindWorkspaceCodeRow, error) {
 	workspaceCode, err := w.Repository.FindWorkspaceCode(context.Background(), &code)
 	if err != nil {
+		log.Println(err)
 		return nil, customerror.WorkspaceCodeNotFound(err)
 	}
 	return &workspaceCode, nil
@@ -30,19 +44,39 @@ func (w *WorkspaceCodeService) PredictCategory(param request.PredictCategoryPara
 		return nil, err
 	}
 
-	req, err := utils.PredictCategory("")
+	dto, err := utils.PredictCategoryRequest(param.Link, param.Domain)
 	if err != nil {
 		return nil, customerror.InternalServerError(err)
 	}
+	category, err := w.CategoryService.FindByName(dto.Category)
+	if err != nil {
+		category, err = w.CategoryService.Create(dto.Category)
+		if err != nil {
+			return nil, err
+		}
+	}
+	createBookmarkParam := repository.CreateBookmarkParams{
+		Title:       &dto.Title,
+		Link:        &param.Link,
+		WorkspaceID: &workspaceCode.Workspace.ID,
+		CategoryID:  &category.ID,
+		UserID:      &param.UserID,
+	}
 
-	// ML 서버 요청
-	// 카테고리 생성 - 있으면 그냥 냅둠
-	// 북마크 생성
-	return nil, nil
+	bookmark, err := w.BookmarkService.Create(createBookmarkParam)
+	if err != nil {
+		return nil, err
+	}
+
+	return bookmark, nil
 }
 
 func (w *WorkspaceCodeService) Update(param repository.UpdateWorkspaceCodeParams) (*repository.WorkspaceCode, error) {
-	return nil, nil
+	workspaceCode, err := w.Repository.UpdateWorkspaceCode(context.Background(), param)
+	if err != nil {
+		return nil, customerror.WorkspaceCodeUpdateFail(err)
+	}
+	return &workspaceCode, nil
 }
 
 func (w *WorkspaceCodeService) Create(param repository.CreateWorkspaceCodeParams) (*repository.WorkspaceCode, error) {

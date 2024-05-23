@@ -14,11 +14,8 @@ import (
 )
 
 type WorkspaceController struct {
-	WorkspaceService interfaces.IWorkspaceService
-}
-
-func (w *WorkspaceController) TestController(ctx echo.Context) error {
-	return nil
+	WorkspaceService     interfaces.IWorkspaceService
+	WorkspaceCodeService interfaces.IWorkspaceCodeService
 }
 
 // ViewWorkspaceController godoc
@@ -333,11 +330,28 @@ func (w *WorkspaceController) SearchBookmarkController(ctx echo.Context) error {
 	return ctx.JSON(http.StatusOK, *bookmarks)
 }
 
+func (w *WorkspaceController) CreateWorkspaceCodeController(ctx echo.Context) error {
+	id, err := utils.ParseURLParam(ctx, "id")
+	if err != nil {
+		return err
+	}
+	parsedID := int64(*id)
+	param := repository.CreateWorkspaceCodeParams{
+		WorkspaceID: &parsedID,
+	}
+	return nil
+}
+
 func InitWorkspaceController() *WorkspaceController {
 	return &WorkspaceController{}
 }
 
 func (w WorkspaceController) WithWorkspaceService(service interfaces.IWorkspaceService) WorkspaceController {
 	w.WorkspaceService = service
+	return w
+}
+
+func (w WorkspaceController) WithWorkspaceCodeService(service interfaces.IWorkspaceCodeService) WorkspaceController {
+	w.WorkspaceCodeService = service
 	return w
 }

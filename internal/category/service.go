@@ -30,7 +30,7 @@ func (c *CategoryService) FindByName(name string) (*repository.Category, error) 
 
 func (c *CategoryService) Create(name string) (*repository.Category, error) {
 	_, err := c.FindByName(name)
-	if err != nil {
+	if err == nil {
 		return nil, customerror.CategoryAlreadyExists(err)
 	} else {
 		newCategory, err := c.Repository.CreateCategory(context.Background(), &name)

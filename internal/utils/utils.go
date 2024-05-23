@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"io"
@@ -16,8 +17,17 @@ import (
 
 const ML_SERVER_URL = "https://ml.officialdevmark.com"
 
+type PredictRequest struct {
+	Title string `json:"title"`
+}
+
 type PredictResponse struct {
 	Category string `json:"category"`
+}
+
+type PredictCategoryDTO struct {
+	Title    string
+	Category string
 }
 
 func ParseURLParam(ctx echo.Context, paramName string) (*int, error) {
@@ -35,7 +45,7 @@ func GetAuthUser(ctx echo.Context) (*repository.FindUserByIdRow, error) {
 	return nil, customerror.UserNotFound(errors.New(""))
 }
 
-func GetTitle(link string, domain string) (*string, error) {
+func getTitle(link string, domain string) (*string, error) {
 	req, err := http.NewRequest("GET", link, nil)
 	if err != nil {
 		return nil, err
@@ -54,6 +64,24 @@ func GetTitle(link string, domain string) (*string, error) {
 	switch domain {
 	case "tistory":
 		title := docs.Find(".tit_blogview").Text()
+		if title == "" {
+			title = docs.Find(".tit_post").Text()
+		}
+		if title == "" {
+			title = docs.Find(".post-cover > .inner > h1").Text()
+		}
+		if title == "" {
+			title = docs.Find(".hgroup > h1").Text()
+		}
+		if title == "" {
+			title = docs.Find(".description > h1").Text()
+		}
+		if title == "" {
+			title = docs.Find(".title_view").Text()
+		}
+		if title == "" {
+			title = docs.Find(".title-article").Text()
+		}
 		return &title, nil
 	case "medium":
 		title := docs.Find("h1").Text()
@@ -65,8 +93,15 @@ func GetTitle(link string, domain string) (*string, error) {
 	return nil, nil
 }
 
-func PredictCategory(title string) (*PredictResponse, error) {
-	req, err := http.NewRequest("POST", ML_SERVER_URL, nil)
+func predictCategory(title string) (*PredictResponse, error) {
+	predictReq := PredictRequest{
+		Title: title,
+	}
+	jsonBody, err := json.Marshal(predictReq)
+	if err != nil {
+		return nil, err
+	}
+	req, err := http.NewRequest("POST", ML_SERVER_URL, bytes.NewBuffer(jsonBody))
 	if err != nil {
 		return nil, err
 	}
@@ -86,6 +121,22 @@ func PredictCategory(title string) (*PredictResponse, error) {
 		return nil, err
 	}
 	return &predictResponse, nil
+}
+
+func PredictCategoryRequest(link string, domain string) (*PredictCategoryDTO, error) {
+	title, err := getTitle(link, domain)
+	if err != nil {
+		return nil, err
+	}
+	category, err := predictCategory(*title)
+	if err != nil {
+		return nil, err
+	}
+	dto := PredictCategoryDTO{
+		Title:    *title,
+		Category: category.Category,
+	}
+	return &dto, nil
 }
 
 func SliceValueIntoNum(arr []string) (*[]int64, error) {

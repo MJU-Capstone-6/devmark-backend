@@ -14,6 +14,8 @@ func CustomHTTPErrorHandler(err error, c echo.Context) {
 		c.JSON(code, customError)
 	} else if echoError, ok := err.(*echo.HTTPError); ok {
 		switch echoError.Code {
+		case http.StatusMethodNotAllowed:
+			c.JSON(echoError.Code, customerror.MethodNotAllowed(echoError))
 		case http.StatusNotFound:
 			c.JSON(echoError.Code, customerror.PageNotFound(echoError))
 		case http.StatusInternalServerError:

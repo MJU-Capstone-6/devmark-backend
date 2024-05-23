@@ -7,6 +7,7 @@ import (
 
 //go:generate mockery --name IWorkspaceCodeService
 type IWorkspaceCodeService interface {
+	CreateCode(int) *string
 	FindByCode(string) (*repository.FindWorkspaceCodeRow, error)
 	PredictCategory(request.PredictCategoryParam) (*repository.Bookmark, error)
 	Update(repository.UpdateWorkspaceCodeParams) (*repository.WorkspaceCode, error)

@@ -178,8 +178,11 @@ RETURNING *;
 
 -- name: FindWorkspaceCode :one
 SELECT sqlc.embed(workspace_code), sqlc.embed(workspace) FROM workspace_code
-JOIN workspace ON workspace_code.workspace_id = workspace.workspace_id
+JOIN workspace ON workspace_code.workspace_id = workspace.id
 WHERE workspace_code.code = $1;
+
+-- name: FindWorkspaceCodeByWorkspaceID :one
+SELECT * FROM workspace_code WHERE workspace_id = $1;
 
 -- name: CreateWorkspaceCode :one
 INSERT INTO workspace_code (workspace_id, code)

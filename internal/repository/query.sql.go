@@ -567,7 +567,7 @@ func (q *Queries) FindWorkspaceCategoryBookmark(ctx context.Context, arg FindWor
 
 const findWorkspaceCode = `-- name: FindWorkspaceCode :one
 SELECT workspace_code.id, workspace_code.workspace_id, workspace_code.code, workspace_code.created_at, workspace_code.updated_at, workspace.id, workspace.name, workspace.description, workspace.created_at, workspace.updated_at, workspace.bookmark_count, workspace.user_count FROM workspace_code
-JOIN workspace ON workspace_code.workspace_id = workspace.workspace_id
+JOIN workspace ON workspace_code.workspace_id = workspace.id
 WHERE workspace_code.code = $1
 `
 
@@ -592,6 +592,23 @@ func (q *Queries) FindWorkspaceCode(ctx context.Context, code *string) (FindWork
 		&i.Workspace.UpdatedAt,
 		&i.Workspace.BookmarkCount,
 		&i.Workspace.UserCount,
+	)
+	return i, err
+}
+
+const findWorkspaceCodeByWorkspaceID = `-- name: FindWorkspaceCodeByWorkspaceID :one
+SELECT id, workspace_id, code, created_at, updated_at FROM workspace_code WHERE workspace_id = $1
+`
+
+func (q *Queries) FindWorkspaceCodeByWorkspaceID(ctx context.Context, workspaceID *int64) (WorkspaceCode, error) {
+	row := q.db.QueryRow(ctx, findWorkspaceCodeByWorkspaceID, workspaceID)
+	var i WorkspaceCode
+	err := row.Scan(
+		&i.ID,
+		&i.WorkspaceID,
+		&i.Code,
+		&i.CreatedAt,
+		&i.UpdatedAt,
 	)
 	return i, err
 }

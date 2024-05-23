@@ -4,6 +4,7 @@ package mocks
 
 import (
 	repository "github.com/MJU-Capstone-6/devmark-backend/internal/repository"
+	request "github.com/MJU-Capstone-6/devmark-backend/internal/request"
 	mock "github.com/stretchr/testify/mock"
 )
 
@@ -42,24 +43,24 @@ func (_m *IWorkspaceCodeService) Create(_a0 repository.CreateWorkspaceCodeParams
 	return r0, r1
 }
 
-// CreateCategoryAndBookmark provides a mock function with given fields: _a0
-func (_m *IWorkspaceCodeService) CreateCategoryAndBookmark(_a0 string) (*repository.Bookmark, error) {
+// FindByCode provides a mock function with given fields: _a0
+func (_m *IWorkspaceCodeService) FindByCode(_a0 string) (*repository.FindWorkspaceCodeRow, error) {
 	ret := _m.Called(_a0)
 
 	if len(ret) == 0 {
-		panic("no return value specified for CreateCategoryAndBookmark")
+		panic("no return value specified for FindByCode")
 	}
 
-	var r0 *repository.Bookmark
+	var r0 *repository.FindWorkspaceCodeRow
 	var r1 error
-	if rf, ok := ret.Get(0).(func(string) (*repository.Bookmark, error)); ok {
+	if rf, ok := ret.Get(0).(func(string) (*repository.FindWorkspaceCodeRow, error)); ok {
 		return rf(_a0)
 	}
-	if rf, ok := ret.Get(0).(func(string) *repository.Bookmark); ok {
+	if rf, ok := ret.Get(0).(func(string) *repository.FindWorkspaceCodeRow); ok {
 		r0 = rf(_a0)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*repository.Bookmark)
+			r0 = ret.Get(0).(*repository.FindWorkspaceCodeRow)
 		}
 	}
 
@@ -72,28 +73,28 @@ func (_m *IWorkspaceCodeService) CreateCategoryAndBookmark(_a0 string) (*reposit
 	return r0, r1
 }
 
-// FindByCode provides a mock function with given fields: _a0
-func (_m *IWorkspaceCodeService) FindByCode(_a0 string) (*repository.WorkspaceCode, error) {
+// PredictCategory provides a mock function with given fields: _a0
+func (_m *IWorkspaceCodeService) PredictCategory(_a0 request.PredictCategoryParam) (*repository.Bookmark, error) {
 	ret := _m.Called(_a0)
 
 	if len(ret) == 0 {
-		panic("no return value specified for FindByCode")
+		panic("no return value specified for PredictCategory")
 	}
 
-	var r0 *repository.WorkspaceCode
+	var r0 *repository.Bookmark
 	var r1 error
-	if rf, ok := ret.Get(0).(func(string) (*repository.WorkspaceCode, error)); ok {
+	if rf, ok := ret.Get(0).(func(request.PredictCategoryParam) (*repository.Bookmark, error)); ok {
 		return rf(_a0)
 	}
-	if rf, ok := ret.Get(0).(func(string) *repository.WorkspaceCode); ok {
+	if rf, ok := ret.Get(0).(func(request.PredictCategoryParam) *repository.Bookmark); ok {
 		r0 = rf(_a0)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*repository.WorkspaceCode)
+			r0 = ret.Get(0).(*repository.Bookmark)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(string) error); ok {
+	if rf, ok := ret.Get(1).(func(request.PredictCategoryParam) error); ok {
 		r1 = rf(_a0)
 	} else {
 		r1 = ret.Error(1)
