@@ -8,16 +8,16 @@ import (
 	"sync"
 
 	"github.com/MJU-Capstone-6/devmark-backend/internal/config"
-	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 var (
-	db   *pgx.Conn
+	db   *pgxpool.Pool
 	once sync.Once
 )
 var BASE_URL = "postgres://%s:%s@%s:%s/%s?sslmode=disable"
 
-func InitDBbyConfig(ctx context.Context, c config.DB) (*pgx.Conn, error) {
+func InitDBbyConfig(ctx context.Context, c config.DB) (*pgxpool.Pool, error) {
 	if db == nil {
 		once.Do(func() {
 			conn, err := setDBByConfig(ctx, c)
@@ -32,7 +32,7 @@ func InitDBbyConfig(ctx context.Context, c config.DB) (*pgx.Conn, error) {
 	return db, nil
 }
 
-func InitDBbyURL(ctx context.Context, dbURL string) (*pgx.Conn, error) {
+func InitDBbyURL(ctx context.Context, dbURL string) (*pgxpool.Pool, error) {
 	if db == nil {
 		once.Do(func() {
 			conn, err := setDBByURL(ctx, dbURL)
@@ -47,22 +47,17 @@ func InitDBbyURL(ctx context.Context, dbURL string) (*pgx.Conn, error) {
 	return db, nil
 }
 
-func setDBByConfig(ctx context.Context, c config.DB) (*pgx.Conn, error) {
+func setDBByConfig(ctx context.Context, c config.DB) (*pgxpool.Pool, error) {
 	dbURL := fmt.Sprintf(BASE_URL, c.Username, c.Password, c.Host, c.Port, c.Name)
-	/*
-		err := Migration(dbURL)
-		if err != nil {
-			log.Println(err)
-		}*/
-	conn, err := pgx.Connect(ctx, dbURL)
+	conn, err := pgxpool.New(ctx, dbURL)
 	if err != nil {
 		return nil, err
 	}
 	return conn, err
 }
 
-func setDBByURL(ctx context.Context, dbURL string) (*pgx.Conn, error) {
-	conn, err := pgx.Connect(ctx, dbURL)
+func setDBByURL(ctx context.Context, dbURL string) (*pgxpool.Pool, error) {
+	conn, err := pgxpool.New(ctx, dbURL)
 	if err != nil {
 		return nil, err
 	}

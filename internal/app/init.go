@@ -12,7 +12,7 @@ import (
 	"github.com/MJU-Capstone-6/devmark-backend/internal/config"
 	"github.com/MJU-Capstone-6/devmark-backend/internal/db"
 	"github.com/MJU-Capstone-6/devmark-backend/internal/repository"
-	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/labstack/echo/v4"
 	"github.com/testcontainers/testcontainers-go"
 	"github.com/testcontainers/testcontainers-go/modules/postgres"
@@ -43,7 +43,7 @@ func (app *Application) Run() error {
 	if err := app.Handler.Start(fmt.Sprintf(":%s", app.Config.App.Port)); err != nil {
 		return err
 	}
-	defer app.DB.Close(context.Background())
+	defer app.DB.Close()
 	return nil
 }
 
@@ -80,7 +80,7 @@ func runWithPostgresContainer(ctx context.Context, dbConfig config.DB) (*postgre
 }
 
 func setApplication() error {
-	var dbConn *pgx.Conn
+	var dbConn *pgxpool.Pool
 
 	ctx := context.Background()
 	applicationConfig, err := config.InitConfig()
