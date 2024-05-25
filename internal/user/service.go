@@ -2,6 +2,7 @@ package user
 
 import (
 	"context"
+	"log"
 
 	customerror "github.com/MJU-Capstone-6/devmark-backend/internal/customError"
 	"github.com/MJU-Capstone-6/devmark-backend/internal/repository"
@@ -40,6 +41,7 @@ func (u *UserService) FindJoinedWorkspace(id int) (*repository.UserWorkspaceView
 func (u *UserService) CreateUser(arg repository.CreateUserParams) (*repository.User, error) {
 	user, err := u.Repository.CreateUser(context.Background(), arg)
 	if err != nil {
+		log.Println(err)
 		return nil, customerror.UserCreationFail(err)
 	}
 	return &user, nil
