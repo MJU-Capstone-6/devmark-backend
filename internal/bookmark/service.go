@@ -5,6 +5,7 @@ import (
 
 	customerror "github.com/MJU-Capstone-6/devmark-backend/internal/customError"
 	"github.com/MJU-Capstone-6/devmark-backend/internal/repository"
+	"github.com/MJU-Capstone-6/devmark-backend/internal/request"
 	"github.com/MJU-Capstone-6/devmark-backend/pkg/interfaces"
 )
 
@@ -39,8 +40,24 @@ func (b *BookmarkService) Create(param repository.CreateBookmarkParams) (*reposi
 	return &bookmark, nil
 }
 
-func (b *BookmarkService) Update(param repository.UpdateBookmarkParams) (*repository.Bookmark, error) {
-	bookmark, err := b.Repository.UpdateBookmark(context.Background(), param)
+func (b *BookmarkService) Update(id int, param request.UpdateBookmarkParam) (*repository.Bookmark, error) {
+	var category *repository.Category
+	category, err := b.CategoryService.FindByName(*param.CategoryName)
+	if err != nil {
+		category, err = b.CategoryService.Create(*param.CategoryName)
+		if err != nil {
+			return nil, err
+		}
+	}
+	updateParam := repository.UpdateBookmarkParams{
+		ID:          int64(id),
+		WorkspaceID: param.WorkspaceID,
+		CategoryID:  &category.ID,
+		Summary:     param.Summary,
+		Title:       param.Title,
+		Link:        param.Link,
+	}
+	bookmark, err := b.Repository.UpdateBookmark(context.Background(), updateParam)
 	if err != nil {
 		return nil, customerror.BookmarkUpdateFail(err)
 	}

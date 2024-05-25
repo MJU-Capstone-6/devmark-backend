@@ -1,7 +1,6 @@
 package bookmark
 
 import (
-	"log"
 	"net/http"
 
 	customerror "github.com/MJU-Capstone-6/devmark-backend/internal/customError"
@@ -115,25 +114,23 @@ func (b *BookmarkController) FindBookmarkCommentsController(ctx echo.Context) er
 //	@tags			bookmark
 //	@accept			json
 //	@produce		json
-//	@param			body	body		repository.UpdateBookmarkParams	true	"Bookmark param"
+//	@param			body	body		request.UpdateBookmarkParam true	"Bookmark param"
 //	@success		200		{object}	repository.Bookmark
 //	@failure		401		{object}	customerror.CustomError
 //	@failure		404		{object}	customerror.CustomError
 //	@failure		500		{object}	customerror.CustomError
 //	@router			/api/v1/bookmark/:id [PUT]
 func (b *BookmarkController) UpdateBookmarkController(ctx echo.Context) error {
-	var param repository.UpdateBookmarkParams
+	var param request.UpdateBookmarkParam
 	err := ctx.Bind(&param)
 	if err != nil {
 		return customerror.InvalidParamError(err)
 	}
-	log.Println(param)
 	id, err := utils.ParseURLParam(ctx, "id")
 	if err != nil {
 		return err
 	}
-	param.ID = int64(*id)
-	bookmark, err := b.BookmarkService.Update(param)
+	bookmark, err := b.BookmarkService.Update(*id, param)
 	if err != nil {
 		return err
 	}

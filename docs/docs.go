@@ -180,7 +180,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/repository.UpdateBookmarkParams"
+                            "$ref": "#/definitions/request.UpdateBookmarkParam"
                         }
                     }
                 ],
@@ -1595,29 +1595,6 @@ const docTemplate = `{
                 }
             }
         },
-        "repository.UpdateBookmarkParams": {
-            "type": "object",
-            "properties": {
-                "category_id": {
-                    "type": "integer"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "link": {
-                    "type": "string"
-                },
-                "summary": {
-                    "type": "string"
-                },
-                "title": {
-                    "type": "string"
-                },
-                "workspace_id": {
-                    "type": "integer"
-                }
-            }
-        },
         "repository.UpdateCategoryParams": {
             "type": "object",
             "properties": {
@@ -1758,6 +1735,29 @@ const docTemplate = `{
             "properties": {
                 "refresh_token": {
                     "type": "string"
+                }
+            }
+        },
+        "request.UpdateBookmarkParam": {
+            "type": "object",
+            "properties": {
+                "category_name": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "link": {
+                    "type": "string"
+                },
+                "summary": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "workspace_id": {
+                    "type": "integer"
                 }
             }
         },
