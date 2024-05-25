@@ -145,6 +145,7 @@ CREATE VIEW bookmark_comment AS
 SELECT b.*, JSON_AGG(DISTINCT JSON_BUILD_OBJECT(
             'comment_id', c.id,
             'comment_text', c.comment_context,
+            'comment_createAt',c.created_at,
             'user_id', u.id,
             'user_name', u.name
         )) AS comments, 
