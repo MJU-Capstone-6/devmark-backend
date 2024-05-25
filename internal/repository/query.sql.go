@@ -677,7 +677,9 @@ func (q *Queries) RegisterCategoryToWorkspace(ctx context.Context, arg RegisterC
 }
 
 const searchWorkspaceBookmark = `-- name: SearchWorkspaceBookmark :many
-SELECT id, link, category_id, workspace_id, summary, created_at, updated_at, user_id, title FROM bookmark WHERE workspace_id = $1 AND user_id = ANY($2::bigint[]) OR category_id = ANY($3::bigint[])
+SELECT id, link, category_id, workspace_id, summary, created_at, updated_at, user_id, title FROM bookmark WHERE workspace_id = $1   
+AND ($2::bigint[] IS NULL OR user_id = ANY($2::bigint[]))
+AND ($3::bigint[] IS NULL OR category_id = ANY($3::bigint[]))
 `
 
 type SearchWorkspaceBookmarkParams struct {

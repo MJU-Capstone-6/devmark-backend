@@ -490,6 +490,58 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/code/predict": {
+            "post": {
+                "description": "카테고리 예측 API 입니다. 카테고리가 존재하지 않을 시 자동으로 카테고리가 생성됩니다.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "workspaceCode"
+                ],
+                "summary": "카테고리 예측 API",
+                "parameters": [
+                    {
+                        "description": "PredictCategory Body",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.PredictCategoryBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/repository.Bookmark"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/customerror.CustomError"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/customerror.CustomError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/customerror.CustomError"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/comment": {
             "post": {
                 "description": "댓글을 생성합니다.",
@@ -809,12 +861,12 @@ const docTemplate = `{
                 "summary": "워크스페이스 생성",
                 "parameters": [
                     {
-                        "description": "Workspace id",
+                        "description": "Workspace Body",
                         "name": "body",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/workspace.CreateWorkspaceParam"
+                            "$ref": "#/definitions/repository.CreateWorkspaceParams"
                         }
                     }
                 ],
@@ -1120,6 +1172,56 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/workspace/:id/code": {
+            "post": {
+                "description": "워크스페이스의 코드를 생성합니다.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "workspace"
+                ],
+                "summary": "워크스페이스 코드 생성",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Workspace id",
+                        "name": "workspace_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/repository.WorkspaceCode"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/customerror.CustomError"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/customerror.CustomError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/customerror.CustomError"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/workspace/:workspace_id/category/:category_id": {
             "get": {
                 "description": "워크스페이스의 카테고리내의 북마크를  조회합니다.",
@@ -1405,6 +1507,17 @@ const docTemplate = `{
                 }
             }
         },
+        "repository.CreateWorkspaceParams": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
         "repository.FindBookmarkRow": {
             "type": "object",
             "properties": {
@@ -1497,6 +1610,9 @@ const docTemplate = `{
                 "summary": {
                     "type": "string"
                 },
+                "title": {
+                    "type": "string"
+                },
                 "workspace_id": {
                     "type": "integer"
                 }
@@ -1567,6 +1683,26 @@ const docTemplate = `{
                 }
             }
         },
+        "repository.WorkspaceCode": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "$ref": "#/definitions/pgtype.Timestamptz"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "updated_at": {
+                    "$ref": "#/definitions/pgtype.Timestamptz"
+                },
+                "workspace_id": {
+                    "type": "integer"
+                }
+            }
+        },
         "request.CreateBookmarkParam": {
             "type": "object",
             "properties": {
@@ -1603,6 +1739,17 @@ const docTemplate = `{
             "properties": {
                 "workspace_id": {
                     "type": "integer"
+                }
+            }
+        },
+        "request.PredictCategoryBody": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string"
+                },
+                "link": {
+                    "type": "string"
                 }
             }
         },
@@ -1648,14 +1795,6 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "refresh_token": {
-                    "type": "string"
-                }
-            }
-        },
-        "workspace.CreateWorkspaceParam": {
-            "type": "object",
-            "properties": {
-                "name": {
                     "type": "string"
                 }
             }

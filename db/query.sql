@@ -160,7 +160,9 @@ SELECT * FROM bookmark WHERE workspace_id = $1 AND category_id = $2;
 SELECT * FROM workspace WHERE id = $1;
 
 -- name: SearchWorkspaceBookmark :many
-SELECT * FROM bookmark WHERE workspace_id = $1 AND user_id = ANY(@user_ids::bigint[]) OR category_id = ANY(@category_ids::bigint[]);
+SELECT * FROM bookmark WHERE workspace_id = $1   
+AND (sqlc.narg('user_ids')::bigint[] IS NULL OR user_id = ANY(sqlc.narg('user_ids')::bigint[]))
+AND (sqlc.narg('category_ids')::bigint[] IS NULL OR category_id = ANY(sqlc.narg('category_ids')::bigint[]));
 
 -- name: FindDuplicateBookmark :one
 SELECT id FROM bookmark WHERE workspace_id = $1 AND "link" = $2;

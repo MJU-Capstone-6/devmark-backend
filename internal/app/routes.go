@@ -68,7 +68,14 @@ func (app *Application) InitWorkspaceRoutes() {
 	inviteCodeService := invitecode.InitInviteCodeService().WithRepository(&app.Repository).WithWorkspaceService(tempWorkspaceService)
 	workspaceService := workspace.InitWorkspaceService(&app.Repository).WithInviteCodeService(&inviteCodeService)
 	workspaceController := workspace.InitWorkspaceController().WithWorkspaceService(&workspaceService)
+	categoryService := category.InitCategoryService().WithRepository(&app.Repository)
+	bookmarkService := bookmark.InitBookmarkService().
+		WithRepository(&app.Repository).
+		WithWorkspaceService(&workspaceService).
+		WithCategoryService(&categoryService)
 
+	workspaceCodeService := workspacecode.InitWorkspaceCodeService().WithRepository(&app.Repository).WithBookmarkService(&bookmarkService).WithCategoryService(&categoryService)
+	workspaceController = workspaceController.WithWorkspaceCodeService(&workspaceCodeService)
 	userService := user.InitUserService(&app.Repository)
 	jwtService := jwtToken.InitJWTService(app.PubKey, app.PrivateKey, app.Config.App.FooterKey)
 
@@ -82,6 +89,7 @@ func (app *Application) InitWorkspaceRoutes() {
 	e.POST("", workspaceController.CreateWorkspaceController, customMiddleware.Auth)
 	e.POST("/join", workspaceController.JoinWorkspaceController, customMiddleware.Auth)
 	e.POST("/:workspace_id/category/:category_id", workspaceController.RegisterCategoryToWorkspaceController, customMiddleware.Auth)
+	e.POST("/:id/code", workspaceController.CreateWorkspaceCodeController, customMiddleware.Auth)
 	e.DELETE("/:id", workspaceController.DeleteWorkspaceController, customMiddleware.Auth)
 }
 
@@ -147,8 +155,13 @@ func (app *Application) InitRefreshTokenRoutes() {
 
 func (app *Application) InitCommentRoutes() {
 	e := app.Handler.Group(fmt.Sprintf("%s/comment", V1))
+	categoryService := category.InitCategoryService().WithRepository(&app.Repository)
+	invitecodeService := invitecode.InitInviteCodeService().WithRepository(&app.Repository)
+	workspaceService := workspace.InitWorkspaceService(&app.Repository).WithInviteCodeService(&invitecodeService)
+	invitecodeService = invitecodeService.WithWorkspaceService(&workspaceService)
+	bookmarkService := bookmark.InitBookmarkService().WithRepository(&app.Repository).WithCategoryService(&categoryService)
 
-	commentService := comment.InitCommentService().WithRepository(&app.Repository)
+	commentService := comment.InitCommentService().WithRepository(&app.Repository).WithBookmarkService(&bookmarkService)
 	commentController := comment.InitCommentController().WithCommentService(&commentService)
 
 	userService := user.InitUserService(&app.Repository)

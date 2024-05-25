@@ -113,7 +113,7 @@ func (w *WorkspaceController) DeleteWorkspaceController(ctx echo.Context) error 
 //	@tags			workspace
 //	@accept			json
 //	@produce		json
-//	@param			body	body		CreateWorkspaceParam	true	"Workspace id"
+//	@param			body	body		repository.CreateWorkspaceParams	true	"Workspace Body"
 //	@success		200		{object}	repository.Workspace
 //	@failure		401		{object}	customerror.CustomError
 //	@failure		404		{object}	customerror.CustomError
@@ -316,6 +316,13 @@ func (w *WorkspaceController) SearchBookmarkController(ctx echo.Context) error {
 		}
 	}
 
+	if len(*category_ids) == 0 {
+		category_ids = nil
+	}
+
+	if len(*user_ids) == 0 {
+		user_ids = nil
+	}
 	parsedWorkspaceID := int64(*workspace_id)
 	param := repository.SearchWorkspaceBookmarkParams{
 		WorkspaceID: &parsedWorkspaceID,
@@ -330,6 +337,20 @@ func (w *WorkspaceController) SearchBookmarkController(ctx echo.Context) error {
 	return ctx.JSON(http.StatusOK, *bookmarks)
 }
 
+// CreateWorkspaceCodeController godoc
+//
+//	@summary	워크스페이스 코드 생성
+//	@schemes
+//	@description	워크스페이스의 코드를 생성합니다.
+//	@tags			workspace
+//	@accept			json
+//	@produce		json
+//	@param			workspace_id	path		int	true	"Workspace id"
+//	@success		200				{object}	repository.WorkspaceCode
+//	@failure		400				{object}	customerror.CustomError
+//	@failure		401				{object}	customerror.CustomError
+//	@failure		500				{object}	customerror.CustomError
+//	@router			/api/v1/workspace/:id/code [POST]
 func (w *WorkspaceController) CreateWorkspaceCodeController(ctx echo.Context) error {
 	id, err := utils.ParseURLParam(ctx, "id")
 	if err != nil {
@@ -339,7 +360,11 @@ func (w *WorkspaceController) CreateWorkspaceCodeController(ctx echo.Context) er
 	param := repository.CreateWorkspaceCodeParams{
 		WorkspaceID: &parsedID,
 	}
-	return nil
+	workspaceCode, err := w.WorkspaceCodeService.Create(param)
+	if err != nil {
+		return err
+	}
+	return ctx.JSON(http.StatusOK, workspaceCode)
 }
 
 func InitWorkspaceController() *WorkspaceController {

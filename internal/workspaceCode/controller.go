@@ -1,6 +1,7 @@
 package workspacecode
 
 import (
+	"errors"
 	"net/http"
 
 	customerror "github.com/MJU-Capstone-6/devmark-backend/internal/customError"
@@ -14,6 +15,20 @@ type WorkspaceCodeController struct {
 	WorkspaceCodeService interfaces.IWorkspaceCodeService
 }
 
+// PredictCategoryController godoc
+//
+//	@summary	카테고리 예측 API
+//	@schemes
+//	@description	카테고리 예측 API 입니다. 카테고리가 존재하지 않을 시 자동으로 카테고리가 생성됩니다.
+//	@tags			workspaceCode
+//	@accept			json
+//	@produce		json
+//	@param			body	body		request.PredictCategoryBody	true	"PredictCategory Body"
+//	@success		200		{object}	repository.Bookmark
+//	@failure		400		{object}	customerror.CustomError
+//	@failure		401		{object}	customerror.CustomError
+//	@failure		500		{object}	customerror.CustomError
+//	@router			/api/v1/code/predict [POST]
 func (w *WorkspaceCodeController) PredictCategoryController(ctx echo.Context) error {
 	var body request.PredictCategoryBody
 	err := ctx.Bind(&body)
@@ -21,6 +36,9 @@ func (w *WorkspaceCodeController) PredictCategoryController(ctx echo.Context) er
 		return customerror.InternalServerError(err)
 	}
 	domain := ctx.QueryParam("domain")
+	if domain == "" {
+		return customerror.InvalidParamError(errors.New("domain query param must be provided"))
+	}
 	user, err := utils.GetAuthUser(ctx)
 	if err != nil {
 		return err

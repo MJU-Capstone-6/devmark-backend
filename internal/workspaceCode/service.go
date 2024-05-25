@@ -80,7 +80,13 @@ func (w *WorkspaceCodeService) Update(param repository.UpdateWorkspaceCodeParams
 }
 
 func (w *WorkspaceCodeService) Create(param repository.CreateWorkspaceCodeParams) (*repository.WorkspaceCode, error) {
-	return nil, nil
+	code := w.CreateCode(6)
+	param.Code = code
+	workspaceCode, err := w.Repository.CreateWorkspaceCode(context.Background(), param)
+	if err != nil {
+		return nil, customerror.WorkspaceCodeCreationFail(err)
+	}
+	return &workspaceCode, nil
 }
 
 func InitWorkspaceCodeService() *WorkspaceCodeService {
