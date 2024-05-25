@@ -138,21 +138,6 @@ definitions:
       workspace_id:
         type: integer
     type: object
-  repository.UpdateBookmarkParams:
-    properties:
-      category_id:
-        type: integer
-      id:
-        type: integer
-      link:
-        type: string
-      summary:
-        type: string
-      title:
-        type: string
-      workspace_id:
-        type: integer
-    type: object
   repository.UpdateCategoryParams:
     properties:
       id:
@@ -244,6 +229,21 @@ definitions:
     properties:
       refresh_token:
         type: string
+    type: object
+  request.UpdateBookmarkParam:
+    properties:
+      category_name:
+        type: string
+      id:
+        type: integer
+      link:
+        type: string
+      summary:
+        type: string
+      title:
+        type: string
+      workspace_id:
+        type: integer
     type: object
   request.UpdateCommentParam:
     properties:
@@ -421,7 +421,7 @@ paths:
         name: body
         required: true
         schema:
-          $ref: '#/definitions/repository.UpdateBookmarkParams'
+          $ref: '#/definitions/request.UpdateBookmarkParam'
       produces:
       - application/json
       responses:

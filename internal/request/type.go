@@ -36,3 +36,12 @@ type PredictCategoryBody struct {
 	Code string `json:"code"`
 	Link string `json:"link"`
 }
+
+type UpdateBookmarkParam struct {
+	ID           int64   `db:"id" json:"id"`
+	Link         *string `db:"link" json:"link"`
+	WorkspaceID  *int64  `db:"workspace_id" json:"workspace_id"`
+	CategoryName *string `db:"category_name" json:"category_name"`
+	Summary      *string `db:"summary" json:"summary"`
+	Title        *string `db:"title" json:"title"`
+}
