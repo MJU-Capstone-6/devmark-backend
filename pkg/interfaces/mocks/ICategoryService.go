@@ -90,6 +90,36 @@ func (_m *ICategoryService) FindById(_a0 int) (*repository.Category, error) {
 	return r0, r1
 }
 
+// FindByName provides a mock function with given fields: _a0
+func (_m *ICategoryService) FindByName(_a0 string) (*repository.Category, error) {
+	ret := _m.Called(_a0)
+
+	if len(ret) == 0 {
+		panic("no return value specified for FindByName")
+	}
+
+	var r0 *repository.Category
+	var r1 error
+	if rf, ok := ret.Get(0).(func(string) (*repository.Category, error)); ok {
+		return rf(_a0)
+	}
+	if rf, ok := ret.Get(0).(func(string) *repository.Category); ok {
+		r0 = rf(_a0)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*repository.Category)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(string) error); ok {
+		r1 = rf(_a0)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // Update provides a mock function with given fields: _a0
 func (_m *ICategoryService) Update(_a0 repository.UpdateCategoryParams) (*repository.Category, error) {
 	ret := _m.Called(_a0)

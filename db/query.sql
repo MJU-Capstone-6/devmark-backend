@@ -13,8 +13,8 @@ RETURNING *;
 -- name: UpdateUser :one
 Update "user"
 SET 
-    refresh_token = $1,
-    username = $2,
+    refresh_token = coalesce($1,refresh_token),
+    username = coalesce($2,username),
     updated_at = CURRENT_TIMESTAMP
 WHERE id = $3
 RETURNING *;
@@ -30,7 +30,7 @@ SELECT * from "refresh_token" WHERE "user_id" = $1 LIMIT 1;
 -- name: UpdateRefreshToken :one
 UPDATE refresh_token
 SET
-    token = $1,
+    token = coalesce($1,token),
     updated_at = CURRENT_TIMESTAMP
 WHERE id = $2 
 RETURNING *; 
@@ -43,8 +43,8 @@ RETURNING *;
 -- name: UpdateWorkspace :one
 UPDATE workspace
 SET
-  name = $1,
-  description = $2,
+  name = coalesce($1,name),
+  description = coalesce($2,description),
   updated_at = CURRENT_TIMESTAMP
 WHERE id = $3
 RETURNING *;
@@ -82,7 +82,7 @@ RETURNING *;
 -- name: UpdateCategory :one
 UPDATE category
 SET
-  name = $1,
+  name = coalesce($1,name),
   updated_at = CURRENT_TIMESTAMP
 WHERE id = $2
 RETURNING *;
@@ -109,10 +109,11 @@ RETURNING *;
 -- name: UpdateBookmark :one
 UPDATE bookmark 
 SET
-  link = $2,
-  workspace_id = $3,
-  category_id = $4,
-  summary = $5,
+  link = coalesce($2,link),
+  workspace_id = coalesce($3,workspace_id),
+  category_id = coalesce($4,category_id),
+  summary = coalesce($5,summary),
+  title = coalesce($6,summary),
   updated_at = CURRENT_TIMESTAMP
 WHERE id = $1
 RETURNING *;
@@ -138,7 +139,7 @@ RETURNING *;
 -- name: UpdateComment :one
 UPDATE "comment"
 SET
-  comment_context = $1,
+  comment_context = coalesce($1,comment_context),
   updated_at = CURRENT_TIMESTAMP
 WHERE id = $2
 RETURNING *;
@@ -159,7 +160,9 @@ SELECT * FROM bookmark WHERE workspace_id = $1 AND category_id = $2;
 SELECT * FROM workspace WHERE id = $1;
 
 -- name: SearchWorkspaceBookmark :many
-SELECT * FROM bookmark WHERE workspace_id = $1 AND user_id = ANY(@user_ids::bigint[]) OR category_id = ANY(@category_ids::bigint[]);
+SELECT * FROM bookmark WHERE workspace_id = $1   
+AND (sqlc.narg('user_ids')::bigint[] IS NULL OR user_id = ANY(sqlc.narg('user_ids')::bigint[]))
+AND (sqlc.narg('category_ids')::bigint[] IS NULL OR category_id = ANY(sqlc.narg('category_ids')::bigint[]));
 
 -- name: FindDuplicateBookmark :one
 SELECT id FROM bookmark WHERE workspace_id = $1 AND "link" = $2;
@@ -170,9 +173,31 @@ SELECT * FROM workspace_user WHERE workspace_id = $1 AND user_id = $2;
 -- name: UpdateInviteCode :one
 UPDATE "invite_code"
 SET
-  code = $1,
+  code = coalesce($1,code),
   updated_at = CURRENT_TIMESTAMP
 WHERE id = $2
 RETURNING *;
 
+-- name: FindWorkspaceCode :one
+SELECT sqlc.embed(workspace_code), sqlc.embed(workspace) FROM workspace_code
+JOIN workspace ON workspace_code.workspace_id = workspace.id
+WHERE workspace_code.code = $1;
 
+-- name: FindWorkspaceCodeByWorkspaceID :one
+SELECT * FROM workspace_code WHERE workspace_id = $1;
+
+-- name: CreateWorkspaceCode :one
+INSERT INTO workspace_code (workspace_id, code)
+VALUES ($1, $2)
+RETURNING *;
+
+-- name: UpdateWorkspaceCode :one
+UPDATE workspace_code
+SET
+  code = coalesce($1,code),
+  updated_at = CURRENT_TIMESTAMP
+WHERE id = $2
+RETURNING *;
+
+-- name: FindCategoryByName :one
+SELECT * FROM category WHERE name = $1;

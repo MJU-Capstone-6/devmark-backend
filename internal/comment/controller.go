@@ -78,7 +78,7 @@ func (c *CommentController) UpdateCommentController(ctx echo.Context) error {
 	}
 	var requestParam request.UpdateCommentParam
 	err = ctx.Bind(&requestParam)
-	if err != nil {
+	if err != nil || requestParam.CommentContext == "" {
 		return customerror.CommentParamNotValid(err)
 	}
 

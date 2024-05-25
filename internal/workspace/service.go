@@ -36,7 +36,6 @@ func (w *WorkspaceService) FindById(id int) (*repository.FindWorkspaceRow, error
 	workspaceId := int64(id)
 	_, err := w.Repository.CheckWorkspaceExists(context.Background(), workspaceId)
 	if err != nil {
-		log.Println(err)
 		return nil, customerror.WorkspaceNotFoundErr(err)
 	}
 
@@ -82,10 +81,7 @@ func (w *WorkspaceService) Join(code string, param repository.JoinWorkspaceParam
 	}
 
 	param.WorkspaceID = int64(*inviteCode.WorkspaceID)
-	findJoinedUserParam := repository.FindWorkspaceJoinedUserParams{
-		WorkspaceID: param.WorkspaceID,
-		UserID:      param.UserID,
-	}
+	findJoinedUserParam := repository.FindWorkspaceJoinedUserParams(param)
 	_, err = w.Repository.FindWorkspaceJoinedUser(context.Background(), findJoinedUserParam)
 
 	if err == nil {

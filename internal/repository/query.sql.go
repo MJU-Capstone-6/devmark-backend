@@ -213,6 +213,30 @@ func (q *Queries) CreateWorkspace(ctx context.Context, arg CreateWorkspaceParams
 	return i, err
 }
 
+const createWorkspaceCode = `-- name: CreateWorkspaceCode :one
+INSERT INTO workspace_code (workspace_id, code)
+VALUES ($1, $2)
+RETURNING id, workspace_id, code, created_at, updated_at
+`
+
+type CreateWorkspaceCodeParams struct {
+	WorkspaceID *int64  `db:"workspace_id" json:"workspace_id"`
+	Code        *string `db:"code" json:"code"`
+}
+
+func (q *Queries) CreateWorkspaceCode(ctx context.Context, arg CreateWorkspaceCodeParams) (WorkspaceCode, error) {
+	row := q.db.QueryRow(ctx, createWorkspaceCode, arg.WorkspaceID, arg.Code)
+	var i WorkspaceCode
+	err := row.Scan(
+		&i.ID,
+		&i.WorkspaceID,
+		&i.Code,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
 const deleteBookmark = `-- name: DeleteBookmark :exec
 DELETE FROM bookmark WHERE id = $1
 `
@@ -307,6 +331,22 @@ SELECT id, name, created_at, updated_at FROM category WHERE id = $1
 
 func (q *Queries) FindCategoryById(ctx context.Context, id int64) (Category, error) {
 	row := q.db.QueryRow(ctx, findCategoryById, id)
+	var i Category
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
+const findCategoryByName = `-- name: FindCategoryByName :one
+SELECT id, name, created_at, updated_at FROM category WHERE name = $1
+`
+
+func (q *Queries) FindCategoryByName(ctx context.Context, name *string) (Category, error) {
+	row := q.db.QueryRow(ctx, findCategoryByName, name)
 	var i Category
 	err := row.Scan(
 		&i.ID,
@@ -525,6 +565,54 @@ func (q *Queries) FindWorkspaceCategoryBookmark(ctx context.Context, arg FindWor
 	return items, nil
 }
 
+const findWorkspaceCode = `-- name: FindWorkspaceCode :one
+SELECT workspace_code.id, workspace_code.workspace_id, workspace_code.code, workspace_code.created_at, workspace_code.updated_at, workspace.id, workspace.name, workspace.description, workspace.created_at, workspace.updated_at, workspace.bookmark_count, workspace.user_count FROM workspace_code
+JOIN workspace ON workspace_code.workspace_id = workspace.id
+WHERE workspace_code.code = $1
+`
+
+type FindWorkspaceCodeRow struct {
+	WorkspaceCode WorkspaceCode `db:"workspace_code" json:"workspace_code"`
+	Workspace     Workspace     `db:"workspace" json:"workspace"`
+}
+
+func (q *Queries) FindWorkspaceCode(ctx context.Context, code *string) (FindWorkspaceCodeRow, error) {
+	row := q.db.QueryRow(ctx, findWorkspaceCode, code)
+	var i FindWorkspaceCodeRow
+	err := row.Scan(
+		&i.WorkspaceCode.ID,
+		&i.WorkspaceCode.WorkspaceID,
+		&i.WorkspaceCode.Code,
+		&i.WorkspaceCode.CreatedAt,
+		&i.WorkspaceCode.UpdatedAt,
+		&i.Workspace.ID,
+		&i.Workspace.Name,
+		&i.Workspace.Description,
+		&i.Workspace.CreatedAt,
+		&i.Workspace.UpdatedAt,
+		&i.Workspace.BookmarkCount,
+		&i.Workspace.UserCount,
+	)
+	return i, err
+}
+
+const findWorkspaceCodeByWorkspaceID = `-- name: FindWorkspaceCodeByWorkspaceID :one
+SELECT id, workspace_id, code, created_at, updated_at FROM workspace_code WHERE workspace_id = $1
+`
+
+func (q *Queries) FindWorkspaceCodeByWorkspaceID(ctx context.Context, workspaceID *int64) (WorkspaceCode, error) {
+	row := q.db.QueryRow(ctx, findWorkspaceCodeByWorkspaceID, workspaceID)
+	var i WorkspaceCode
+	err := row.Scan(
+		&i.ID,
+		&i.WorkspaceID,
+		&i.Code,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
 const findWorkspaceJoinedUser = `-- name: FindWorkspaceJoinedUser :one
 SELECT workspace_id, user_id FROM workspace_user WHERE workspace_id = $1 AND user_id = $2
 `
@@ -589,7 +677,9 @@ func (q *Queries) RegisterCategoryToWorkspace(ctx context.Context, arg RegisterC
 }
 
 const searchWorkspaceBookmark = `-- name: SearchWorkspaceBookmark :many
-SELECT id, link, category_id, workspace_id, summary, created_at, updated_at, user_id, title FROM bookmark WHERE workspace_id = $1 AND user_id = ANY($2::bigint[]) OR category_id = ANY($3::bigint[])
+SELECT id, link, category_id, workspace_id, summary, created_at, updated_at, user_id, title FROM bookmark WHERE workspace_id = $1   
+AND ($2::bigint[] IS NULL OR user_id = ANY($2::bigint[]))
+AND ($3::bigint[] IS NULL OR category_id = ANY($3::bigint[]))
 `
 
 type SearchWorkspaceBookmarkParams struct {
@@ -631,10 +721,11 @@ func (q *Queries) SearchWorkspaceBookmark(ctx context.Context, arg SearchWorkspa
 const updateBookmark = `-- name: UpdateBookmark :one
 UPDATE bookmark 
 SET
-  link = $2,
-  workspace_id = $3,
-  category_id = $4,
-  summary = $5,
+  link = coalesce($2,link),
+  workspace_id = coalesce($3,workspace_id),
+  category_id = coalesce($4,category_id),
+  summary = coalesce($5,summary),
+  title = coalesce($6,summary),
   updated_at = CURRENT_TIMESTAMP
 WHERE id = $1
 RETURNING id, link, category_id, workspace_id, summary, created_at, updated_at, user_id, title
@@ -646,6 +737,7 @@ type UpdateBookmarkParams struct {
 	WorkspaceID *int64  `db:"workspace_id" json:"workspace_id"`
 	CategoryID  *int64  `db:"category_id" json:"category_id"`
 	Summary     *string `db:"summary" json:"summary"`
+	Title       *string `db:"title" json:"title"`
 }
 
 func (q *Queries) UpdateBookmark(ctx context.Context, arg UpdateBookmarkParams) (Bookmark, error) {
@@ -655,6 +747,7 @@ func (q *Queries) UpdateBookmark(ctx context.Context, arg UpdateBookmarkParams) 
 		arg.WorkspaceID,
 		arg.CategoryID,
 		arg.Summary,
+		arg.Title,
 	)
 	var i Bookmark
 	err := row.Scan(
@@ -674,7 +767,7 @@ func (q *Queries) UpdateBookmark(ctx context.Context, arg UpdateBookmarkParams) 
 const updateCategory = `-- name: UpdateCategory :one
 UPDATE category
 SET
-  name = $1,
+  name = coalesce($1,name),
   updated_at = CURRENT_TIMESTAMP
 WHERE id = $2
 RETURNING id, name, created_at, updated_at
@@ -700,7 +793,7 @@ func (q *Queries) UpdateCategory(ctx context.Context, arg UpdateCategoryParams) 
 const updateComment = `-- name: UpdateComment :one
 UPDATE "comment"
 SET
-  comment_context = $1,
+  comment_context = coalesce($1,comment_context),
   updated_at = CURRENT_TIMESTAMP
 WHERE id = $2
 RETURNING id, bookmark_id, user_id, comment_context, created_at, updated_at
@@ -728,7 +821,7 @@ func (q *Queries) UpdateComment(ctx context.Context, arg UpdateCommentParams) (C
 const updateInviteCode = `-- name: UpdateInviteCode :one
 UPDATE "invite_code"
 SET
-  code = $1,
+  code = coalesce($1,code),
   updated_at = CURRENT_TIMESTAMP
 WHERE id = $2
 RETURNING id, workspace_id, code, expired_at, created_at, updated_at
@@ -756,7 +849,7 @@ func (q *Queries) UpdateInviteCode(ctx context.Context, arg UpdateInviteCodePara
 const updateRefreshToken = `-- name: UpdateRefreshToken :one
 UPDATE refresh_token
 SET
-    token = $1,
+    token = coalesce($1,token),
     updated_at = CURRENT_TIMESTAMP
 WHERE id = $2 
 RETURNING id, token, user_id, created_at, updated_at
@@ -783,8 +876,8 @@ func (q *Queries) UpdateRefreshToken(ctx context.Context, arg UpdateRefreshToken
 const updateUser = `-- name: UpdateUser :one
 Update "user"
 SET 
-    refresh_token = $1,
-    username = $2,
+    refresh_token = coalesce($1,refresh_token),
+    username = coalesce($2,username),
     updated_at = CURRENT_TIMESTAMP
 WHERE id = $3
 RETURNING id, username, provider, refresh_token, created_at, updated_at
@@ -813,8 +906,8 @@ func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, e
 const updateWorkspace = `-- name: UpdateWorkspace :one
 UPDATE workspace
 SET
-  name = $1,
-  description = $2,
+  name = coalesce($1,name),
+  description = coalesce($2,description),
   updated_at = CURRENT_TIMESTAMP
 WHERE id = $3
 RETURNING id, name, description, created_at, updated_at, bookmark_count, user_count
@@ -837,6 +930,33 @@ func (q *Queries) UpdateWorkspace(ctx context.Context, arg UpdateWorkspaceParams
 		&i.UpdatedAt,
 		&i.BookmarkCount,
 		&i.UserCount,
+	)
+	return i, err
+}
+
+const updateWorkspaceCode = `-- name: UpdateWorkspaceCode :one
+UPDATE workspace_code
+SET
+  code = coalesce($1,code),
+  updated_at = CURRENT_TIMESTAMP
+WHERE id = $2
+RETURNING id, workspace_id, code, created_at, updated_at
+`
+
+type UpdateWorkspaceCodeParams struct {
+	Code *string `db:"code" json:"code"`
+	ID   int64   `db:"id" json:"id"`
+}
+
+func (q *Queries) UpdateWorkspaceCode(ctx context.Context, arg UpdateWorkspaceCodeParams) (WorkspaceCode, error) {
+	row := q.db.QueryRow(ctx, updateWorkspaceCode, arg.Code, arg.ID)
+	var i WorkspaceCode
+	err := row.Scan(
+		&i.ID,
+		&i.WorkspaceID,
+		&i.Code,
+		&i.CreatedAt,
+		&i.UpdatedAt,
 	)
 	return i, err
 }

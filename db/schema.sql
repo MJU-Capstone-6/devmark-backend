@@ -159,3 +159,13 @@ FROM workspace w
 LEFT JOIN workspace_category wc ON wc.workspace_id = w.id
 LEFT JOIN category c ON wc.category_id = c.id
 GROUP BY w.id;
+
+CREATE TABLE "workspace_code" (
+  "id" bigserial PRIMARY KEY,
+  "workspace_id" bigint,
+  "code" varchar,
+  "created_at" timestamptz DEFAULT CURRENT_TIMESTAMP NOT NULL,
+  "updated_at" timestamptz DEFAULT CURRENT_TIMESTAMP NOT NULL,
+  FOREIGN KEY ("workspace_id") REFERENCES "workspace" ("id")
+);
+

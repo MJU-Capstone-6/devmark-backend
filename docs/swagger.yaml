@@ -81,6 +81,13 @@ definitions:
       user_id:
         type: integer
     type: object
+  repository.CreateWorkspaceParams:
+    properties:
+      description:
+        type: string
+      name:
+        type: string
+    type: object
   repository.FindBookmarkRow:
     properties:
       bookmark:
@@ -141,6 +148,8 @@ definitions:
         type: string
       summary:
         type: string
+      title:
+        type: string
       workspace_id:
         type: integer
     type: object
@@ -186,6 +195,19 @@ definitions:
       user_count:
         type: integer
     type: object
+  repository.WorkspaceCode:
+    properties:
+      code:
+        type: string
+      created_at:
+        $ref: '#/definitions/pgtype.Timestamptz'
+      id:
+        type: integer
+      updated_at:
+        $ref: '#/definitions/pgtype.Timestamptz'
+      workspace_id:
+        type: integer
+    type: object
   request.CreateBookmarkParam:
     properties:
       category_id:
@@ -210,6 +232,13 @@ definitions:
     properties:
       workspace_id:
         type: integer
+    type: object
+  request.PredictCategoryBody:
+    properties:
+      code:
+        type: string
+      link:
+        type: string
     type: object
   request.RefreshAccessTokenParam:
     properties:
@@ -238,11 +267,6 @@ definitions:
       access_token:
         type: string
       refresh_token:
-        type: string
-    type: object
-  workspace.CreateWorkspaceParam:
-    properties:
-      name:
         type: string
     type: object
   workspace.JoinWorkspaceParam:
@@ -572,6 +596,40 @@ paths:
       summary: Update Category
       tags:
       - category
+  /api/v1/code/predict:
+    post:
+      consumes:
+      - application/json
+      description: 카테고리 예측 API 입니다. 카테고리가 존재하지 않을 시 자동으로 카테고리가 생성됩니다.
+      parameters:
+      - description: PredictCategory Body
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/request.PredictCategoryBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/repository.Bookmark'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/customerror.CustomError'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/customerror.CustomError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/customerror.CustomError'
+      summary: 카테고리 예측 API
+      tags:
+      - workspaceCode
   /api/v1/comment:
     post:
       consumes:
@@ -778,12 +836,12 @@ paths:
       - application/json
       description: 워크스페이스를 생성합니다.
       parameters:
-      - description: Workspace id
+      - description: Workspace Body
         in: body
         name: body
         required: true
         schema:
-          $ref: '#/definitions/workspace.CreateWorkspaceParam'
+          $ref: '#/definitions/repository.CreateWorkspaceParams'
       produces:
       - application/json
       responses:
@@ -986,6 +1044,39 @@ paths:
           schema:
             $ref: '#/definitions/customerror.CustomError'
       summary: 워크스페이스 카테고리 조회
+      tags:
+      - workspace
+  /api/v1/workspace/:id/code:
+    post:
+      consumes:
+      - application/json
+      description: 워크스페이스의 코드를 생성합니다.
+      parameters:
+      - description: Workspace id
+        in: path
+        name: workspace_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/repository.WorkspaceCode'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/customerror.CustomError'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/customerror.CustomError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/customerror.CustomError'
+      summary: 워크스페이스 코드 생성
       tags:
       - workspace
   /api/v1/workspace/:workspace_id/category/:category_id:

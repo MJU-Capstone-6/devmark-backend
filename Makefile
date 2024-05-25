@@ -10,7 +10,7 @@ USER_PATH="internal/user"
 BOOKMARK_PATH="internal/bookmark"
 REFRESH_TOKEN_PATH="internal/refreshToken"
 COMMENT_PATH="internal/comment"
-
+WORKSPACECODE_PATH="internal/workspaceCode"
 status:
 	GOOSE_MIGRATION_DIR=${migration_dir} goose postgres ${url} status
 
@@ -31,5 +31,5 @@ run:
 
 swag:
 	swag fmt
-	swag init -d ${AUTH_PATH},${CATEGORY_PATH},${INVITECODE_PATH},${WORKSPACE_PATH},${USER_PATH},${BOOKMARK_PATH},${REFRESH_TOKEN_PATH},${COMMENT_PATH} -g ../../main.go --parseDependency
+	swag init -d ${AUTH_PATH},${CATEGORY_PATH},${INVITECODE_PATH},${WORKSPACE_PATH},${USER_PATH},${BOOKMARK_PATH},${REFRESH_TOKEN_PATH},${COMMENT_PATH},${WORKSPACECODE_PATH} -g ../../main.go --parseDependency
 	

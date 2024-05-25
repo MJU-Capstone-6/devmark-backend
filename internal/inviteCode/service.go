@@ -45,7 +45,7 @@ func (i *InviteCodeService) CreateInviteCode(param request.CreateInviteCodeParam
 	}
 	_, err := i.WorkspaceService.FindById(param.WorkspaceID)
 	if err != nil {
-		return nil, customerror.WorkspaceNotFoundErr(err)
+		return nil, err
 	}
 	workspaceId := int32(param.WorkspaceID)
 	inviteCodeParam := repository.CreateInviteCodeParams{

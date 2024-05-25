@@ -13,6 +13,7 @@ import (
 	refreshtoken "github.com/MJU-Capstone-6/devmark-backend/internal/refreshToken"
 	"github.com/MJU-Capstone-6/devmark-backend/internal/user"
 	"github.com/MJU-Capstone-6/devmark-backend/internal/workspace"
+	workspacecode "github.com/MJU-Capstone-6/devmark-backend/internal/workspaceCode"
 	"github.com/labstack/echo/v4/middleware"
 	echoSwagger "github.com/swaggo/echo-swagger"
 )
@@ -34,6 +35,7 @@ func (app *Application) InitRoutes() {
 	app.InitBookmarkRoutes()
 	app.InitRefreshTokenRoutes()
 	app.InitCommentRoutes()
+	app.InitWorkspaceCodeRoutes()
 }
 
 func (app *Application) InitUserRoutes() {
@@ -66,7 +68,14 @@ func (app *Application) InitWorkspaceRoutes() {
 	inviteCodeService := invitecode.InitInviteCodeService().WithRepository(&app.Repository).WithWorkspaceService(tempWorkspaceService)
 	workspaceService := workspace.InitWorkspaceService(&app.Repository).WithInviteCodeService(&inviteCodeService)
 	workspaceController := workspace.InitWorkspaceController().WithWorkspaceService(&workspaceService)
+	categoryService := category.InitCategoryService().WithRepository(&app.Repository)
+	bookmarkService := bookmark.InitBookmarkService().
+		WithRepository(&app.Repository).
+		WithWorkspaceService(&workspaceService).
+		WithCategoryService(&categoryService)
 
+	workspaceCodeService := workspacecode.InitWorkspaceCodeService().WithRepository(&app.Repository).WithBookmarkService(&bookmarkService).WithCategoryService(&categoryService)
+	workspaceController = workspaceController.WithWorkspaceCodeService(&workspaceCodeService)
 	userService := user.InitUserService(&app.Repository)
 	jwtService := jwtToken.InitJWTService(app.PubKey, app.PrivateKey, app.Config.App.FooterKey)
 
@@ -80,6 +89,7 @@ func (app *Application) InitWorkspaceRoutes() {
 	e.POST("", workspaceController.CreateWorkspaceController, customMiddleware.Auth)
 	e.POST("/join", workspaceController.JoinWorkspaceController, customMiddleware.Auth)
 	e.POST("/:workspace_id/category/:category_id", workspaceController.RegisterCategoryToWorkspaceController, customMiddleware.Auth)
+	e.POST("/:id/code", workspaceController.CreateWorkspaceCodeController, customMiddleware.Auth)
 	e.DELETE("/:id", workspaceController.DeleteWorkspaceController, customMiddleware.Auth)
 }
 
@@ -145,8 +155,13 @@ func (app *Application) InitRefreshTokenRoutes() {
 
 func (app *Application) InitCommentRoutes() {
 	e := app.Handler.Group(fmt.Sprintf("%s/comment", V1))
+	categoryService := category.InitCategoryService().WithRepository(&app.Repository)
+	invitecodeService := invitecode.InitInviteCodeService().WithRepository(&app.Repository)
+	workspaceService := workspace.InitWorkspaceService(&app.Repository).WithInviteCodeService(&invitecodeService)
+	invitecodeService = invitecodeService.WithWorkspaceService(&workspaceService)
+	bookmarkService := bookmark.InitBookmarkService().WithRepository(&app.Repository).WithCategoryService(&categoryService)
 
-	commentService := comment.InitCommentService().WithRepository(&app.Repository)
+	commentService := comment.InitCommentService().WithRepository(&app.Repository).WithBookmarkService(&bookmarkService)
 	commentController := comment.InitCommentController().WithCommentService(&commentService)
 
 	userService := user.InitUserService(&app.Repository)
@@ -155,4 +170,20 @@ func (app *Application) InitCommentRoutes() {
 	e.POST("", commentController.CreateCommentController, customMiddleware.Auth)
 	e.PUT("/:id", commentController.UpdateCommentController, customMiddleware.Auth)
 	e.DELETE("/:id", commentController.DeleteCommentController, customMiddleware.Auth)
+}
+
+func (app *Application) InitWorkspaceCodeRoutes() {
+	e := app.Handler.Group(fmt.Sprintf("%s/code", V1))
+	categoryService := category.InitCategoryService().WithRepository(&app.Repository)
+	workspaceService := workspace.InitWorkspaceService(&app.Repository)
+	bookmarkSeervice := bookmark.InitBookmarkService().WithRepository(&app.Repository).WithCategoryService(&categoryService).WithWorkspaceService(workspaceService)
+	workspaceCodeService := workspacecode.InitWorkspaceCodeService().
+		WithRepository(&app.Repository).WithBookmarkService(&bookmarkSeervice).WithCategoryService(&categoryService)
+
+	workspaceCodeController := workspacecode.InitWorkspaceCodeController().WithWorkspaceCodeService(&workspaceCodeService)
+
+	userService := user.InitUserService(&app.Repository)
+	jwtService := jwtToken.InitJWTService(app.PubKey, app.PrivateKey, app.Config.App.FooterKey)
+	customMiddleware := middlewares.InitMiddleware().WithUserService(userService).WithJwtTokenService(jwtService)
+	e.POST("/predict", workspaceCodeController.PredictCategoryController, customMiddleware.Auth)
 }

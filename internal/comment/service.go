@@ -11,7 +11,8 @@ import (
 )
 
 type CommentService struct {
-	Repository interfaces.IRepository
+	Repository      interfaces.IRepository
+	BookmarkService interfaces.IBookmarkService
 }
 
 func (c *CommentService) FindById(id int) (*repository.Comment, error) {
@@ -23,6 +24,11 @@ func (c *CommentService) FindById(id int) (*repository.Comment, error) {
 }
 
 func (c *CommentService) Create(param repository.CreateCommentParams) (*repository.Comment, error) {
+	bookmarkID := param.BookmarkID
+	_, err := c.BookmarkService.FindById(int(*bookmarkID))
+	if err != nil {
+		return nil, err
+	}
 	comment, err := c.Repository.CreateComment(context.Background(), param)
 	if err != nil {
 		log.Println(err)
@@ -69,5 +75,10 @@ func InitCommentService() *CommentService {
 
 func (c CommentService) WithRepository(repo interfaces.IRepository) CommentService {
 	c.Repository = repo
+	return c
+}
+
+func (c CommentService) WithBookmarkService(service interfaces.IBookmarkService) CommentService {
+	c.BookmarkService = service
 	return c
 }
