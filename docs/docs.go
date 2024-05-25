@@ -1744,9 +1744,6 @@ const docTemplate = `{
                 "category_name": {
                     "type": "string"
                 },
-                "id": {
-                    "type": "integer"
-                },
                 "link": {
                     "type": "string"
                 },

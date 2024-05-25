@@ -234,8 +234,6 @@ definitions:
     properties:
       category_name:
         type: string
-      id:
-        type: integer
       link:
         type: string
       summary:
