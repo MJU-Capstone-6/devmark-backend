@@ -13,9 +13,10 @@ import (
 )
 
 type WorkspaceCodeService struct {
-	Repository      interfaces.IRepository
-	CategoryService interfaces.ICategoryService
-	BookmarkService interfaces.IBookmarkService
+	Repository       interfaces.IRepository
+	CategoryService  interfaces.ICategoryService
+	BookmarkService  interfaces.IBookmarkService
+	WorkspaceService interfaces.IWorkspaceService
 }
 
 const CHARSET = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
@@ -67,6 +68,14 @@ func (w *WorkspaceCodeService) PredictCategory(param request.PredictCategoryPara
 	if err != nil {
 		return nil, err
 	}
+	registerParam := repository.RegisterCategoryToWorkspaceParams{
+		WorkspaceID: workspaceCode.Workspace.ID,
+		CategoryID:  category.ID,
+	}
+	err = w.WorkspaceService.RegisterCategory(registerParam)
+	if err != nil {
+		return nil, err
+	}
 
 	return bookmark, nil
 }
@@ -105,5 +114,10 @@ func (w WorkspaceCodeService) WithCategoryService(service interfaces.ICategorySe
 
 func (w WorkspaceCodeService) WithBookmarkService(service interfaces.IBookmarkService) WorkspaceCodeService {
 	w.BookmarkService = service
+	return w
+}
+
+func (w WorkspaceCodeService) WithWorkspaceService(service interfaces.IWorkspaceService) WorkspaceCodeService {
+	w.WorkspaceService = service
 	return w
 }
