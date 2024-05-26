@@ -218,6 +218,11 @@ definitions:
       workspace_id:
         type: integer
     type: object
+  request.FindWorkspaceCodeParam:
+    properties:
+      code:
+        type: string
+    type: object
   request.PredictCategoryBody:
     properties:
       code:
@@ -246,6 +251,11 @@ definitions:
   request.UpdateCommentParam:
     properties:
       comment_context:
+        type: string
+    type: object
+  responses.FindWorkspaceResponse:
+    properties:
+      workspace_name:
         type: string
     type: object
   responses.GetKakaoInfoResponse:
@@ -594,6 +604,40 @@ paths:
       summary: Update Category
       tags:
       - category
+  /api/v1/code:
+    get:
+      consumes:
+      - application/json
+      description: 코드가 존재하면 해당하는 코드의 Workspace Name을 반환합니다.
+      parameters:
+      - description: FindWorkspaceCode Body
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/request.FindWorkspaceCodeParam'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.FindWorkspaceResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/customerror.CustomError'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/customerror.CustomError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/customerror.CustomError'
+      summary: 코드 검증 API
+      tags:
+      - workspaceCode
   /api/v1/code/predict:
     post:
       consumes:

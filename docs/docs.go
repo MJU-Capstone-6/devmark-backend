@@ -490,6 +490,58 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/code": {
+            "get": {
+                "description": "코드가 존재하면 해당하는 코드의 Workspace Name을 반환합니다.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "workspaceCode"
+                ],
+                "summary": "코드 검증 API",
+                "parameters": [
+                    {
+                        "description": "FindWorkspaceCode Body",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.FindWorkspaceCodeParam"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/responses.FindWorkspaceResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/customerror.CustomError"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/customerror.CustomError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/customerror.CustomError"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/code/predict": {
             "post": {
                 "description": "카테고리 예측 API 입니다. 카테고리가 존재하지 않을 시 자동으로 카테고리가 생성됩니다.",
@@ -1719,6 +1771,14 @@ const docTemplate = `{
                 }
             }
         },
+        "request.FindWorkspaceCodeParam": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string"
+                }
+            }
+        },
         "request.PredictCategoryBody": {
             "type": "object",
             "properties": {
@@ -1762,6 +1822,14 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "comment_context": {
+                    "type": "string"
+                }
+            }
+        },
+        "responses.FindWorkspaceResponse": {
+            "type": "object",
+            "properties": {
+                "workspace_name": {
                     "type": "string"
                 }
             }

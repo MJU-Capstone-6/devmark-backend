@@ -57,6 +57,20 @@ func (w *WorkspaceCodeController) PredictCategoryController(ctx echo.Context) er
 	return ctx.JSON(http.StatusOK, bookmark)
 }
 
+// FindWorkspaceCodeController godoc
+//
+//	@summary 코드 검증 API
+//	@schemes
+//	@description	코드가 존재하면 해당하는 코드의 Workspace Name을 반환합니다.
+//	@tags			workspaceCode
+//	@accept			json
+//	@produce		json
+//	@param			body	body		request.FindWorkspaceCodeParam true	"FindWorkspaceCode Body"
+//	@success		200		{object}	responses.FindWorkspaceResponse
+//	@failure		400		{object}	customerror.CustomError
+//	@failure		401		{object}	customerror.CustomError
+//	@failure		500		{object}	customerror.CustomError
+//	@router			/api/v1/code [GET]
 func (w *WorkspaceCodeController) FindWorkspaceCodeController(ctx echo.Context) error {
 	var param request.FindWorkspaceCodeParam
 	err := ctx.Bind(&param)
