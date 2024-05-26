@@ -2,6 +2,7 @@ package app
 
 import (
 	"fmt"
+	"net/http"
 
 	"github.com/MJU-Capstone-6/devmark-backend/internal/auth"
 	"github.com/MJU-Capstone-6/devmark-backend/internal/bookmark"
@@ -24,6 +25,11 @@ func (app *Application) InitRoutes() {
 	app.Handler.HTTPErrorHandler = CustomHTTPErrorHandler
 	app.Handler.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
 		Format: "method=${method}, uri=${uri}, status=${status}\n",
+	}))
+	app.Handler.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		Skipper:      middleware.DefaultSkipper,
+		AllowOrigins: []string{"*"},
+		AllowMethods: []string{http.MethodGet, http.MethodHead, http.MethodPut, http.MethodPatch, http.MethodPost, http.MethodDelete},
 	}))
 	app.Handler.File("/docs", "swagger.json")
 	app.Handler.GET("/api/v1/swagger/*", echoSwagger.WrapHandler)
