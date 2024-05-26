@@ -218,11 +218,6 @@ definitions:
       workspace_id:
         type: integer
     type: object
-  request.FindWorkspaceCodeParam:
-    properties:
-      code:
-        type: string
-    type: object
   request.PredictCategoryBody:
     properties:
       code:
@@ -607,15 +602,14 @@ paths:
   /api/v1/code:
     get:
       consumes:
-      - application/json
+      - text/plain
       description: 코드가 존재하면 해당하는 코드의 Workspace Name을 반환합니다.
       parameters:
-      - description: FindWorkspaceCode Body
-        in: body
-        name: body
+      - description: code query
+        in: query
+        name: code
         required: true
-        schema:
-          $ref: '#/definitions/request.FindWorkspaceCodeParam'
+        type: string
       produces:
       - application/json
       responses:

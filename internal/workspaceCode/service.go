@@ -59,7 +59,6 @@ func (w *WorkspaceCodeService) PredictCategory(param request.PredictCategoryPara
 		Link:        &param.Link,
 		WorkspaceID: &workspaceCode.Workspace.ID,
 		CategoryID:  &category.ID,
-		UserID:      &param.UserID,
 	}
 
 	bookmark, err := w.BookmarkService.Create(createBookmarkParam)
@@ -70,10 +69,7 @@ func (w *WorkspaceCodeService) PredictCategory(param request.PredictCategoryPara
 		WorkspaceID: workspaceCode.Workspace.ID,
 		CategoryID:  category.ID,
 	}
-	err = w.WorkspaceService.RegisterCategory(registerParam)
-	if err != nil {
-		return nil, err
-	}
+	_ = w.WorkspaceService.RegisterCategory(registerParam)
 
 	return bookmark, nil
 }

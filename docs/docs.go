@@ -494,7 +494,7 @@ const docTemplate = `{
             "get": {
                 "description": "코드가 존재하면 해당하는 코드의 Workspace Name을 반환합니다.",
                 "consumes": [
-                    "application/json"
+                    "text/plain"
                 ],
                 "produces": [
                     "application/json"
@@ -505,13 +505,11 @@ const docTemplate = `{
                 "summary": "코드 검증 API",
                 "parameters": [
                     {
-                        "description": "FindWorkspaceCode Body",
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/request.FindWorkspaceCodeParam"
-                        }
+                        "type": "string",
+                        "description": "code query",
+                        "name": "code",
+                        "in": "query",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -1768,14 +1766,6 @@ const docTemplate = `{
             "properties": {
                 "workspace_id": {
                     "type": "integer"
-                }
-            }
-        },
-        "request.FindWorkspaceCodeParam": {
-            "type": "object",
-            "properties": {
-                "code": {
-                    "type": "string"
                 }
             }
         },
