@@ -29,7 +29,7 @@ func (app *Application) InitRoutes() {
 	app.Handler.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 		Skipper:      middleware.DefaultSkipper,
 		AllowOrigins: []string{"*"},
-		AllowMethods: []string{http.MethodGet, http.MethodHead, http.MethodPut, http.MethodPatch, http.MethodPost, http.MethodDelete},
+		AllowMethods: []string{http.MethodGet, http.MethodHead, http.MethodPut, http.MethodPatch, http.MethodPost, http.MethodDelete, http.MethodOptions},
 	}))
 	app.Handler.File("/docs", "swagger.json")
 	app.Handler.GET("/api/v1/swagger/*", echoSwagger.WrapHandler)
