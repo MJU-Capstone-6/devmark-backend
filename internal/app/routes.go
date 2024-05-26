@@ -187,9 +187,6 @@ func (app *Application) InitWorkspaceCodeRoutes() {
 		WithRepository(&app.Repository).WithBookmarkService(&bookmarkSeervice).WithCategoryService(&categoryService).WithWorkspaceService(workspaceService)
 
 	workspaceCodeController := workspacecode.InitWorkspaceCodeController().WithWorkspaceCodeService(&workspaceCodeService)
-	userService := user.InitUserService(&app.Repository)
-	jwtService := jwtToken.InitJWTService(app.PubKey, app.PrivateKey, app.Config.App.FooterKey)
-	customMiddleware := middlewares.InitMiddleware().WithUserService(userService).WithJwtTokenService(jwtService)
-	e.POST("/predict", workspaceCodeController.PredictCategoryController, customMiddleware.Auth)
-	e.GET("", workspaceCodeController.FindWorkspaceCodeController, customMiddleware.Auth)
+	e.POST("/predict", workspaceCodeController.PredictCategoryController)
+	e.GET("", workspaceCodeController.FindWorkspaceCodeController)
 }
