@@ -2,7 +2,6 @@ package workspacecode
 
 import (
 	"context"
-	"log"
 	"math/rand"
 
 	customerror "github.com/MJU-Capstone-6/devmark-backend/internal/customError"
@@ -33,7 +32,6 @@ func (w *WorkspaceCodeService) CreateCode(length int) *string {
 func (w *WorkspaceCodeService) FindByCode(code string) (*repository.FindWorkspaceCodeRow, error) {
 	workspaceCode, err := w.Repository.FindWorkspaceCode(context.Background(), &code)
 	if err != nil {
-		log.Println(err)
 		return nil, customerror.WorkspaceCodeNotFound(err)
 	}
 	return &workspaceCode, nil
