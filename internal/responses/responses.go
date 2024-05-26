@@ -20,6 +20,10 @@ type OkResponse struct {
 	Ok bool `json:"ok"`
 }
 
+type FindWorkspaceResponse struct {
+	WorkspaceName string `json:"workspace_name"`
+}
+
 func Unauthorized(ctx echo.Context, data interface{}) error {
 	return ctx.JSON(http.StatusUnauthorized, data)
 }

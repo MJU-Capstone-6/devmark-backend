@@ -6,6 +6,7 @@ import (
 
 	customerror "github.com/MJU-Capstone-6/devmark-backend/internal/customError"
 	"github.com/MJU-Capstone-6/devmark-backend/internal/request"
+	"github.com/MJU-Capstone-6/devmark-backend/internal/responses"
 	"github.com/MJU-Capstone-6/devmark-backend/internal/utils"
 	"github.com/MJU-Capstone-6/devmark-backend/pkg/interfaces"
 	"github.com/labstack/echo/v4"
@@ -54,6 +55,22 @@ func (w *WorkspaceCodeController) PredictCategoryController(ctx echo.Context) er
 		return err
 	}
 	return ctx.JSON(http.StatusOK, bookmark)
+}
+
+func (w *WorkspaceCodeController) FindWorkspaceCodeController(ctx echo.Context) error {
+	var param request.FindWorkspaceCodeParam
+	err := ctx.Bind(&param)
+	if err != nil {
+		return customerror.InternalServerError(err)
+	}
+	row, err := w.WorkspaceCodeService.FindByCode(param.Code)
+	if err != nil {
+		return err
+	}
+	response := responses.FindWorkspaceResponse{
+		WorkspaceName: *row.Workspace.Name,
+	}
+	return ctx.JSON(http.StatusOK, response)
 }
 
 func InitWorkspaceCodeController() *WorkspaceCodeController {

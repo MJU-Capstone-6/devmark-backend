@@ -185,4 +185,5 @@ func (app *Application) InitWorkspaceCodeRoutes() {
 	jwtService := jwtToken.InitJWTService(app.PubKey, app.PrivateKey, app.Config.App.FooterKey)
 	customMiddleware := middlewares.InitMiddleware().WithUserService(userService).WithJwtTokenService(jwtService)
 	e.POST("/predict", workspaceCodeController.PredictCategoryController, customMiddleware.Auth)
+	e.GET("", workspaceCodeController.FindWorkspaceCodeController, customMiddleware.Auth)
 }
