@@ -170,3 +170,33 @@ CREATE TABLE "workspace_code" (
   FOREIGN KEY ("workspace_id") REFERENCES "workspace" ("id")
 );
 
+CREATE VIEW bookmark_count AS
+SELECT "user".username, workspace.id, workspace.name, workspace.description
+FROM workspace_user
+JOIN "user" on workspace_user.user_id = "user".id
+JOIN workspace on workspace_user.workspace_id = workspace.id
+GROUP BY workspace.id, "user".id;
+
+ALTER TABLE "workspace_user_bookmark_count" ADD COLUMN "bookmark_count" integer DEFAULT 0;
+
+CREATE OR REPLACE FUNCTION update_bookmark_count()
+RETURNS TRIGGER AS $$
+BEGIN
+    UPDATE "workspace_user_bookmark_count" SET "bookmark_count" = (
+    SELECT COUNT(bookmark.id)
+    FROM workspace_user
+    JOIN "user" on workspace_user.user_id = "user".id
+    JOIN workspace on workspace_user.workspace_id = workspace.id
+    JOIN bookmark on (bookmark.user_id = "user".id AND bookmark.workspace_id = workspace.id)
+    WHERE workspace_user.workspace_id = $1
+    GROUP BY workspace.id, "user".id;
+    );
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trigger_update_workspace_user_count
+AFTER INSERT OR UPDATE OR DELETE ON "bookmark"
+FOR EACH ROW EXECUTE FUNCTION update_bookmark_count();
+
+

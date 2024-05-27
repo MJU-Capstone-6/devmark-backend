@@ -119,6 +119,11 @@ type WorkspaceUser struct {
 	UserID      int64 `db:"user_id" json:"user_id"`
 }
 
+type WorkspaceUserBookmarkCount struct {
+	WorkspaceID       int64               `db:"workspace_id" json:"workspace_id"`
+	UserBookmarkCount []UserBookmarkCount `db:"user_bookmark_count" json:"user_bookmark_count"`
+}
+
 type WorkspaceUserCategory struct {
 	ID            int64              `db:"id" json:"id"`
 	Name          *string            `db:"name" json:"name"`

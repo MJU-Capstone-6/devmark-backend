@@ -359,6 +359,18 @@ func (w *WorkspaceController) CreateWorkspaceCodeController(ctx echo.Context) er
 	return ctx.JSON(http.StatusOK, workspaceCode)
 }
 
+func (w *WorkspaceController) FindWorkspaceInfoController(ctx echo.Context) error {
+	id, err := utils.ParseURLParam(ctx, "id")
+	if err != nil {
+		return err
+	}
+	workspaceInfo, err := w.WorkspaceService.FindInfoById(*id)
+	if err != nil {
+		return err
+	}
+	return ctx.JSON(http.StatusOK, workspaceInfo)
+}
+
 func InitWorkspaceController() *WorkspaceController {
 	return &WorkspaceController{}
 }

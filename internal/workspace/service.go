@@ -131,6 +131,14 @@ func (w *WorkspaceService) RegisterCategory(param repository.RegisterCategoryToW
 	return nil
 }
 
+func (w *WorkspaceService) FindInfoById(id int) (*repository.FindWorkspaceInfoRow, error) {
+	workspaceInfo, err := w.Repository.FindWorkspaceInfo(context.Background(), int64(id))
+	if err != nil {
+		return nil, customerror.WorkspaceNotFoundErr(err)
+	}
+	return &workspaceInfo, nil
+}
+
 func InitWorkspaceService(repo interfaces.IRepository) *WorkspaceService {
 	return &WorkspaceService{Repository: repo}
 }
