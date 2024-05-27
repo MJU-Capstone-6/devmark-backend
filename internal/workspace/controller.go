@@ -359,6 +359,20 @@ func (w *WorkspaceController) CreateWorkspaceCodeController(ctx echo.Context) er
 	return ctx.JSON(http.StatusOK, workspaceCode)
 }
 
+// CreateWorkspaceCodeController godoc
+//
+//	@summary	워크스페이스 정보 조회
+//	@schemes
+//	@description	워크스페이스의 정보를 조회합니다.
+//	@tags			workspace
+//	@accept			json
+//	@produce		json
+//	@param			workspace_id	path		int	true	"Workspace id"
+//	@success		200				{object}	repository.FindWorkspaceInfoRow
+//	@failure		400				{object}	customerror.CustomError
+//	@failure		401				{object}	customerror.CustomError
+//	@failure		500				{object}	customerror.CustomError
+//	@router			/api/v1/workspace/:id/info [GET]
 func (w *WorkspaceController) FindWorkspaceInfoController(ctx echo.Context) error {
 	id, err := utils.ParseURLParam(ctx, "id")
 	if err != nil {
