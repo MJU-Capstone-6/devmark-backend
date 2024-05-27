@@ -285,8 +285,8 @@ func (w *WorkspaceController) RegisterCategoryToWorkspaceController(ctx echo.Con
 //	@produce		json
 //	@param			workspace_id	path		int		true	"Workspace id"
 //	@param			category_id		path		int		true	"Category id"
-//	@param			users			query		string	false	"users id"
-//	@param			categories		query		string	false	"categories id"
+//	@param			user			query		string	false	"users id"
+//	@param			category		query		string	false	"categories id"
 //	@success		200				{object}	[]repository.Bookmark
 //	@failure		400				{object}	customerror.CustomError
 //	@failure		401				{object}	customerror.CustomError
@@ -300,7 +300,7 @@ func (w *WorkspaceController) SearchBookmarkController(ctx echo.Context) error {
 		return err
 	}
 
-	usersParam := ctx.QueryParam("users")
+	usersParam := ctx.QueryParam("user")
 	if usersParam != "" {
 		user_ids, err = utils.SliceValueIntoNum(strings.Split(usersParam, ","))
 		if err != nil {
@@ -316,13 +316,6 @@ func (w *WorkspaceController) SearchBookmarkController(ctx echo.Context) error {
 		}
 	}
 
-	if len(*category_ids) == 0 {
-		category_ids = nil
-	}
-
-	if len(*user_ids) == 0 {
-		user_ids = nil
-	}
 	parsedWorkspaceID := int64(*workspace_id)
 	param := repository.SearchWorkspaceBookmarkParams{
 		WorkspaceID: &parsedWorkspaceID,

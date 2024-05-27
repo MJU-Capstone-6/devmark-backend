@@ -1134,13 +1134,13 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "users id",
-                        "name": "users",
+                        "name": "user",
                         "in": "query"
                     },
                     {
                         "type": "string",
                         "description": "categories id",
-                        "name": "categories",
+                        "name": "category",
                         "in": "query"
                     }
                 ],
