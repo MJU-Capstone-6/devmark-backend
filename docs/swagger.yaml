@@ -110,6 +110,17 @@ definitions:
       username:
         type: string
     type: object
+  repository.FindWorkspaceInfoRow:
+    properties:
+      description:
+        type: string
+      name:
+        type: string
+      user_bookmark_count:
+        items:
+          $ref: '#/definitions/repository.UserBookmarkCount'
+        type: array
+    type: object
   repository.FindWorkspaceRow:
     properties:
       categories:
@@ -175,6 +186,15 @@ definitions:
       id:
         type: integer
       name:
+        type: string
+    type: object
+  repository.UserBookmarkCount:
+    properties:
+      bookmark_count:
+        type: integer
+      user_id:
+        type: integer
+      username:
         type: string
     type: object
   repository.UserWorkspaceView:
@@ -1131,6 +1151,39 @@ paths:
           schema:
             $ref: '#/definitions/customerror.CustomError'
       summary: 워크스페이스 코드 생성
+      tags:
+      - workspace
+  /api/v1/workspace/:id/info:
+    get:
+      consumes:
+      - application/json
+      description: 워크스페이스의 정보를 조회합니다.
+      parameters:
+      - description: Workspace id
+        in: path
+        name: workspace_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/repository.FindWorkspaceInfoRow'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/customerror.CustomError'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/customerror.CustomError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/customerror.CustomError'
+      summary: 워크스페이스 정보 조회
       tags:
       - workspace
   /api/v1/workspace/:workspace_id/category/:category_id:

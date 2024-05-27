@@ -51,4 +51,5 @@ type IRepository interface {
 	UpdateWorkspaceCode(context.Context, repository.UpdateWorkspaceCodeParams) (repository.WorkspaceCode, error)
 	FindCategoryByName(context.Context, *string) (repository.Category, error)
 	FindWorkspaceCodeByWorkspaceID(context.Context, *int64) (repository.WorkspaceCode, error)
+	FindWorkspaceInfo(context.Context, int64) (repository.FindWorkspaceInfoRow, error)
 }

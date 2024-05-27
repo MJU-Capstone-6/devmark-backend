@@ -204,3 +204,10 @@ RETURNING *;
 
 -- name: FindCategoryByName :one
 SELECT * FROM category WHERE name = $1;
+
+-- name: FindWorkspaceInfo :one
+SELECT w.name, w.description, user_bookmark_count 
+FROM workspace_user_bookmark_count wu 
+JOIN workspace w ON wu.workspace_id = w.id
+WHERE workspace_id = $1;
+

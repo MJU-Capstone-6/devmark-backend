@@ -43,3 +43,7 @@ sql:
               type: "Category"
               slice: true
               pointer: true
+          - column: "workspace_user_bookmark_count.user_bookmark_count"
+            go_type:
+              type: "UserBookmarkCount"
+              slice: true

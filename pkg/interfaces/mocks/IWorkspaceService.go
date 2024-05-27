@@ -150,6 +150,36 @@ func (_m *IWorkspaceService) FindCategoryBookmark(_a0 repository.FindWorkspaceCa
 	return r0, r1
 }
 
+// FindInfoById provides a mock function with given fields: _a0
+func (_m *IWorkspaceService) FindInfoById(_a0 int) (*repository.FindWorkspaceInfoRow, error) {
+	ret := _m.Called(_a0)
+
+	if len(ret) == 0 {
+		panic("no return value specified for FindInfoById")
+	}
+
+	var r0 *repository.FindWorkspaceInfoRow
+	var r1 error
+	if rf, ok := ret.Get(0).(func(int) (*repository.FindWorkspaceInfoRow, error)); ok {
+		return rf(_a0)
+	}
+	if rf, ok := ret.Get(0).(func(int) *repository.FindWorkspaceInfoRow); ok {
+		r0 = rf(_a0)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*repository.FindWorkspaceInfoRow)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(int) error); ok {
+		r1 = rf(_a0)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // Join provides a mock function with given fields: _a0, _a1
 func (_m *IWorkspaceService) Join(_a0 string, _a1 repository.JoinWorkspaceParams) error {
 	ret := _m.Called(_a0, _a1)

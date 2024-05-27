@@ -1265,6 +1265,56 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/workspace/:id/info": {
+            "get": {
+                "description": "워크스페이스의 정보를 조회합니다.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "workspace"
+                ],
+                "summary": "워크스페이스 정보 조회",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Workspace id",
+                        "name": "workspace_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/repository.FindWorkspaceInfoRow"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/customerror.CustomError"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/customerror.CustomError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/customerror.CustomError"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/workspace/:workspace_id/category/:category_id": {
             "get": {
                 "description": "워크스페이스의 카테고리내의 북마크를  조회합니다.",
@@ -1595,6 +1645,23 @@ const docTemplate = `{
                 }
             }
         },
+        "repository.FindWorkspaceInfoRow": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "user_bookmark_count": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/repository.UserBookmarkCount"
+                    }
+                }
+            }
+        },
         "repository.FindWorkspaceRow": {
             "type": "object",
             "properties": {
@@ -1694,6 +1761,20 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "repository.UserBookmarkCount": {
+            "type": "object",
+            "properties": {
+                "bookmark_count": {
+                    "type": "integer"
+                },
+                "user_id": {
+                    "type": "integer"
+                },
+                "username": {
                     "type": "string"
                 }
             }

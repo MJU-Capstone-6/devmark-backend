@@ -821,6 +821,34 @@ func (_m *IRepository) FindWorkspaceCodeByWorkspaceID(_a0 context.Context, _a1 *
 	return r0, r1
 }
 
+// FindWorkspaceInfo provides a mock function with given fields: _a0, _a1
+func (_m *IRepository) FindWorkspaceInfo(_a0 context.Context, _a1 int64) (repository.FindWorkspaceInfoRow, error) {
+	ret := _m.Called(_a0, _a1)
+
+	if len(ret) == 0 {
+		panic("no return value specified for FindWorkspaceInfo")
+	}
+
+	var r0 repository.FindWorkspaceInfoRow
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, int64) (repository.FindWorkspaceInfoRow, error)); ok {
+		return rf(_a0, _a1)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, int64) repository.FindWorkspaceInfoRow); ok {
+		r0 = rf(_a0, _a1)
+	} else {
+		r0 = ret.Get(0).(repository.FindWorkspaceInfoRow)
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, int64) error); ok {
+		r1 = rf(_a0, _a1)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // FindWorkspaceJoinedUser provides a mock function with given fields: _a0, _a1
 func (_m *IRepository) FindWorkspaceJoinedUser(_a0 context.Context, _a1 repository.FindWorkspaceJoinedUserParams) (repository.WorkspaceUser, error) {
 	ret := _m.Called(_a0, _a1)

@@ -613,6 +613,26 @@ func (q *Queries) FindWorkspaceCodeByWorkspaceID(ctx context.Context, workspaceI
 	return i, err
 }
 
+const findWorkspaceInfo = `-- name: FindWorkspaceInfo :one
+SELECT w.name, w.description, user_bookmark_count 
+FROM workspace_user_bookmark_count wu 
+JOIN workspace w ON wu.workspace_id = w.id
+WHERE workspace_id = $1
+`
+
+type FindWorkspaceInfoRow struct {
+	Name              *string             `db:"name" json:"name"`
+	Description       *string             `db:"description" json:"description"`
+	UserBookmarkCount []UserBookmarkCount `db:"user_bookmark_count" json:"user_bookmark_count"`
+}
+
+func (q *Queries) FindWorkspaceInfo(ctx context.Context, workspaceID int64) (FindWorkspaceInfoRow, error) {
+	row := q.db.QueryRow(ctx, findWorkspaceInfo, workspaceID)
+	var i FindWorkspaceInfoRow
+	err := row.Scan(&i.Name, &i.Description, &i.UserBookmarkCount)
+	return i, err
+}
+
 const findWorkspaceJoinedUser = `-- name: FindWorkspaceJoinedUser :one
 SELECT workspace_id, user_id FROM workspace_user WHERE workspace_id = $1 AND user_id = $2
 `
