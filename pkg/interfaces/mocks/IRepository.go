@@ -904,23 +904,23 @@ func (_m *IRepository) RegisterCategoryToWorkspace(_a0 context.Context, _a1 repo
 }
 
 // SearchWorkspaceBookmark provides a mock function with given fields: _a0, _a1
-func (_m *IRepository) SearchWorkspaceBookmark(_a0 context.Context, _a1 repository.SearchWorkspaceBookmarkParams) ([]repository.Bookmark, error) {
+func (_m *IRepository) SearchWorkspaceBookmark(_a0 context.Context, _a1 repository.SearchWorkspaceBookmarkParams) ([]repository.SearchWorkspaceBookmarkRow, error) {
 	ret := _m.Called(_a0, _a1)
 
 	if len(ret) == 0 {
 		panic("no return value specified for SearchWorkspaceBookmark")
 	}
 
-	var r0 []repository.Bookmark
+	var r0 []repository.SearchWorkspaceBookmarkRow
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, repository.SearchWorkspaceBookmarkParams) ([]repository.Bookmark, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, repository.SearchWorkspaceBookmarkParams) ([]repository.SearchWorkspaceBookmarkRow, error)); ok {
 		return rf(_a0, _a1)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, repository.SearchWorkspaceBookmarkParams) []repository.Bookmark); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, repository.SearchWorkspaceBookmarkParams) []repository.SearchWorkspaceBookmarkRow); ok {
 		r0 = rf(_a0, _a1)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]repository.Bookmark)
+			r0 = ret.Get(0).([]repository.SearchWorkspaceBookmarkRow)
 		}
 	}
 
