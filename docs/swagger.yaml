@@ -138,6 +138,29 @@ definitions:
       workspace_id:
         type: integer
     type: object
+  repository.SearchWorkspaceBookmarkRow:
+    properties:
+      category_id:
+        type: integer
+      category_name:
+        type: string
+      created_at:
+        $ref: '#/definitions/pgtype.Timestamptz'
+      id:
+        type: integer
+      link:
+        type: string
+      summary:
+        type: string
+      title:
+        type: string
+      updated_at:
+        $ref: '#/definitions/pgtype.Timestamptz'
+      user_id:
+        type: integer
+      workspace_id:
+        type: integer
+    type: object
   repository.UpdateCategoryParams:
     properties:
       id:
@@ -1014,11 +1037,6 @@ paths:
         name: workspace_id
         required: true
         type: integer
-      - description: Category id
-        in: path
-        name: category_id
-        required: true
-        type: integer
       - description: users id
         in: query
         name: user
@@ -1034,7 +1052,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/repository.Bookmark'
+              $ref: '#/definitions/repository.SearchWorkspaceBookmarkRow'
             type: array
         "400":
           description: Bad Request

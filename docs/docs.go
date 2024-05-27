@@ -1125,13 +1125,6 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "type": "integer",
-                        "description": "Category id",
-                        "name": "category_id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
                         "type": "string",
                         "description": "users id",
                         "name": "user",
@@ -1150,7 +1143,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/repository.Bookmark"
+                                "$ref": "#/definitions/repository.SearchWorkspaceBookmarkRow"
                             }
                         }
                     },
@@ -1639,6 +1632,41 @@ const docTemplate = `{
                 },
                 "updated_at": {
                     "$ref": "#/definitions/pgtype.Timestamptz"
+                },
+                "workspace_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "repository.SearchWorkspaceBookmarkRow": {
+            "type": "object",
+            "properties": {
+                "category_id": {
+                    "type": "integer"
+                },
+                "category_name": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "$ref": "#/definitions/pgtype.Timestamptz"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "link": {
+                    "type": "string"
+                },
+                "summary": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "$ref": "#/definitions/pgtype.Timestamptz"
+                },
+                "user_id": {
+                    "type": "integer"
                 },
                 "workspace_id": {
                     "type": "integer"

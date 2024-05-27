@@ -286,7 +286,7 @@ func (w *WorkspaceController) RegisterCategoryToWorkspaceController(ctx echo.Con
 //	@param			workspace_id	path		int		true	"Workspace id"
 //	@param			user			query		string	false	"users id"
 //	@param			category		query		string	false	"categories id"
-//	@success		200				{object}	[]repository.Bookmark
+//	@success		200				{object}	[]repository.SearchWorkspaceBookmarkRow
 //	@failure		400				{object}	customerror.CustomError
 //	@failure		401				{object}	customerror.CustomError
 //	@failure		500				{object}	customerror.CustomError
