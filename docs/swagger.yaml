@@ -983,11 +983,11 @@ paths:
         type: integer
       - description: users id
         in: query
-        name: users
+        name: user
         type: string
       - description: categories id
         in: query
-        name: categories
+        name: category
         type: string
       produces:
       - application/json
