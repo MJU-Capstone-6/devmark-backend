@@ -43,6 +43,26 @@ func (_m *IWorkspaceCodeService) Create(_a0 repository.CreateWorkspaceCodeParams
 	return r0, r1
 }
 
+// CreateCode provides a mock function with given fields: _a0
+func (_m *IWorkspaceCodeService) CreateCode(_a0 int) *string {
+	ret := _m.Called(_a0)
+
+	if len(ret) == 0 {
+		panic("no return value specified for CreateCode")
+	}
+
+	var r0 *string
+	if rf, ok := ret.Get(0).(func(int) *string); ok {
+		r0 = rf(_a0)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*string)
+		}
+	}
+
+	return r0
+}
+
 // FindByCode provides a mock function with given fields: _a0
 func (_m *IWorkspaceCodeService) FindByCode(_a0 string) (*repository.FindWorkspaceCodeRow, error) {
 	ret := _m.Called(_a0)

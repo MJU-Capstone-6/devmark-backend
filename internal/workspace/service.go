@@ -111,7 +111,7 @@ func (w *WorkspaceService) FindCategoryBookmark(param repository.FindWorkspaceCa
 	return &bookmarks, nil
 }
 
-func (w *WorkspaceService) SearchBookmark(param repository.SearchWorkspaceBookmarkParams) (*[]repository.Bookmark, error) {
+func (w *WorkspaceService) SearchBookmark(param repository.SearchWorkspaceBookmarkParams) (*[]repository.SearchWorkspaceBookmarkRow, error) {
 	bookmarks, err := w.Repository.SearchWorkspaceBookmark(context.Background(), param)
 	if err != nil {
 		return nil, customerror.InternalServerError(err)
@@ -119,7 +119,7 @@ func (w *WorkspaceService) SearchBookmark(param repository.SearchWorkspaceBookma
 	if bookmarks != nil {
 		return &bookmarks, nil
 	} else {
-		return &[]repository.Bookmark{}, nil
+		return &[]repository.SearchWorkspaceBookmarkRow{}, nil
 	}
 }
 

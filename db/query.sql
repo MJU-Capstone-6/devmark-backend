@@ -160,8 +160,9 @@ SELECT * FROM bookmark WHERE workspace_id = $1 AND category_id = $2;
 SELECT * FROM workspace WHERE id = $1;
 
 -- name: SearchWorkspaceBookmark :many
-SELECT *
+SELECT bookmark.*, category.name AS category_name
 FROM bookmark
+JOIN category ON bookmark.category_id = category.id
 WHERE workspace_id = $1
   AND (array_length(@user_ids::bigint[], 1) IS NULL OR array_length(@user_ids::bigint[], 1) = 0 OR user_id = ANY(@user_ids::bigint[]))
   AND (array_length(@category_ids::bigint[], 1) IS NULL OR array_length(@category_ids::bigint[], 1) = 0 OR category_id = ANY(@category_ids::bigint[]));

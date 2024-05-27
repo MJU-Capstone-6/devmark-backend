@@ -677,8 +677,9 @@ func (q *Queries) RegisterCategoryToWorkspace(ctx context.Context, arg RegisterC
 }
 
 const searchWorkspaceBookmark = `-- name: SearchWorkspaceBookmark :many
-SELECT id, link, category_id, workspace_id, summary, created_at, updated_at, user_id, title
+SELECT bookmark.id, bookmark.link, bookmark.category_id, bookmark.workspace_id, bookmark.summary, bookmark.created_at, bookmark.updated_at, bookmark.user_id, bookmark.title, category.name AS category_name
 FROM bookmark
+JOIN category ON bookmark.category_id = category.id
 WHERE workspace_id = $1
   AND (array_length($2::bigint[], 1) IS NULL OR array_length($2::bigint[], 1) = 0 OR user_id = ANY($2::bigint[]))
   AND (array_length($3::bigint[], 1) IS NULL OR array_length($3::bigint[], 1) = 0 OR category_id = ANY($3::bigint[]))
@@ -690,15 +691,28 @@ type SearchWorkspaceBookmarkParams struct {
 	CategoryIds []int64 `db:"category_ids" json:"category_ids"`
 }
 
-func (q *Queries) SearchWorkspaceBookmark(ctx context.Context, arg SearchWorkspaceBookmarkParams) ([]Bookmark, error) {
+type SearchWorkspaceBookmarkRow struct {
+	ID           int64              `db:"id" json:"id"`
+	Link         *string            `db:"link" json:"link"`
+	CategoryID   *int64             `db:"category_id" json:"category_id"`
+	WorkspaceID  *int64             `db:"workspace_id" json:"workspace_id"`
+	Summary      *string            `db:"summary" json:"summary"`
+	CreatedAt    pgtype.Timestamptz `db:"created_at" json:"created_at"`
+	UpdatedAt    pgtype.Timestamptz `db:"updated_at" json:"updated_at"`
+	UserID       *int64             `db:"user_id" json:"user_id"`
+	Title        *string            `db:"title" json:"title"`
+	CategoryName *string            `db:"category_name" json:"category_name"`
+}
+
+func (q *Queries) SearchWorkspaceBookmark(ctx context.Context, arg SearchWorkspaceBookmarkParams) ([]SearchWorkspaceBookmarkRow, error) {
 	rows, err := q.db.Query(ctx, searchWorkspaceBookmark, arg.WorkspaceID, arg.UserIds, arg.CategoryIds)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []Bookmark
+	var items []SearchWorkspaceBookmarkRow
 	for rows.Next() {
-		var i Bookmark
+		var i SearchWorkspaceBookmarkRow
 		if err := rows.Scan(
 			&i.ID,
 			&i.Link,
@@ -709,6 +723,7 @@ func (q *Queries) SearchWorkspaceBookmark(ctx context.Context, arg SearchWorkspa
 			&i.UpdatedAt,
 			&i.UserID,
 			&i.Title,
+			&i.CategoryName,
 		); err != nil {
 			return nil, err
 		}

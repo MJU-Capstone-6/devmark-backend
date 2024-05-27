@@ -42,7 +42,7 @@ type IRepository interface {
 	FindWorkspaceCategory(context.Context, int64) ([]*repository.Category, error)
 	FindWorkspaceCategoryBookmark(context.Context, repository.FindWorkspaceCategoryBookmarkParams) ([]repository.Bookmark, error)
 	CheckWorkspaceExists(context.Context, int64) (repository.Workspace, error)
-	SearchWorkspaceBookmark(context.Context, repository.SearchWorkspaceBookmarkParams) ([]repository.Bookmark, error)
+	SearchWorkspaceBookmark(context.Context, repository.SearchWorkspaceBookmarkParams) ([]repository.SearchWorkspaceBookmarkRow, error)
 	FindDuplicateBookmark(context.Context, repository.FindDuplicateBookmarkParams) (int64, error)
 	FindWorkspaceJoinedUser(context.Context, repository.FindWorkspaceJoinedUserParams) (repository.WorkspaceUser, error)
 	UpdateInviteCode(context.Context, repository.UpdateInviteCodeParams) (repository.InviteCode, error)
