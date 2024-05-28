@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/MJU-Capstone-6/devmark-backend/internal/config"
+	"github.com/MJU-Capstone-6/devmark-backend/internal/constants"
 	customerror "github.com/MJU-Capstone-6/devmark-backend/internal/customError"
 	"github.com/MJU-Capstone-6/devmark-backend/pkg/interfaces"
 	"github.com/labstack/echo/v4"
@@ -33,6 +34,7 @@ type AuthController struct {
 func (a *AuthController) GetKakaoUserInfo(ctx echo.Context) error {
 	key := ctx.Get("key")
 	provider := ctx.Param("provider")
+	agentHeader := ctx.Request().Header.Get(constants.USER_AGENT_HEADER)
 	if parsedKey, ok := key.(string); ok {
 		userInfo, err := requestKakaoUserInfo(parsedKey)
 		if err != nil {
@@ -41,7 +43,7 @@ func (a *AuthController) GetKakaoUserInfo(ctx echo.Context) error {
 		if userInfo.ID == 0 {
 			return customerror.TokenNotValidError(errors.New(""))
 		}
-		request, err := a.AuthService.KakaoSignUp(userInfo.Properties.Nickname, provider)
+		request, err := a.AuthService.KakaoSignUp(userInfo.Properties.Nickname, provider, agentHeader)
 		if err != nil {
 			return err
 		}

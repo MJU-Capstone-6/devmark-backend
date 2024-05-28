@@ -8,17 +8,17 @@ import (
 )
 
 type AuthService struct {
-	Repository     interfaces.IRepository
-	UserService    interfaces.IUserService
-	JWTService     interfaces.IJWTService
-	RefreshService interfaces.IRefreshTokenService
+	Repository        interfaces.IRepository
+	UserService       interfaces.IUserService
+	JWTService        interfaces.IJWTService
+	RefreshService    interfaces.IRefreshTokenService
+	DeviceInfoService interfaces.IDeviceinfoService
 }
 
-func (a *AuthService) KakaoSignUp(nickname string, provider string) (*responses.GetKakaoInfoResponse, error) {
+func (a *AuthService) KakaoSignUp(nickname string, provider string, agent string) (*responses.GetKakaoInfoResponse, error) {
 	var userId int
 	var user *repository.User
 	var refreshToken *repository.RefreshToken
-
 	user, err := a.UserService.FindUserByUserName(&nickname)
 	if err != nil {
 		params := repository.CreateUserParams{Username: &nickname, Provider: &provider}
@@ -72,11 +72,21 @@ func (a *AuthService) KakaoSignUp(nickname string, provider string) (*responses.
 	if err != nil {
 		return nil, err
 	}
+	if _, err := a.DeviceInfoService.FindByAgentAndUserID(int(user.ID), agent); err != nil {
+		createParam := repository.CreateDeviceInfoParams{
+			UserID:      user.ID,
+			AgentHeader: agent,
+		}
+		_, err := a.DeviceInfoService.Create(createParam)
+		if err != nil {
+			return nil, err
+		}
+	}
 	return &responses.GetKakaoInfoResponse{AccessToken: accessToken, RefreshToken: *refreshToken.Token}, nil
 }
 
-func InitAuthService(repo interfaces.IRepository, userService interfaces.IUserService, jwtService interfaces.IJWTService, refreshTokenService interfaces.IRefreshTokenService) *AuthService {
-	authService := AuthService{}.WithUserService(userService).WithRepository(repo).WithJWTService(jwtService).WithRefreshTokenService(refreshTokenService)
+func InitAuthService(repo interfaces.IRepository, userService interfaces.IUserService, jwtService interfaces.IJWTService, refreshTokenService interfaces.IRefreshTokenService, deviceInfoService interfaces.IDeviceinfoService) *AuthService {
+	authService := AuthService{}.WithUserService(userService).WithRepository(repo).WithJWTService(jwtService).WithRefreshTokenService(refreshTokenService).WithDeviceInfoService(deviceInfoService)
 	return &authService
 }
 
@@ -97,5 +107,10 @@ func (a AuthService) WithJWTService(service interfaces.IJWTService) AuthService 
 
 func (a AuthService) WithRefreshTokenService(service interfaces.IRefreshTokenService) AuthService {
 	a.RefreshService = service
+	return a
+}
+
+func (a AuthService) WithDeviceInfoService(service interfaces.IDeviceinfoService) AuthService {
+	a.DeviceInfoService = service
 	return a
 }

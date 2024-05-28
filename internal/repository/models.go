@@ -49,6 +49,15 @@ type Comment struct {
 	UpdatedAt      pgtype.Timestamptz `db:"updated_at" json:"updated_at"`
 }
 
+type DeviceInfo struct {
+	ID          int64              `db:"id" json:"id"`
+	UserID      int64              `db:"user_id" json:"user_id"`
+	AgentHeader string             `db:"agent_header" json:"agent_header"`
+	DeviceID    *string            `db:"device_id" json:"device_id"`
+	CreatedAt   pgtype.Timestamptz `db:"created_at" json:"created_at"`
+	UpdatedAt   pgtype.Timestamptz `db:"updated_at" json:"updated_at"`
+}
+
 type InviteCode struct {
 	ID          int64              `db:"id" json:"id"`
 	WorkspaceID *int32             `db:"workspace_id" json:"workspace_id"`

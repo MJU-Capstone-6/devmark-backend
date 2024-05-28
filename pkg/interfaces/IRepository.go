@@ -52,4 +52,8 @@ type IRepository interface {
 	FindCategoryByName(context.Context, *string) (repository.Category, error)
 	FindWorkspaceCodeByWorkspaceID(context.Context, *int64) (repository.WorkspaceCode, error)
 	FindWorkspaceInfo(context.Context, int64) (repository.FindWorkspaceInfoRow, error)
+	CreateDeviceInfo(context.Context, repository.CreateDeviceInfoParams) (repository.DeviceInfo, error)
+	FindDeviceInfo(context.Context, int64) (repository.DeviceInfo, error)
+	FindDeviceInfoByAgent(context.Context, string) (repository.DeviceInfo, error)
+	FindDeviceInfoByAgentAndUserID(context.Context, repository.FindDeviceInfoByAgentAndUserIDParams) (repository.DeviceInfo, error)
 }

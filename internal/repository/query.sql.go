@@ -113,6 +113,32 @@ func (q *Queries) CreateComment(ctx context.Context, arg CreateCommentParams) (C
 	return i, err
 }
 
+const createDeviceInfo = `-- name: CreateDeviceInfo :one
+INSERT INTO device_info (user_id, agent_header, device_id)
+VALUES ($1, $2, $3)
+RETURNING id, user_id, agent_header, device_id, created_at, updated_at
+`
+
+type CreateDeviceInfoParams struct {
+	UserID      int64   `db:"user_id" json:"user_id"`
+	AgentHeader string  `db:"agent_header" json:"agent_header"`
+	DeviceID    *string `db:"device_id" json:"device_id"`
+}
+
+func (q *Queries) CreateDeviceInfo(ctx context.Context, arg CreateDeviceInfoParams) (DeviceInfo, error) {
+	row := q.db.QueryRow(ctx, createDeviceInfo, arg.UserID, arg.AgentHeader, arg.DeviceID)
+	var i DeviceInfo
+	err := row.Scan(
+		&i.ID,
+		&i.UserID,
+		&i.AgentHeader,
+		&i.DeviceID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
 const createInviteCode = `-- name: CreateInviteCode :one
 INSERT INTO invite_code (workspace_id, code)
 VALUES ($1, $2)
@@ -369,6 +395,65 @@ func (q *Queries) FindComment(ctx context.Context, id int64) (Comment, error) {
 		&i.BookmarkID,
 		&i.UserID,
 		&i.CommentContext,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
+const findDeviceInfo = `-- name: FindDeviceInfo :one
+SELECT id, user_id, agent_header, device_id, created_at, updated_at FROM device_info WHERE user_id = $1
+`
+
+func (q *Queries) FindDeviceInfo(ctx context.Context, userID int64) (DeviceInfo, error) {
+	row := q.db.QueryRow(ctx, findDeviceInfo, userID)
+	var i DeviceInfo
+	err := row.Scan(
+		&i.ID,
+		&i.UserID,
+		&i.AgentHeader,
+		&i.DeviceID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
+const findDeviceInfoByAgent = `-- name: FindDeviceInfoByAgent :one
+SELECT id, user_id, agent_header, device_id, created_at, updated_at FROM device_info WHERE agent_header = $1
+`
+
+func (q *Queries) FindDeviceInfoByAgent(ctx context.Context, agentHeader string) (DeviceInfo, error) {
+	row := q.db.QueryRow(ctx, findDeviceInfoByAgent, agentHeader)
+	var i DeviceInfo
+	err := row.Scan(
+		&i.ID,
+		&i.UserID,
+		&i.AgentHeader,
+		&i.DeviceID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
+const findDeviceInfoByAgentAndUserID = `-- name: FindDeviceInfoByAgentAndUserID :one
+SELECT id, user_id, agent_header, device_id, created_at, updated_at FROM device_info WHERE agent_header = $1 AND user_id = $2
+`
+
+type FindDeviceInfoByAgentAndUserIDParams struct {
+	AgentHeader string `db:"agent_header" json:"agent_header"`
+	UserID      int64  `db:"user_id" json:"user_id"`
+}
+
+func (q *Queries) FindDeviceInfoByAgentAndUserID(ctx context.Context, arg FindDeviceInfoByAgentAndUserIDParams) (DeviceInfo, error) {
+	row := q.db.QueryRow(ctx, findDeviceInfoByAgentAndUserID, arg.AgentHeader, arg.UserID)
+	var i DeviceInfo
+	err := row.Scan(
+		&i.ID,
+		&i.UserID,
+		&i.AgentHeader,
+		&i.DeviceID,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)

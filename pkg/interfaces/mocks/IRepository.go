@@ -127,6 +127,34 @@ func (_m *IRepository) CreateComment(_a0 context.Context, _a1 repository.CreateC
 	return r0, r1
 }
 
+// CreateDeviceInfo provides a mock function with given fields: _a0, _a1
+func (_m *IRepository) CreateDeviceInfo(_a0 context.Context, _a1 repository.CreateDeviceInfoParams) (repository.DeviceInfo, error) {
+	ret := _m.Called(_a0, _a1)
+
+	if len(ret) == 0 {
+		panic("no return value specified for CreateDeviceInfo")
+	}
+
+	var r0 repository.DeviceInfo
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, repository.CreateDeviceInfoParams) (repository.DeviceInfo, error)); ok {
+		return rf(_a0, _a1)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, repository.CreateDeviceInfoParams) repository.DeviceInfo); ok {
+		r0 = rf(_a0, _a1)
+	} else {
+		r0 = ret.Get(0).(repository.DeviceInfo)
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, repository.CreateDeviceInfoParams) error); ok {
+		r1 = rf(_a0, _a1)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // CreateInviteCode provides a mock function with given fields: _a0, _a1
 func (_m *IRepository) CreateInviteCode(_a0 context.Context, _a1 repository.CreateInviteCodeParams) (repository.InviteCode, error) {
 	ret := _m.Called(_a0, _a1)
@@ -473,6 +501,62 @@ func (_m *IRepository) FindComment(_a0 context.Context, _a1 int64) (repository.C
 	}
 
 	if rf, ok := ret.Get(1).(func(context.Context, int64) error); ok {
+		r1 = rf(_a0, _a1)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// FindDeviceInfo provides a mock function with given fields: _a0, _a1
+func (_m *IRepository) FindDeviceInfo(_a0 context.Context, _a1 int64) (repository.DeviceInfo, error) {
+	ret := _m.Called(_a0, _a1)
+
+	if len(ret) == 0 {
+		panic("no return value specified for FindDeviceInfo")
+	}
+
+	var r0 repository.DeviceInfo
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, int64) (repository.DeviceInfo, error)); ok {
+		return rf(_a0, _a1)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, int64) repository.DeviceInfo); ok {
+		r0 = rf(_a0, _a1)
+	} else {
+		r0 = ret.Get(0).(repository.DeviceInfo)
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, int64) error); ok {
+		r1 = rf(_a0, _a1)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// FindDeviceInfoByAgent provides a mock function with given fields: _a0, _a1
+func (_m *IRepository) FindDeviceInfoByAgent(_a0 context.Context, _a1 string) (repository.DeviceInfo, error) {
+	ret := _m.Called(_a0, _a1)
+
+	if len(ret) == 0 {
+		panic("no return value specified for FindDeviceInfoByAgent")
+	}
+
+	var r0 repository.DeviceInfo
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, string) (repository.DeviceInfo, error)); ok {
+		return rf(_a0, _a1)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, string) repository.DeviceInfo); ok {
+		r0 = rf(_a0, _a1)
+	} else {
+		r0 = ret.Get(0).(repository.DeviceInfo)
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
 		r1 = rf(_a0, _a1)
 	} else {
 		r1 = ret.Error(1)
