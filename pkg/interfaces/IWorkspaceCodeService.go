@@ -9,7 +9,7 @@ import (
 type IWorkspaceCodeService interface {
 	CreateCode(int) *string
 	FindByCode(string) (*repository.FindWorkspaceCodeRow, error)
-	PredictCategory(request.PredictCategoryParam) (*repository.Bookmark, error)
+	PredictCategory(request.PredictCategoryParam, string) (*repository.Bookmark, error)
 	Update(repository.UpdateWorkspaceCodeParams) (*repository.WorkspaceCode, error)
 	Create(repository.CreateWorkspaceCodeParams) (*repository.WorkspaceCode, error)
 }

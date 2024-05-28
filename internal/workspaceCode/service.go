@@ -12,10 +12,11 @@ import (
 )
 
 type WorkspaceCodeService struct {
-	Repository       interfaces.IRepository
-	CategoryService  interfaces.ICategoryService
-	BookmarkService  interfaces.IBookmarkService
-	WorkspaceService interfaces.IWorkspaceService
+	Repository        interfaces.IRepository
+	CategoryService   interfaces.ICategoryService
+	BookmarkService   interfaces.IBookmarkService
+	WorkspaceService  interfaces.IWorkspaceService
+	DeviceInfoService interfaces.IDeviceinfoService
 }
 
 const CHARSET = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
@@ -37,8 +38,13 @@ func (w *WorkspaceCodeService) FindByCode(code string) (*repository.FindWorkspac
 	return &workspaceCode, nil
 }
 
-func (w *WorkspaceCodeService) PredictCategory(param request.PredictCategoryParam) (*repository.Bookmark, error) {
+func (w *WorkspaceCodeService) PredictCategory(param request.PredictCategoryParam, agent string) (*repository.Bookmark, error) {
 	workspaceCode, err := w.FindByCode(param.Code)
+	if err != nil {
+		return nil, err
+	}
+
+	deviceInfo, err := w.DeviceInfoService.FindByAgent(agent)
 	if err != nil {
 		return nil, err
 	}
@@ -59,6 +65,7 @@ func (w *WorkspaceCodeService) PredictCategory(param request.PredictCategoryPara
 		Link:        &param.Link,
 		WorkspaceID: &workspaceCode.Workspace.ID,
 		CategoryID:  &category.ID,
+		UserID:      &deviceInfo.UserID,
 	}
 
 	bookmark, err := w.BookmarkService.Create(createBookmarkParam)
@@ -113,5 +120,10 @@ func (w WorkspaceCodeService) WithBookmarkService(service interfaces.IBookmarkSe
 
 func (w WorkspaceCodeService) WithWorkspaceService(service interfaces.IWorkspaceService) WorkspaceCodeService {
 	w.WorkspaceService = service
+	return w
+}
+
+func (w WorkspaceCodeService) WithDeviceInfoService(service interfaces.IDeviceinfoService) WorkspaceCodeService {
+	w.DeviceInfoService = service
 	return w
 }

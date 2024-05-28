@@ -186,9 +186,10 @@ func (app *Application) InitWorkspaceCodeRoutes() {
 	categoryService := category.InitCategoryService().WithRepository(&app.Repository)
 	workspaceService := workspace.InitWorkspaceService(&app.Repository)
 	bookmarkSeervice := bookmark.InitBookmarkService().WithRepository(&app.Repository).WithCategoryService(&categoryService).WithWorkspaceService(workspaceService)
-	workspaceCodeService := workspacecode.InitWorkspaceCodeService().
-		WithRepository(&app.Repository).WithBookmarkService(&bookmarkSeervice).WithCategoryService(&categoryService).WithWorkspaceService(workspaceService)
 
+	deviceInfoService := deviceinfo.InitDeviceInfoService().WithRepository(&app.Repository)
+	workspaceCodeService := workspacecode.InitWorkspaceCodeService().
+		WithRepository(&app.Repository).WithBookmarkService(&bookmarkSeervice).WithCategoryService(&categoryService).WithWorkspaceService(workspaceService).WithDeviceInfoService(&deviceInfoService)
 	workspaceCodeController := workspacecode.InitWorkspaceCodeController().WithWorkspaceCodeService(&workspaceCodeService)
 	e.POST("/predict", workspaceCodeController.PredictCategoryController)
 	e.GET("", workspaceCodeController.FindWorkspaceCodeController)
