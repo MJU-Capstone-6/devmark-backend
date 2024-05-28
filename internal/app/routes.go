@@ -8,6 +8,7 @@ import (
 	"github.com/MJU-Capstone-6/devmark-backend/internal/bookmark"
 	"github.com/MJU-Capstone-6/devmark-backend/internal/category"
 	"github.com/MJU-Capstone-6/devmark-backend/internal/comment"
+	deviceinfo "github.com/MJU-Capstone-6/devmark-backend/internal/deviceInfo"
 	invitecode "github.com/MJU-Capstone-6/devmark-backend/internal/inviteCode"
 	"github.com/MJU-Capstone-6/devmark-backend/internal/jwtToken"
 	"github.com/MJU-Capstone-6/devmark-backend/internal/middlewares"
@@ -60,7 +61,8 @@ func (app *Application) InitAuthRoutes() {
 	userService := user.InitUserService(&app.Repository)
 	jwtService := jwtToken.InitJWTService(app.PubKey, app.PrivateKey, app.Config.App.FooterKey)
 	refreshTokenService := refreshtoken.InitRefreshTokenService(&app.Repository, jwtService)
-	authService := auth.InitAuthService(&app.Repository, userService, jwtService, refreshTokenService)
+	deviceInfoService := deviceinfo.InitDeviceInfoService().WithRepository(&app.Repository)
+	authService := auth.InitAuthService(&app.Repository, userService, jwtService, refreshTokenService, &deviceInfoService)
 	authController := auth.InitAuthController().
 		WithKakaoInfo(app.Config.Kakao).
 		WithAuthService(authService)

@@ -8,4 +8,5 @@ var (
 	TOKEN_DATA_KEY             = "id"
 	USER_CONTEXT_KEY           = "user"
 	CODE_LENGTH                = 6
+	USER_AGENT_HEADER          = "User-Agent"
 )

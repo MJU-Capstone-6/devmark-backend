@@ -6,5 +6,5 @@ import (
 
 //go:generate mockery --name IAuthService
 type IAuthService interface {
-	KakaoSignUp(string, string) (*responses.GetKakaoInfoResponse, error)
+	KakaoSignUp(string, string, string) (*responses.GetKakaoInfoResponse, error)
 }

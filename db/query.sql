@@ -211,3 +211,16 @@ FROM workspace_user_bookmark_count wu
 JOIN workspace w ON wu.workspace_id = w.id
 WHERE workspace_id = $1;
 
+-- name: CreateDeviceInfo :one
+INSERT INTO device_info (user_id, agent_header, device_id)
+VALUES ($1, $2, $3)
+RETURNING *;
+
+-- name: FindDeviceInfo :one
+SELECT * FROM device_info WHERE user_id = $1;
+
+-- name: FindDeviceInfoByAgent :one
+SELECT * FROM device_info WHERE agent_header = $1;
+
+-- name: FindDeviceInfoByAgentAndUserID :one
+SELECT * FROM device_info WHERE agent_header = $1 AND user_id = $2;
