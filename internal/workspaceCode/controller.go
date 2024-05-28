@@ -6,6 +6,7 @@ import (
 	"io"
 	"net/http"
 
+	"github.com/MJU-Capstone-6/devmark-backend/internal/constants"
 	customerror "github.com/MJU-Capstone-6/devmark-backend/internal/customError"
 	"github.com/MJU-Capstone-6/devmark-backend/internal/request"
 	"github.com/MJU-Capstone-6/devmark-backend/internal/responses"
@@ -45,12 +46,13 @@ func (w *WorkspaceCodeController) PredictCategoryController(ctx echo.Context) er
 	if domain == "" {
 		return customerror.InvalidParamError(errors.New("domain query param must be provided"))
 	}
+	header := ctx.Request().Header.Get(constants.USER_AGENT_HEADER)
 	param := request.PredictCategoryParam{
 		Code:   body.Code,
 		Link:   body.Link,
 		Domain: domain,
 	}
-	bookmark, err := w.WorkspaceCodeService.PredictCategory(param)
+	bookmark, err := w.WorkspaceCodeService.PredictCategory(param, header)
 	if err != nil {
 		return err
 	}
