@@ -2,6 +2,7 @@ package workspacecode
 
 import (
 	"context"
+	"log"
 	"math/rand"
 
 	customerror "github.com/MJU-Capstone-6/devmark-backend/internal/customError"
@@ -46,7 +47,7 @@ func (w *WorkspaceCodeService) PredictCategory(param request.PredictCategoryPara
 
 	deviceInfo, err := w.DeviceInfoService.FindByAgent(agent)
 	if err != nil {
-		return nil, err
+		log.Println(err)
 	}
 
 	dto, err := utils.PredictCategoryRequest(param.Link, param.Domain)
