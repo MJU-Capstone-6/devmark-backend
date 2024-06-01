@@ -93,9 +93,9 @@ func (_m *IWorkspaceCodeService) FindByCode(_a0 string) (*repository.FindWorkspa
 	return r0, r1
 }
 
-// PredictCategory provides a mock function with given fields: _a0
-func (_m *IWorkspaceCodeService) PredictCategory(_a0 request.PredictCategoryParam) (*repository.Bookmark, error) {
-	ret := _m.Called(_a0)
+// PredictCategory provides a mock function with given fields: _a0, _a1
+func (_m *IWorkspaceCodeService) PredictCategory(_a0 request.PredictCategoryParam, _a1 string) (*repository.Bookmark, error) {
+	ret := _m.Called(_a0, _a1)
 
 	if len(ret) == 0 {
 		panic("no return value specified for PredictCategory")
@@ -103,19 +103,19 @@ func (_m *IWorkspaceCodeService) PredictCategory(_a0 request.PredictCategoryPara
 
 	var r0 *repository.Bookmark
 	var r1 error
-	if rf, ok := ret.Get(0).(func(request.PredictCategoryParam) (*repository.Bookmark, error)); ok {
-		return rf(_a0)
+	if rf, ok := ret.Get(0).(func(request.PredictCategoryParam, string) (*repository.Bookmark, error)); ok {
+		return rf(_a0, _a1)
 	}
-	if rf, ok := ret.Get(0).(func(request.PredictCategoryParam) *repository.Bookmark); ok {
-		r0 = rf(_a0)
+	if rf, ok := ret.Get(0).(func(request.PredictCategoryParam, string) *repository.Bookmark); ok {
+		r0 = rf(_a0, _a1)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*repository.Bookmark)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(request.PredictCategoryParam) error); ok {
-		r1 = rf(_a0)
+	if rf, ok := ret.Get(1).(func(request.PredictCategoryParam, string) error); ok {
+		r1 = rf(_a0, _a1)
 	} else {
 		r1 = ret.Error(1)
 	}

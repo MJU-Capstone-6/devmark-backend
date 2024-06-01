@@ -565,6 +565,34 @@ func (_m *IRepository) FindDeviceInfoByAgent(_a0 context.Context, _a1 string) (r
 	return r0, r1
 }
 
+// FindDeviceInfoByAgentAndUserID provides a mock function with given fields: _a0, _a1
+func (_m *IRepository) FindDeviceInfoByAgentAndUserID(_a0 context.Context, _a1 repository.FindDeviceInfoByAgentAndUserIDParams) (repository.DeviceInfo, error) {
+	ret := _m.Called(_a0, _a1)
+
+	if len(ret) == 0 {
+		panic("no return value specified for FindDeviceInfoByAgentAndUserID")
+	}
+
+	var r0 repository.DeviceInfo
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, repository.FindDeviceInfoByAgentAndUserIDParams) (repository.DeviceInfo, error)); ok {
+		return rf(_a0, _a1)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, repository.FindDeviceInfoByAgentAndUserIDParams) repository.DeviceInfo); ok {
+		r0 = rf(_a0, _a1)
+	} else {
+		r0 = ret.Get(0).(repository.DeviceInfo)
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, repository.FindDeviceInfoByAgentAndUserIDParams) error); ok {
+		r1 = rf(_a0, _a1)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // FindDuplicateBookmark provides a mock function with given fields: _a0, _a1
 func (_m *IRepository) FindDuplicateBookmark(_a0 context.Context, _a1 repository.FindDuplicateBookmarkParams) (int64, error) {
 	ret := _m.Called(_a0, _a1)

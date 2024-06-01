@@ -1,9 +1,10 @@
 package config
 
 type Config struct {
-	DB    DB    `mapstructure:"db"`
-	Kakao Kakao `mapstructure:"kakao"`
-	App   App   `mapstructure:"app"`
+	DB     DB     `mapstructure:"db" json:"db"`
+	Kakao  Kakao  `mapstructure:"kakao" json:"kakao"`
+	App    App    `mapstructure:"app" json:"app"`
+	OpenAI OpenAI `mapstructure:"open_ai" json:"open_ai"`
 }
 
 type DB struct {
@@ -23,4 +24,8 @@ type App struct {
 type Kakao struct {
 	ClientKey    string `mapstructure:"client_key"`
 	ClientSecret string `mapstructure:"client_secret"`
+}
+
+type OpenAI struct {
+	ClientKey string `mapstructure:"client_key"`
 }

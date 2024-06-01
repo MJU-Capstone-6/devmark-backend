@@ -42,15 +42,11 @@ func (w *WorkspaceCodeController) PredictCategoryController(ctx echo.Context) er
 	if err != nil {
 		return customerror.InternalServerError(err)
 	}
-	domain := ctx.QueryParam("domain")
-	if domain == "" {
-		return customerror.InvalidParamError(errors.New("domain query param must be provided"))
-	}
+
 	header := ctx.Request().Header.Get(constants.USER_AGENT_HEADER)
 	param := request.PredictCategoryParam{
-		Code:   body.Code,
-		Link:   body.Link,
-		Domain: domain,
+		Code: body.Code,
+		Link: body.Link,
 	}
 	bookmark, err := w.WorkspaceCodeService.PredictCategory(param, header)
 	if err != nil {

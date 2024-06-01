@@ -6,6 +6,7 @@ import (
 	"errors"
 	"io"
 	"net/http"
+	"regexp"
 	"strconv"
 
 	"github.com/MJU-Capstone-6/devmark-backend/internal/constants"
@@ -93,6 +94,35 @@ func getTitle(link string, domain string) (*string, error) {
 	return nil, nil
 }
 
+func GetJsonString(str string) string {
+	re := regexp.MustCompile(`\{[\s\S]*\}`)
+	jsonString := re.FindString(str)
+	return jsonString
+}
+
+func GetResponseBody(link string) (*string, error) {
+	client := http.Client{}
+	req, err := http.NewRequest("GET", link, nil)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	doc, err := goquery.NewDocumentFromReader(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+	htmlString, err := doc.Find("body").Html()
+	if err != nil {
+		return nil, err
+	}
+	return &htmlString, nil
+}
+
 func predictCategory(title string) (*PredictResponse, error) {
 	predictReq := PredictRequest{
 		Title: title,
@@ -123,17 +153,12 @@ func predictCategory(title string) (*PredictResponse, error) {
 	return &predictResponse, nil
 }
 
-func PredictCategoryRequest(link string, domain string) (*PredictCategoryDTO, error) {
-	title, err := getTitle(link, domain)
-	if err != nil {
-		return nil, err
-	}
-	category, err := predictCategory(*title)
+func PredictCategoryRequest(title string) (*PredictCategoryDTO, error) {
+	category, err := predictCategory(title)
 	if err != nil {
 		return nil, err
 	}
 	dto := PredictCategoryDTO{
-		Title:    *title,
 		Category: category.Category,
 	}
 	return &dto, nil
