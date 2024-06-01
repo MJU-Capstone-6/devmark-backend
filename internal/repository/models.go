@@ -121,6 +121,7 @@ type WorkspaceCode struct {
 	Code        *string            `db:"code" json:"code"`
 	CreatedAt   pgtype.Timestamptz `db:"created_at" json:"created_at"`
 	UpdatedAt   pgtype.Timestamptz `db:"updated_at" json:"updated_at"`
+	UserID      *int64             `db:"user_id" json:"user_id"`
 }
 
 type WorkspaceUser struct {

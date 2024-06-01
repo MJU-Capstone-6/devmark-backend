@@ -56,4 +56,5 @@ type IRepository interface {
 	FindDeviceInfo(context.Context, int64) (repository.DeviceInfo, error)
 	FindDeviceInfoByAgent(context.Context, string) (repository.DeviceInfo, error)
 	FindDeviceInfoByAgentAndUserID(context.Context, repository.FindDeviceInfoByAgentAndUserIDParams) (repository.DeviceInfo, error)
+	FindWorkspaceCodeByWorkspaceIDAndUserID(context.Context, repository.FindWorkspaceCodeByWorkspaceIDAndUserIDParams) (repository.WorkspaceCode, error)
 }

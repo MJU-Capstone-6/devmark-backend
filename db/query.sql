@@ -189,9 +189,12 @@ WHERE workspace_code.code = $1;
 -- name: FindWorkspaceCodeByWorkspaceID :one
 SELECT * FROM workspace_code WHERE workspace_id = $1;
 
+-- name: FindWorkspaceCodeByWorkspaceIDAndUserID :one
+SELECT * FROM workspace_code WHERE workspace_id = $1 AND user_id = $2;
+
 -- name: CreateWorkspaceCode :one
-INSERT INTO workspace_code (workspace_id, code)
-VALUES ($1, $2)
+INSERT INTO workspace_code (workspace_id, code, user_id)
+VALUES ($1, $2, $3)
 RETURNING *;
 
 -- name: UpdateWorkspaceCode :one
@@ -224,3 +227,4 @@ SELECT * FROM device_info WHERE agent_header = $1;
 
 -- name: FindDeviceInfoByAgentAndUserID :one
 SELECT * FROM device_info WHERE agent_header = $1 AND user_id = $2;
+

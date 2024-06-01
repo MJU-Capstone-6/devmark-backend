@@ -1216,6 +1216,54 @@ const docTemplate = `{
             }
         },
         "/api/v1/workspace/:id/code": {
+            "get": {
+                "description": "워크스페이스의 코드를 조회 합니다.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "workspace"
+                ],
+                "summary": "워크스페이스 코드 조회",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Workspace id",
+                        "name": "workspace_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/repository.WorkspaceCode"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/customerror.CustomError"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/customerror.CustomError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/customerror.CustomError"
+                        }
+                    }
+                }
+            },
             "post": {
                 "description": "워크스페이스의 코드를 생성합니다.",
                 "consumes": [
@@ -1833,6 +1881,9 @@ const docTemplate = `{
                 },
                 "updated_at": {
                     "$ref": "#/definitions/pgtype.Timestamptz"
+                },
+                "user_id": {
+                    "type": "integer"
                 },
                 "workspace_id": {
                     "type": "integer"
