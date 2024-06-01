@@ -10,14 +10,17 @@ import (
 	"time"
 
 	"github.com/MJU-Capstone-6/devmark-backend/internal/config"
+	"github.com/MJU-Capstone-6/devmark-backend/internal/constants"
 	"github.com/MJU-Capstone-6/devmark-backend/internal/db"
 	"github.com/MJU-Capstone-6/devmark-backend/internal/repository"
+	"github.com/google/generative-ai-go/genai"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/labstack/echo/v4"
 	"github.com/sashabaranov/go-openai"
 	"github.com/testcontainers/testcontainers-go"
 	"github.com/testcontainers/testcontainers-go/modules/postgres"
 	"github.com/testcontainers/testcontainers-go/wait"
+	"google.golang.org/api/option"
 )
 
 var (
@@ -115,15 +118,22 @@ func setApplication() error {
 	if err != nil {
 		return err
 	}
-	client := openai.NewClient(applicationConfig.OpenAI.ClientKey)
+	gptClient := openai.NewClient(applicationConfig.OpenAI.ClientKey)
+	geminiClient, err := genai.NewClient(context.Background(), option.WithAPIKey(applicationConfig.GoogleAPI.ClientKey))
+	if err != nil {
+		return err
+	}
+	geminiModel := geminiClient.GenerativeModel(constants.GEMINI_FLASH_MODEL)
 	app = &Application{
-		DB:         dbConn,
-		Config:     applicationConfig,
-		Repository: *repository.New(dbConn),
-		PubKey:     publicKey,
-		PrivateKey: privateKey,
-		Handler:    handler,
-		GPTClient:  client,
+		DB:           dbConn,
+		Config:       applicationConfig,
+		Repository:   *repository.New(dbConn),
+		PubKey:       publicKey,
+		PrivateKey:   privateKey,
+		Handler:      handler,
+		GPTClient:    gptClient,
+		GeminiClient: geminiClient,
+		GeminiModel:  geminiModel,
 	}
 
 	app.InitRoutes()

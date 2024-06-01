@@ -52,12 +52,12 @@ func (w *WorkspaceCodeService) PredictCategory(param request.PredictCategoryPara
 		if err != nil {
 			log.Println(err)
 		}*/
-	title, err := w.GPTService.ExtractTitle(param.Link)
+	title, err := w.GPTService.GeminiExtractTitle(param.Link)
 	if err != nil {
 		return nil, err
 	}
 	log.Println(*title)
-	summary, err := w.GPTService.SummarizePost(param.Link)
+	summary, err := w.GPTService.GeminiSummarizePost(param.Link)
 	if err != nil {
 		return nil, err
 	}
