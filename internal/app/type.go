@@ -7,6 +7,7 @@ import (
 	"github.com/MJU-Capstone-6/devmark-backend/internal/repository"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/labstack/echo/v4"
+	"github.com/sashabaranov/go-openai"
 )
 
 type Application struct {
@@ -16,4 +17,5 @@ type Application struct {
 	Config     *config.Config
 	PubKey     ed25519.PublicKey
 	PrivateKey ed25519.PrivateKey
+	GPTClient  *openai.Client
 }

@@ -14,6 +14,7 @@ import (
 	"github.com/MJU-Capstone-6/devmark-backend/internal/repository"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/labstack/echo/v4"
+	"github.com/sashabaranov/go-openai"
 	"github.com/testcontainers/testcontainers-go"
 	"github.com/testcontainers/testcontainers-go/modules/postgres"
 	"github.com/testcontainers/testcontainers-go/wait"
@@ -114,6 +115,7 @@ func setApplication() error {
 	if err != nil {
 		return err
 	}
+	client := openai.NewClient(applicationConfig.OpenAI.ClientKey)
 	app = &Application{
 		DB:         dbConn,
 		Config:     applicationConfig,
@@ -121,6 +123,7 @@ func setApplication() error {
 		PubKey:     publicKey,
 		PrivateKey: privateKey,
 		Handler:    handler,
+		GPTClient:  client,
 	}
 
 	app.InitRoutes()

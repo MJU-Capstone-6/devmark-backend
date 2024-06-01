@@ -12,9 +12,9 @@ type IAuthService struct {
 	mock.Mock
 }
 
-// KakaoSignUp provides a mock function with given fields: _a0, _a1
-func (_m *IAuthService) KakaoSignUp(_a0 string, _a1 string) (*responses.GetKakaoInfoResponse, error) {
-	ret := _m.Called(_a0, _a1)
+// KakaoSignUp provides a mock function with given fields: _a0, _a1, _a2
+func (_m *IAuthService) KakaoSignUp(_a0 string, _a1 string, _a2 string) (*responses.GetKakaoInfoResponse, error) {
+	ret := _m.Called(_a0, _a1, _a2)
 
 	if len(ret) == 0 {
 		panic("no return value specified for KakaoSignUp")
@@ -22,19 +22,19 @@ func (_m *IAuthService) KakaoSignUp(_a0 string, _a1 string) (*responses.GetKakao
 
 	var r0 *responses.GetKakaoInfoResponse
 	var r1 error
-	if rf, ok := ret.Get(0).(func(string, string) (*responses.GetKakaoInfoResponse, error)); ok {
-		return rf(_a0, _a1)
+	if rf, ok := ret.Get(0).(func(string, string, string) (*responses.GetKakaoInfoResponse, error)); ok {
+		return rf(_a0, _a1, _a2)
 	}
-	if rf, ok := ret.Get(0).(func(string, string) *responses.GetKakaoInfoResponse); ok {
-		r0 = rf(_a0, _a1)
+	if rf, ok := ret.Get(0).(func(string, string, string) *responses.GetKakaoInfoResponse); ok {
+		r0 = rf(_a0, _a1, _a2)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*responses.GetKakaoInfoResponse)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(string, string) error); ok {
-		r1 = rf(_a0, _a1)
+	if rf, ok := ret.Get(1).(func(string, string, string) error); ok {
+		r1 = rf(_a0, _a1, _a2)
 	} else {
 		r1 = ret.Error(1)
 	}

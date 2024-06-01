@@ -9,6 +9,7 @@ import (
 	"github.com/MJU-Capstone-6/devmark-backend/internal/category"
 	"github.com/MJU-Capstone-6/devmark-backend/internal/comment"
 	deviceinfo "github.com/MJU-Capstone-6/devmark-backend/internal/deviceInfo"
+	"github.com/MJU-Capstone-6/devmark-backend/internal/gpt"
 	invitecode "github.com/MJU-Capstone-6/devmark-backend/internal/inviteCode"
 	"github.com/MJU-Capstone-6/devmark-backend/internal/jwtToken"
 	"github.com/MJU-Capstone-6/devmark-backend/internal/middlewares"
@@ -187,9 +188,11 @@ func (app *Application) InitWorkspaceCodeRoutes() {
 	workspaceService := workspace.InitWorkspaceService(&app.Repository)
 	bookmarkSeervice := bookmark.InitBookmarkService().WithRepository(&app.Repository).WithCategoryService(&categoryService).WithWorkspaceService(workspaceService)
 
+	gptRepository := gpt.InitGPTRepository().WithClient(app.GPTClient)
+	gptService := gpt.InitGPTService().WithRepository(&gptRepository)
 	deviceInfoService := deviceinfo.InitDeviceInfoService().WithRepository(&app.Repository)
 	workspaceCodeService := workspacecode.InitWorkspaceCodeService().
-		WithRepository(&app.Repository).WithBookmarkService(&bookmarkSeervice).WithCategoryService(&categoryService).WithWorkspaceService(workspaceService).WithDeviceInfoService(&deviceInfoService)
+		WithRepository(&app.Repository).WithBookmarkService(&bookmarkSeervice).WithCategoryService(&categoryService).WithWorkspaceService(workspaceService).WithDeviceInfoService(&deviceInfoService).WithGPTService(&gptService)
 	workspaceCodeController := workspacecode.InitWorkspaceCodeController().WithWorkspaceCodeService(&workspaceCodeService)
 	e.POST("/predict", workspaceCodeController.PredictCategoryController)
 	e.GET("", workspaceCodeController.FindWorkspaceCodeController)

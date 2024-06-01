@@ -2,6 +2,7 @@ package workspacecode
 
 import (
 	"context"
+	"log"
 	"math/rand"
 
 	customerror "github.com/MJU-Capstone-6/devmark-backend/internal/customError"
@@ -17,6 +18,7 @@ type WorkspaceCodeService struct {
 	BookmarkService   interfaces.IBookmarkService
 	WorkspaceService  interfaces.IWorkspaceService
 	DeviceInfoService interfaces.IDeviceinfoService
+	GPTService        interfaces.IGPTService
 }
 
 const CHARSET = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
@@ -50,8 +52,16 @@ func (w *WorkspaceCodeService) PredictCategory(param request.PredictCategoryPara
 		if err != nil {
 			log.Println(err)
 		}*/
-
-	dto, err := utils.PredictCategoryRequest(param.Link, param.Domain)
+	title, err := w.GPTService.ExtractTitle(param.Link)
+	if err != nil {
+		return nil, err
+	}
+	log.Println(*title)
+	summary, err := w.GPTService.SummarizePost(param.Link)
+	if err != nil {
+		return nil, err
+	}
+	dto, err := utils.PredictCategoryRequest(*title)
 	if err != nil {
 		return nil, customerror.InternalServerError(err)
 	}
@@ -63,10 +73,11 @@ func (w *WorkspaceCodeService) PredictCategory(param request.PredictCategoryPara
 		}
 	}
 	createBookmarkParam := repository.CreateBookmarkParams{
-		Title:       &dto.Title,
+		Title:       title,
 		Link:        &param.Link,
 		WorkspaceID: &workspaceCode.Workspace.ID,
 		CategoryID:  &category.ID,
+		Summary:     summary,
 	}
 
 	bookmark, err := w.BookmarkService.Create(createBookmarkParam)
@@ -126,5 +137,10 @@ func (w WorkspaceCodeService) WithWorkspaceService(service interfaces.IWorkspace
 
 func (w WorkspaceCodeService) WithDeviceInfoService(service interfaces.IDeviceinfoService) WorkspaceCodeService {
 	w.DeviceInfoService = service
+	return w
+}
+
+func (w WorkspaceCodeService) WithGPTService(service interfaces.IGPTService) WorkspaceCodeService {
+	w.GPTService = service
 	return w
 }
