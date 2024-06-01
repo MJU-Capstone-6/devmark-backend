@@ -240,18 +240,19 @@ func (q *Queries) CreateWorkspace(ctx context.Context, arg CreateWorkspaceParams
 }
 
 const createWorkspaceCode = `-- name: CreateWorkspaceCode :one
-INSERT INTO workspace_code (workspace_id, code)
-VALUES ($1, $2)
-RETURNING id, workspace_id, code, created_at, updated_at
+INSERT INTO workspace_code (workspace_id, code, user_id)
+VALUES ($1, $2, $3)
+RETURNING id, workspace_id, code, created_at, updated_at, user_id
 `
 
 type CreateWorkspaceCodeParams struct {
 	WorkspaceID *int64  `db:"workspace_id" json:"workspace_id"`
 	Code        *string `db:"code" json:"code"`
+	UserID      *int64  `db:"user_id" json:"user_id"`
 }
 
 func (q *Queries) CreateWorkspaceCode(ctx context.Context, arg CreateWorkspaceCodeParams) (WorkspaceCode, error) {
-	row := q.db.QueryRow(ctx, createWorkspaceCode, arg.WorkspaceID, arg.Code)
+	row := q.db.QueryRow(ctx, createWorkspaceCode, arg.WorkspaceID, arg.Code, arg.UserID)
 	var i WorkspaceCode
 	err := row.Scan(
 		&i.ID,
@@ -259,6 +260,7 @@ func (q *Queries) CreateWorkspaceCode(ctx context.Context, arg CreateWorkspaceCo
 		&i.Code,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.UserID,
 	)
 	return i, err
 }
@@ -651,7 +653,7 @@ func (q *Queries) FindWorkspaceCategoryBookmark(ctx context.Context, arg FindWor
 }
 
 const findWorkspaceCode = `-- name: FindWorkspaceCode :one
-SELECT workspace_code.id, workspace_code.workspace_id, workspace_code.code, workspace_code.created_at, workspace_code.updated_at, workspace.id, workspace.name, workspace.description, workspace.created_at, workspace.updated_at, workspace.bookmark_count, workspace.user_count FROM workspace_code
+SELECT workspace_code.id, workspace_code.workspace_id, workspace_code.code, workspace_code.created_at, workspace_code.updated_at, workspace_code.user_id, workspace.id, workspace.name, workspace.description, workspace.created_at, workspace.updated_at, workspace.bookmark_count, workspace.user_count FROM workspace_code
 JOIN workspace ON workspace_code.workspace_id = workspace.id
 WHERE workspace_code.code = $1
 `
@@ -670,6 +672,7 @@ func (q *Queries) FindWorkspaceCode(ctx context.Context, code *string) (FindWork
 		&i.WorkspaceCode.Code,
 		&i.WorkspaceCode.CreatedAt,
 		&i.WorkspaceCode.UpdatedAt,
+		&i.WorkspaceCode.UserID,
 		&i.Workspace.ID,
 		&i.Workspace.Name,
 		&i.Workspace.Description,
@@ -682,7 +685,7 @@ func (q *Queries) FindWorkspaceCode(ctx context.Context, code *string) (FindWork
 }
 
 const findWorkspaceCodeByWorkspaceID = `-- name: FindWorkspaceCodeByWorkspaceID :one
-SELECT id, workspace_id, code, created_at, updated_at FROM workspace_code WHERE workspace_id = $1
+SELECT id, workspace_id, code, created_at, updated_at, user_id FROM workspace_code WHERE workspace_id = $1
 `
 
 func (q *Queries) FindWorkspaceCodeByWorkspaceID(ctx context.Context, workspaceID *int64) (WorkspaceCode, error) {
@@ -694,6 +697,30 @@ func (q *Queries) FindWorkspaceCodeByWorkspaceID(ctx context.Context, workspaceI
 		&i.Code,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.UserID,
+	)
+	return i, err
+}
+
+const findWorkspaceCodeByWorkspaceIDAndUserID = `-- name: FindWorkspaceCodeByWorkspaceIDAndUserID :one
+SELECT id, workspace_id, code, created_at, updated_at, user_id FROM workspace_code WHERE workspace_id = $1 AND user_id = $2
+`
+
+type FindWorkspaceCodeByWorkspaceIDAndUserIDParams struct {
+	WorkspaceID *int64 `db:"workspace_id" json:"workspace_id"`
+	UserID      *int64 `db:"user_id" json:"user_id"`
+}
+
+func (q *Queries) FindWorkspaceCodeByWorkspaceIDAndUserID(ctx context.Context, arg FindWorkspaceCodeByWorkspaceIDAndUserIDParams) (WorkspaceCode, error) {
+	row := q.db.QueryRow(ctx, findWorkspaceCodeByWorkspaceIDAndUserID, arg.WorkspaceID, arg.UserID)
+	var i WorkspaceCode
+	err := row.Scan(
+		&i.ID,
+		&i.WorkspaceID,
+		&i.Code,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.UserID,
 	)
 	return i, err
 }
@@ -1062,7 +1089,7 @@ SET
   code = coalesce($1,code),
   updated_at = CURRENT_TIMESTAMP
 WHERE id = $2
-RETURNING id, workspace_id, code, created_at, updated_at
+RETURNING id, workspace_id, code, created_at, updated_at, user_id
 `
 
 type UpdateWorkspaceCodeParams struct {
@@ -1079,6 +1106,7 @@ func (q *Queries) UpdateWorkspaceCode(ctx context.Context, arg UpdateWorkspaceCo
 		&i.Code,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.UserID,
 	)
 	return i, err
 }

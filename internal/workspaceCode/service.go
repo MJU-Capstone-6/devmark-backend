@@ -2,7 +2,6 @@ package workspacecode
 
 import (
 	"context"
-	"log"
 	"math/rand"
 
 	customerror "github.com/MJU-Capstone-6/devmark-backend/internal/customError"
@@ -40,23 +39,24 @@ func (w *WorkspaceCodeService) FindByCode(code string) (*repository.FindWorkspac
 	return &workspaceCode, nil
 }
 
+func (w *WorkspaceCodeService) FindByWorkspaceAndUserID(param repository.FindWorkspaceCodeByWorkspaceIDAndUserIDParams) (*repository.WorkspaceCode, error) {
+	workspaceCode, err := w.Repository.FindWorkspaceCodeByWorkspaceIDAndUserID(context.Background(), param)
+	if err != nil {
+		return nil, customerror.WorkspaceCodeNotFound(err)
+	}
+	return &workspaceCode, nil
+}
+
 func (w *WorkspaceCodeService) PredictCategory(param request.PredictCategoryParam, agent string) (*repository.Bookmark, error) {
 	workspaceCode, err := w.FindByCode(param.Code)
 	if err != nil {
 		return nil, err
 	}
 
-	/*
-
-		deviceInfo, err := w.DeviceInfoService.FindByAgent(agent)
-		if err != nil {
-			log.Println(err)
-		}*/
 	title, err := w.GPTService.GeminiExtractTitle(param.Link)
 	if err != nil {
 		return nil, err
 	}
-	log.Println(*title)
 	summary, err := w.GPTService.GeminiSummarizePost(param.Link)
 	if err != nil {
 		return nil, err
@@ -78,6 +78,7 @@ func (w *WorkspaceCodeService) PredictCategory(param request.PredictCategoryPara
 		WorkspaceID: &workspaceCode.Workspace.ID,
 		CategoryID:  &category.ID,
 		Summary:     summary,
+		UserID:      workspaceCode.WorkspaceCode.UserID,
 	}
 
 	bookmark, err := w.BookmarkService.Create(createBookmarkParam)

@@ -329,6 +329,41 @@ func (w *WorkspaceController) SearchBookmarkController(ctx echo.Context) error {
 	return ctx.JSON(http.StatusOK, *bookmarks)
 }
 
+// FindWorkspaceCodeController godoc
+//
+//	@summary	워크스페이스 코드 조회
+//	@schemes
+//	@description	워크스페이스의 코드를 조회 합니다.
+//	@tags			workspace
+//	@accept			json
+//	@produce		json
+//	@param			workspace_id	path		int	true	"Workspace id"
+//	@success		200				{object}	repository.WorkspaceCode
+//	@failure		400				{object}	customerror.CustomError
+//	@failure		401				{object}	customerror.CustomError
+//	@failure		500				{object}	customerror.CustomError
+//	@router			/api/v1/workspace/:id/code [GET]
+func (w *WorkspaceController) FindWorkspaceCodeController(ctx echo.Context) error {
+	id, err := utils.ParseURLParam(ctx, "id")
+	if err != nil {
+		return err
+	}
+	user, err := utils.GetAuthUser(ctx)
+	if err != nil {
+		return err
+	}
+	parsedID := int64(*id)
+	param := repository.FindWorkspaceCodeByWorkspaceIDAndUserIDParams{
+		WorkspaceID: &parsedID,
+		UserID:      &user.ID,
+	}
+	workspaceCode, err := w.WorkspaceCodeService.FindByWorkspaceAndUserID(param)
+	if err != nil {
+		return err
+	}
+	return ctx.JSON(http.StatusOK, workspaceCode)
+}
+
 // CreateWorkspaceCodeController godoc
 //
 //	@summary	워크스페이스 코드 생성
@@ -348,9 +383,14 @@ func (w *WorkspaceController) CreateWorkspaceCodeController(ctx echo.Context) er
 	if err != nil {
 		return err
 	}
+	user, err := utils.GetAuthUser(ctx)
+	if err != nil {
+		return err
+	}
 	parsedID := int64(*id)
 	param := repository.CreateWorkspaceCodeParams{
 		WorkspaceID: &parsedID,
+		UserID:      &user.ID,
 	}
 	workspaceCode, err := w.WorkspaceCodeService.Create(param)
 	if err != nil {

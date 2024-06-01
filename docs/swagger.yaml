@@ -233,6 +233,8 @@ definitions:
         type: integer
       updated_at:
         $ref: '#/definitions/pgtype.Timestamptz'
+      user_id:
+        type: integer
       workspace_id:
         type: integer
     type: object
@@ -1121,6 +1123,38 @@ paths:
       tags:
       - workspace
   /api/v1/workspace/:id/code:
+    get:
+      consumes:
+      - application/json
+      description: 워크스페이스의 코드를 조회 합니다.
+      parameters:
+      - description: Workspace id
+        in: path
+        name: workspace_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/repository.WorkspaceCode'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/customerror.CustomError'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/customerror.CustomError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/customerror.CustomError'
+      summary: 워크스페이스 코드 조회
+      tags:
+      - workspace
     post:
       consumes:
       - application/json

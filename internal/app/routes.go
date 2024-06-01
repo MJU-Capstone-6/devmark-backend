@@ -99,6 +99,7 @@ func (app *Application) InitWorkspaceRoutes() {
 	e.POST("", workspaceController.CreateWorkspaceController, customMiddleware.Auth)
 	e.POST("/join", workspaceController.JoinWorkspaceController, customMiddleware.Auth)
 	e.POST("/:workspace_id/category/:category_id", workspaceController.RegisterCategoryToWorkspaceController, customMiddleware.Auth)
+	e.GET("/:id/code", workspaceController.FindWorkspaceCodeController, customMiddleware.Auth)
 	e.POST("/:id/code", workspaceController.CreateWorkspaceCodeController, customMiddleware.Auth)
 	e.DELETE("/:id", workspaceController.DeleteWorkspaceController, customMiddleware.Auth)
 }
