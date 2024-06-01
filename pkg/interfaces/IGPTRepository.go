@@ -1,5 +1,6 @@
 package interfaces
 
 type IGPTRepository interface {
-	ChatRequest(string) (*string, error)
+	GPTChatRequest(string) (*string, error)
+	GeminiChatRequest(string) (*string, error)
 }

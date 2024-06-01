@@ -188,7 +188,7 @@ func (app *Application) InitWorkspaceCodeRoutes() {
 	workspaceService := workspace.InitWorkspaceService(&app.Repository)
 	bookmarkSeervice := bookmark.InitBookmarkService().WithRepository(&app.Repository).WithCategoryService(&categoryService).WithWorkspaceService(workspaceService)
 
-	gptRepository := gpt.InitGPTRepository().WithClient(app.GPTClient)
+	gptRepository := gpt.InitGPTRepository().WithClient(app.GPTClient).WithGeminiModel(app.GeminiModel)
 	gptService := gpt.InitGPTService().WithRepository(&gptRepository)
 	deviceInfoService := deviceinfo.InitDeviceInfoService().WithRepository(&app.Repository)
 	workspaceCodeService := workspacecode.InitWorkspaceCodeService().

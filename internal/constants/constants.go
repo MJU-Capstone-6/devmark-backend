@@ -9,4 +9,5 @@ var (
 	USER_CONTEXT_KEY           = "user"
 	CODE_LENGTH                = 6
 	USER_AGENT_HEADER          = "User-Agent"
+	GEMINI_FLASH_MODEL         = "gemini-1.5-flash"
 )
