@@ -7,7 +7,6 @@ type IUserService interface {
 	FindUserByUserName(*string) (*repository.User, error)
 	FindUserById(int) (*repository.FindUserByIdRow, error)
 	FindJoinedWorkspace(int) (*repository.UserWorkspaceView, error)
-	FindUnreadBookmarks(int) (*[]repository.FindUnreadBookmarkRow, error)
 	CreateUser(repository.CreateUserParams) (*repository.User, error)
 	UpdateUser(repository.UpdateUserParams) (*repository.User, error)
 }

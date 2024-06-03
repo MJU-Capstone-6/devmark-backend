@@ -23,32 +23,12 @@ func (d *DeviceInfoService) Create(param repository.CreateDeviceInfoParams) (*re
 	return &deviceInfo, nil
 }
 
-func (d *DeviceInfoService) FindByUserID(id int) (*repository.DeviceInfo, error) {
-	deviceInfo, err := d.Repository.FindDeviceInfo(context.Background(), int64(id))
+func (d *DeviceInfoService) CheckDeviceInfoExists(token string) error {
+	_, err := d.Repository.FindDeviceInfoByToken(context.Background(), &token)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return &deviceInfo, nil
-}
-
-func (d *DeviceInfoService) FindByAgentAndUserID(id int, agent string) (*repository.DeviceInfo, error) {
-	param := repository.FindDeviceInfoByAgentAndUserIDParams{
-		UserID:      int64(id),
-		AgentHeader: agent,
-	}
-	deviceInfo, err := d.Repository.FindDeviceInfoByAgentAndUserID(context.Background(), param)
-	if err != nil {
-		return nil, err
-	}
-	return &deviceInfo, nil
-}
-
-func (d *DeviceInfoService) FindByAgent(agent string) (*repository.DeviceInfo, error) {
-	deviceInfo, err := d.Repository.FindDeviceInfoByAgent(context.Background(), agent)
-	if err != nil {
-		return nil, err
-	}
-	return &deviceInfo, nil
+	return nil
 }
 
 func (d DeviceInfoService) WithRepository(repo interfaces.IRepository) DeviceInfoService {

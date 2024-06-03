@@ -509,82 +509,26 @@ func (_m *IRepository) FindComment(_a0 context.Context, _a1 int64) (repository.C
 	return r0, r1
 }
 
-// FindDeviceInfo provides a mock function with given fields: _a0, _a1
-func (_m *IRepository) FindDeviceInfo(_a0 context.Context, _a1 int64) (repository.DeviceInfo, error) {
+// FindDeviceInfoByToken provides a mock function with given fields: _a0, _a1
+func (_m *IRepository) FindDeviceInfoByToken(_a0 context.Context, _a1 *string) (repository.DeviceInfo, error) {
 	ret := _m.Called(_a0, _a1)
 
 	if len(ret) == 0 {
-		panic("no return value specified for FindDeviceInfo")
+		panic("no return value specified for FindDeviceInfoByToken")
 	}
 
 	var r0 repository.DeviceInfo
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, int64) (repository.DeviceInfo, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, *string) (repository.DeviceInfo, error)); ok {
 		return rf(_a0, _a1)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, int64) repository.DeviceInfo); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, *string) repository.DeviceInfo); ok {
 		r0 = rf(_a0, _a1)
 	} else {
 		r0 = ret.Get(0).(repository.DeviceInfo)
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, int64) error); ok {
-		r1 = rf(_a0, _a1)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// FindDeviceInfoByAgent provides a mock function with given fields: _a0, _a1
-func (_m *IRepository) FindDeviceInfoByAgent(_a0 context.Context, _a1 string) (repository.DeviceInfo, error) {
-	ret := _m.Called(_a0, _a1)
-
-	if len(ret) == 0 {
-		panic("no return value specified for FindDeviceInfoByAgent")
-	}
-
-	var r0 repository.DeviceInfo
-	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, string) (repository.DeviceInfo, error)); ok {
-		return rf(_a0, _a1)
-	}
-	if rf, ok := ret.Get(0).(func(context.Context, string) repository.DeviceInfo); ok {
-		r0 = rf(_a0, _a1)
-	} else {
-		r0 = ret.Get(0).(repository.DeviceInfo)
-	}
-
-	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
-		r1 = rf(_a0, _a1)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// FindDeviceInfoByAgentAndUserID provides a mock function with given fields: _a0, _a1
-func (_m *IRepository) FindDeviceInfoByAgentAndUserID(_a0 context.Context, _a1 repository.FindDeviceInfoByAgentAndUserIDParams) (repository.DeviceInfo, error) {
-	ret := _m.Called(_a0, _a1)
-
-	if len(ret) == 0 {
-		panic("no return value specified for FindDeviceInfoByAgentAndUserID")
-	}
-
-	var r0 repository.DeviceInfo
-	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, repository.FindDeviceInfoByAgentAndUserIDParams) (repository.DeviceInfo, error)); ok {
-		return rf(_a0, _a1)
-	}
-	if rf, ok := ret.Get(0).(func(context.Context, repository.FindDeviceInfoByAgentAndUserIDParams) repository.DeviceInfo); ok {
-		r0 = rf(_a0, _a1)
-	} else {
-		r0 = ret.Get(0).(repository.DeviceInfo)
-	}
-
-	if rf, ok := ret.Get(1).(func(context.Context, repository.FindDeviceInfoByAgentAndUserIDParams) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, *string) error); ok {
 		r1 = rf(_a0, _a1)
 	} else {
 		r1 = ret.Error(1)
@@ -705,9 +649,9 @@ func (_m *IRepository) FindRefreshTokenByUserID(_a0 context.Context, _a1 *int32)
 	return r0, r1
 }
 
-// FindUnreadBookmark provides a mock function with given fields: _a0, _a1
-func (_m *IRepository) FindUnreadBookmark(_a0 context.Context, _a1 *int64) ([]repository.FindUnreadBookmarkRow, error) {
-	ret := _m.Called(_a0, _a1)
+// FindUnreadBookmark provides a mock function with given fields: _a0
+func (_m *IRepository) FindUnreadBookmark(_a0 context.Context) ([]repository.FindUnreadBookmarkRow, error) {
+	ret := _m.Called(_a0)
 
 	if len(ret) == 0 {
 		panic("no return value specified for FindUnreadBookmark")
@@ -715,19 +659,19 @@ func (_m *IRepository) FindUnreadBookmark(_a0 context.Context, _a1 *int64) ([]re
 
 	var r0 []repository.FindUnreadBookmarkRow
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, *int64) ([]repository.FindUnreadBookmarkRow, error)); ok {
-		return rf(_a0, _a1)
+	if rf, ok := ret.Get(0).(func(context.Context) ([]repository.FindUnreadBookmarkRow, error)); ok {
+		return rf(_a0)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, *int64) []repository.FindUnreadBookmarkRow); ok {
-		r0 = rf(_a0, _a1)
+	if rf, ok := ret.Get(0).(func(context.Context) []repository.FindUnreadBookmarkRow); ok {
+		r0 = rf(_a0)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]repository.FindUnreadBookmarkRow)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, *int64) error); ok {
-		r1 = rf(_a0, _a1)
+	if rf, ok := ret.Get(1).(func(context.Context) error); ok {
+		r1 = rf(_a0)
 	} else {
 		r1 = ret.Error(1)
 	}

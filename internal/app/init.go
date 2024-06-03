@@ -12,7 +12,9 @@ import (
 	"github.com/MJU-Capstone-6/devmark-backend/internal/config"
 	"github.com/MJU-Capstone-6/devmark-backend/internal/constants"
 	"github.com/MJU-Capstone-6/devmark-backend/internal/db"
+	"github.com/MJU-Capstone-6/devmark-backend/internal/notification"
 	"github.com/MJU-Capstone-6/devmark-backend/internal/repository"
+	"github.com/MJU-Capstone-6/devmark-backend/internal/scheduler"
 	"github.com/google/generative-ai-go/genai"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/labstack/echo/v4"
@@ -44,10 +46,19 @@ func InitApplication() (*Application, error) {
 }
 
 func (app *Application) Run() error {
+	notificationService := notification.InitNotificationService().WithRepository(&app.Repository).WithClient(app.MessagingClient)
+	unreadBookmarkSchedulerService := scheduler.InitUnreadBookmarkSchedulerService().WithNotificationService(&notificationService)
+	unreadBookmarkScheduler, err := unreadBookmarkSchedulerService.Run()
+	if err != nil {
+		return err
+	}
 	if err := app.Handler.Start(fmt.Sprintf(":%s", app.Config.App.Port)); err != nil {
 		return err
 	}
-	defer app.DB.Close()
+	defer func() {
+		app.DB.Close()
+		_ = unreadBookmarkScheduler.Shutdown()
+	}()
 	return nil
 }
 
@@ -124,16 +135,26 @@ func setApplication() error {
 		return err
 	}
 	geminiModel := geminiClient.GenerativeModel(constants.GEMINI_FLASH_MODEL)
+	firebaseApp, err := InitFirebaseApp(applicationConfig.App.FireBaseFilename)
+	if err != nil {
+		return err
+	}
+	messagingClient, err := firebaseApp.Messaging(context.Background())
+	if err != nil {
+		return err
+	}
 	app = &Application{
-		DB:           dbConn,
-		Config:       applicationConfig,
-		Repository:   *repository.New(dbConn),
-		PubKey:       publicKey,
-		PrivateKey:   privateKey,
-		Handler:      handler,
-		GPTClient:    gptClient,
-		GeminiClient: geminiClient,
-		GeminiModel:  geminiModel,
+		DB:              dbConn,
+		Config:          applicationConfig,
+		Repository:      *repository.New(dbConn),
+		PubKey:          publicKey,
+		PrivateKey:      privateKey,
+		Handler:         handler,
+		GPTClient:       gptClient,
+		GeminiClient:    geminiClient,
+		GeminiModel:     geminiModel,
+		FirebaseApp:     firebaseApp,
+		MessagingClient: messagingClient,
 	}
 
 	app.InitRoutes()
