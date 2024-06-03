@@ -18,6 +18,7 @@ type Bookmark struct {
 	UpdatedAt   pgtype.Timestamptz `db:"updated_at" json:"updated_at"`
 	UserID      *int64             `db:"user_id" json:"user_id"`
 	Title       *string            `db:"title" json:"title"`
+	IsRead      *bool              `db:"is_read" json:"is_read"`
 }
 
 type BookmarkComment struct {
