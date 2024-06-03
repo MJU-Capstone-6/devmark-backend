@@ -42,6 +42,8 @@ definitions:
         $ref: '#/definitions/pgtype.Timestamptz'
       id:
         type: integer
+      is_read:
+        type: boolean
       link:
         type: string
       summary:
@@ -159,6 +161,8 @@ definitions:
         $ref: '#/definitions/pgtype.Timestamptz'
       id:
         type: integer
+      is_read:
+        type: boolean
       link:
         type: string
       summary:
@@ -237,6 +241,11 @@ definitions:
         type: integer
       workspace_id:
         type: integer
+    type: object
+  request.AuthParam:
+    properties:
+      registration_token:
+        type: string
     type: object
   request.CreateBookmarkParam:
     properties:
@@ -338,6 +347,13 @@ paths:
       - application/json
       description: retrive user info from kakao oauth. if user exists in our service,
         then return access token.
+      parameters:
+      - description: body to signup/signin
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/request.AuthParam'
       produces:
       - application/json
       responses:

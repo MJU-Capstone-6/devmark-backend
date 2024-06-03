@@ -32,6 +32,17 @@ const docTemplate = `{
                     "auth"
                 ],
                 "summary": "retrive user info from kakao oauth",
+                "parameters": [
+                    {
+                        "description": "body to signup/signin",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.AuthParam"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -1588,6 +1599,9 @@ const docTemplate = `{
                 "id": {
                     "type": "integer"
                 },
+                "is_read": {
+                    "type": "boolean"
+                },
                 "link": {
                     "type": "string"
                 },
@@ -1768,6 +1782,9 @@ const docTemplate = `{
                 "id": {
                     "type": "integer"
                 },
+                "is_read": {
+                    "type": "boolean"
+                },
                 "link": {
                     "type": "string"
                 },
@@ -1887,6 +1904,14 @@ const docTemplate = `{
                 },
                 "workspace_id": {
                     "type": "integer"
+                }
+            }
+        },
+        "request.AuthParam": {
+            "type": "object",
+            "properties": {
+                "registration_token": {
+                    "type": "string"
                 }
             }
         },

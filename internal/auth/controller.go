@@ -26,10 +26,11 @@ type AuthController struct {
 //	@tags			auth
 //	@accept			json
 //	@produce		json
-//	@success		200	{object}	responses.GetKakaoInfoResponse
-//	@failure		401	{object}	customerror.CustomError
-//	@failure		422 {object}	customerror.CustomError
-//	@failure		500 {object}	customerror.CustomError
+//	@param			body	body		request.AuthParam	true	"body to signup/signin"
+//	@success		200		{object}	responses.GetKakaoInfoResponse
+//	@failure		401		{object}	customerror.CustomError
+//	@failure		422		{object}	customerror.CustomError
+//	@failure		500		{object}	customerror.CustomError
 //	@router			/api/v1/auth/kakao [POST]
 func (a *AuthController) GetKakaoUserInfo(ctx echo.Context) error {
 	var param request.AuthParam
