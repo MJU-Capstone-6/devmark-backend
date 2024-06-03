@@ -47,6 +47,15 @@ func (u *UserService) CreateUser(arg repository.CreateUserParams) (*repository.U
 	return &user, nil
 }
 
+func (u *UserService) FindUnreadBookmarks(id int) (*[]repository.FindUnreadBookmarkRow, error) {
+	parsedID := int64(id)
+	bookmarks, err := u.Repository.FindUnreadBookmark(context.Background(), &parsedID)
+	if err != nil {
+		return &[]repository.FindUnreadBookmarkRow{}, nil
+	}
+	return &bookmarks, nil
+}
+
 func (u *UserService) UpdateUser(arg repository.UpdateUserParams) (*repository.User, error) {
 	user, err := u.Repository.UpdateUser(context.Background(), arg)
 	if err != nil {

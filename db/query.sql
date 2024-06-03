@@ -234,3 +234,9 @@ SET
   is_read = true,
   updated_at = CURRENT_TIMESTAMP
 WHERE id = $1;
+
+-- name: FindUnreadBookmark :many
+SELECT u.id, u.username, w.name AS workspace_name, bookmarks FROM unread_bookmark 
+JOIN workspace w ON w.id = unread_bookmark.workspace_id
+JOIN "user" u ON u.id = unread_bookmark.user_id
+WHERE user_id = $1;

@@ -47,3 +47,7 @@ sql:
             go_type:
               type: "UserBookmarkCount"
               slice: true
+          - column: "unread_bookmark.bookmarks"
+            go_type:
+              type: "Bookmark"
+              slice: true

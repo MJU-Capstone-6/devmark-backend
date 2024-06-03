@@ -533,6 +533,45 @@ func (q *Queries) FindRefreshTokenByUserID(ctx context.Context, userID *int32) (
 	return i, err
 }
 
+const findUnreadBookmark = `-- name: FindUnreadBookmark :many
+SELECT u.id, u.username, w.name AS workspace_name, bookmarks FROM unread_bookmark 
+JOIN workspace w ON w.id = unread_bookmark.workspace_id
+JOIN "user" u ON u.id = unread_bookmark.user_id
+WHERE user_id = $1
+`
+
+type FindUnreadBookmarkRow struct {
+	ID            int64      `db:"id" json:"id"`
+	Username      *string    `db:"username" json:"username"`
+	WorkspaceName *string    `db:"workspace_name" json:"workspace_name"`
+	Bookmarks     []Bookmark `db:"bookmarks" json:"bookmarks"`
+}
+
+func (q *Queries) FindUnreadBookmark(ctx context.Context, userID *int64) ([]FindUnreadBookmarkRow, error) {
+	rows, err := q.db.Query(ctx, findUnreadBookmark, userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []FindUnreadBookmarkRow
+	for rows.Next() {
+		var i FindUnreadBookmarkRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.Username,
+			&i.WorkspaceName,
+			&i.Bookmarks,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const findUserById = `-- name: FindUserById :one
 SELECT "user".id, "user".username, "user".provider, "user".created_at, "user".updated_at  FROM "user" WHERE "id" = $1 LIMIT 1
 `
