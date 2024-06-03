@@ -76,6 +76,12 @@ type RefreshToken struct {
 	UpdatedAt pgtype.Timestamptz `db:"updated_at" json:"updated_at"`
 }
 
+type UnreadBookmark struct {
+	UserID      *int64     `db:"user_id" json:"user_id"`
+	WorkspaceID *int64     `db:"workspace_id" json:"workspace_id"`
+	Bookmarks   []Bookmark `db:"bookmarks" json:"bookmarks"`
+}
+
 type User struct {
 	ID           int64              `db:"id" json:"id"`
 	Username     *string            `db:"username" json:"username"`
