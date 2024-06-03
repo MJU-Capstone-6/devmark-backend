@@ -51,12 +51,11 @@ type Comment struct {
 }
 
 type DeviceInfo struct {
-	ID          int64              `db:"id" json:"id"`
-	UserID      int64              `db:"user_id" json:"user_id"`
-	AgentHeader string             `db:"agent_header" json:"agent_header"`
-	DeviceID    *string            `db:"device_id" json:"device_id"`
-	CreatedAt   pgtype.Timestamptz `db:"created_at" json:"created_at"`
-	UpdatedAt   pgtype.Timestamptz `db:"updated_at" json:"updated_at"`
+	ID                int64              `db:"id" json:"id"`
+	UserID            *int64             `db:"user_id" json:"user_id"`
+	RegistrationToken *string            `db:"registration_token" json:"registration_token"`
+	CreatedAt         pgtype.Timestamptz `db:"created_at" json:"created_at"`
+	UpdatedAt         pgtype.Timestamptz `db:"updated_at" json:"updated_at"`
 }
 
 type InviteCode struct {
@@ -77,9 +76,10 @@ type RefreshToken struct {
 }
 
 type UnreadBookmark struct {
-	UserID      *int64     `db:"user_id" json:"user_id"`
-	WorkspaceID *int64     `db:"workspace_id" json:"workspace_id"`
-	Bookmarks   []Bookmark `db:"bookmarks" json:"bookmarks"`
+	UserID      *int64       `db:"user_id" json:"user_id"`
+	WorkspaceID *int64       `db:"workspace_id" json:"workspace_id"`
+	Bookmarks   []Bookmark   `db:"bookmarks" json:"bookmarks"`
+	DeviceInfos []DeviceInfo `db:"device_infos" json:"device_infos"`
 }
 
 type User struct {

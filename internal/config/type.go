@@ -17,9 +17,10 @@ type DB struct {
 }
 
 type App struct {
-	Port      string `mapstructure:"port"`
-	FooterKey string `mapstructure:"footer_key"`
-	IsDevMode bool   `mapstructure:"is_dev_mode"`
+	Port             string `mapstructure:"port"`
+	FooterKey        string `mapstructure:"footer_key"`
+	IsDevMode        bool   `mapstructure:"is_dev_mode"`
+	FireBaseFilename string `mapstructure:"firebase_filename"`
 }
 
 type Kakao struct {

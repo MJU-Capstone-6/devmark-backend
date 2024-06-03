@@ -115,25 +115,23 @@ func (q *Queries) CreateComment(ctx context.Context, arg CreateCommentParams) (C
 }
 
 const createDeviceInfo = `-- name: CreateDeviceInfo :one
-INSERT INTO device_info (user_id, agent_header, device_id)
-VALUES ($1, $2, $3)
-RETURNING id, user_id, agent_header, device_id, created_at, updated_at
+INSERT INTO device_info (user_id, registration_token)
+VALUES ($1, $2)
+RETURNING id, user_id, registration_token, created_at, updated_at
 `
 
 type CreateDeviceInfoParams struct {
-	UserID      int64   `db:"user_id" json:"user_id"`
-	AgentHeader string  `db:"agent_header" json:"agent_header"`
-	DeviceID    *string `db:"device_id" json:"device_id"`
+	UserID            *int64  `db:"user_id" json:"user_id"`
+	RegistrationToken *string `db:"registration_token" json:"registration_token"`
 }
 
 func (q *Queries) CreateDeviceInfo(ctx context.Context, arg CreateDeviceInfoParams) (DeviceInfo, error) {
-	row := q.db.QueryRow(ctx, createDeviceInfo, arg.UserID, arg.AgentHeader, arg.DeviceID)
+	row := q.db.QueryRow(ctx, createDeviceInfo, arg.UserID, arg.RegistrationToken)
 	var i DeviceInfo
 	err := row.Scan(
 		&i.ID,
 		&i.UserID,
-		&i.AgentHeader,
-		&i.DeviceID,
+		&i.RegistrationToken,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
@@ -191,7 +189,7 @@ func (q *Queries) CreateRefreshToken(ctx context.Context, arg CreateRefreshToken
 
 const createUser = `-- name: CreateUser :one
 INSERT INTO "user" (username, provider)
-VALUES ($1, $2)
+VALUES ($1, $2 )
 RETURNING id, username, provider, refresh_token, created_at, updated_at
 `
 
@@ -405,59 +403,17 @@ func (q *Queries) FindComment(ctx context.Context, id int64) (Comment, error) {
 	return i, err
 }
 
-const findDeviceInfo = `-- name: FindDeviceInfo :one
-SELECT id, user_id, agent_header, device_id, created_at, updated_at FROM device_info WHERE user_id = $1
+const findDeviceInfoByToken = `-- name: FindDeviceInfoByToken :one
+SELECT id, user_id, registration_token, created_at, updated_at FROM device_info WHERE registration_token = $1
 `
 
-func (q *Queries) FindDeviceInfo(ctx context.Context, userID int64) (DeviceInfo, error) {
-	row := q.db.QueryRow(ctx, findDeviceInfo, userID)
+func (q *Queries) FindDeviceInfoByToken(ctx context.Context, registrationToken *string) (DeviceInfo, error) {
+	row := q.db.QueryRow(ctx, findDeviceInfoByToken, registrationToken)
 	var i DeviceInfo
 	err := row.Scan(
 		&i.ID,
 		&i.UserID,
-		&i.AgentHeader,
-		&i.DeviceID,
-		&i.CreatedAt,
-		&i.UpdatedAt,
-	)
-	return i, err
-}
-
-const findDeviceInfoByAgent = `-- name: FindDeviceInfoByAgent :one
-SELECT id, user_id, agent_header, device_id, created_at, updated_at FROM device_info WHERE agent_header = $1
-`
-
-func (q *Queries) FindDeviceInfoByAgent(ctx context.Context, agentHeader string) (DeviceInfo, error) {
-	row := q.db.QueryRow(ctx, findDeviceInfoByAgent, agentHeader)
-	var i DeviceInfo
-	err := row.Scan(
-		&i.ID,
-		&i.UserID,
-		&i.AgentHeader,
-		&i.DeviceID,
-		&i.CreatedAt,
-		&i.UpdatedAt,
-	)
-	return i, err
-}
-
-const findDeviceInfoByAgentAndUserID = `-- name: FindDeviceInfoByAgentAndUserID :one
-SELECT id, user_id, agent_header, device_id, created_at, updated_at FROM device_info WHERE agent_header = $1 AND user_id = $2
-`
-
-type FindDeviceInfoByAgentAndUserIDParams struct {
-	AgentHeader string `db:"agent_header" json:"agent_header"`
-	UserID      int64  `db:"user_id" json:"user_id"`
-}
-
-func (q *Queries) FindDeviceInfoByAgentAndUserID(ctx context.Context, arg FindDeviceInfoByAgentAndUserIDParams) (DeviceInfo, error) {
-	row := q.db.QueryRow(ctx, findDeviceInfoByAgentAndUserID, arg.AgentHeader, arg.UserID)
-	var i DeviceInfo
-	err := row.Scan(
-		&i.ID,
-		&i.UserID,
-		&i.AgentHeader,
-		&i.DeviceID,
+		&i.RegistrationToken,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
@@ -534,21 +490,21 @@ func (q *Queries) FindRefreshTokenByUserID(ctx context.Context, userID *int32) (
 }
 
 const findUnreadBookmark = `-- name: FindUnreadBookmark :many
-SELECT u.id, u.username, w.name AS workspace_name, bookmarks FROM unread_bookmark 
+SELECT u.id, u.username, w.name AS workspace_name, bookmarks, device_infos FROM unread_bookmark 
 JOIN workspace w ON w.id = unread_bookmark.workspace_id
 JOIN "user" u ON u.id = unread_bookmark.user_id
-WHERE user_id = $1
 `
 
 type FindUnreadBookmarkRow struct {
-	ID            int64      `db:"id" json:"id"`
-	Username      *string    `db:"username" json:"username"`
-	WorkspaceName *string    `db:"workspace_name" json:"workspace_name"`
-	Bookmarks     []Bookmark `db:"bookmarks" json:"bookmarks"`
+	ID            int64        `db:"id" json:"id"`
+	Username      *string      `db:"username" json:"username"`
+	WorkspaceName *string      `db:"workspace_name" json:"workspace_name"`
+	Bookmarks     []Bookmark   `db:"bookmarks" json:"bookmarks"`
+	DeviceInfos   []DeviceInfo `db:"device_infos" json:"device_infos"`
 }
 
-func (q *Queries) FindUnreadBookmark(ctx context.Context, userID *int64) ([]FindUnreadBookmarkRow, error) {
-	rows, err := q.db.Query(ctx, findUnreadBookmark, userID)
+func (q *Queries) FindUnreadBookmark(ctx context.Context) ([]FindUnreadBookmarkRow, error) {
+	rows, err := q.db.Query(ctx, findUnreadBookmark)
 	if err != nil {
 		return nil, err
 	}
@@ -561,6 +517,7 @@ func (q *Queries) FindUnreadBookmark(ctx context.Context, userID *int64) ([]Find
 			&i.Username,
 			&i.WorkspaceName,
 			&i.Bookmarks,
+			&i.DeviceInfos,
 		); err != nil {
 			return nil, err
 		}

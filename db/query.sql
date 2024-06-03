@@ -7,7 +7,7 @@ SELECT "user".id, "user".username, "user".provider, "user".created_at, "user".up
 
 -- name: CreateUser :one
 INSERT INTO "user" (username, provider)
-VALUES ($1, $2)
+VALUES ($1, $2 )
 RETURNING *;
 
 -- name: UpdateUser :one
@@ -215,18 +215,9 @@ JOIN workspace w ON wu.workspace_id = w.id
 WHERE workspace_id = $1;
 
 -- name: CreateDeviceInfo :one
-INSERT INTO device_info (user_id, agent_header, device_id)
-VALUES ($1, $2, $3)
+INSERT INTO device_info (user_id, registration_token)
+VALUES ($1, $2)
 RETURNING *;
-
--- name: FindDeviceInfo :one
-SELECT * FROM device_info WHERE user_id = $1;
-
--- name: FindDeviceInfoByAgent :one
-SELECT * FROM device_info WHERE agent_header = $1;
-
--- name: FindDeviceInfoByAgentAndUserID :one
-SELECT * FROM device_info WHERE agent_header = $1 AND user_id = $2;
 
 -- name: ReadBookmark :exec
 UPDATE bookmark
@@ -236,7 +227,9 @@ SET
 WHERE id = $1;
 
 -- name: FindUnreadBookmark :many
-SELECT u.id, u.username, w.name AS workspace_name, bookmarks FROM unread_bookmark 
+SELECT u.id, u.username, w.name AS workspace_name, bookmarks, device_infos FROM unread_bookmark 
 JOIN workspace w ON w.id = unread_bookmark.workspace_id
-JOIN "user" u ON u.id = unread_bookmark.user_id
-WHERE user_id = $1;
+JOIN "user" u ON u.id = unread_bookmark.user_id;
+
+-- name: FindDeviceInfoByToken :one
+SELECT * FROM device_info WHERE registration_token = $1;

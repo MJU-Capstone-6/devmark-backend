@@ -15,7 +15,7 @@ type AuthService struct {
 	DeviceInfoService interfaces.IDeviceinfoService
 }
 
-func (a *AuthService) KakaoSignUp(nickname string, provider string, agent string) (*responses.GetKakaoInfoResponse, error) {
+func (a *AuthService) KakaoSignUp(nickname string, provider string, registrationToken string) (*responses.GetKakaoInfoResponse, error) {
 	var userId int
 	var user *repository.User
 	var refreshToken *repository.RefreshToken
@@ -58,6 +58,18 @@ func (a *AuthService) KakaoSignUp(nickname string, provider string, agent string
 			return nil, err
 		}
 	}
+
+	if err := a.DeviceInfoService.CheckDeviceInfoExists(registrationToken); err != nil {
+		createDeviceInfoParam := repository.CreateDeviceInfoParams{
+			UserID:            &user.ID,
+			RegistrationToken: &registrationToken,
+		}
+		_, err := a.DeviceInfoService.Create(createDeviceInfoParam)
+		if err != nil {
+			return nil, err
+		}
+	}
+
 	accessToken, err := a.JWTService.GenerateToken(userId, constants.ACCESSTOKEN_EXPIRED_TIME)
 	if err != nil {
 		return nil, err
@@ -72,16 +84,7 @@ func (a *AuthService) KakaoSignUp(nickname string, provider string, agent string
 	if err != nil {
 		return nil, err
 	}
-	if _, err := a.DeviceInfoService.FindByAgentAndUserID(int(user.ID), agent); err != nil {
-		createParam := repository.CreateDeviceInfoParams{
-			UserID:      user.ID,
-			AgentHeader: agent,
-		}
-		_, err := a.DeviceInfoService.Create(createParam)
-		if err != nil {
-			return nil, err
-		}
-	}
+
 	return &responses.GetKakaoInfoResponse{AccessToken: accessToken, RefreshToken: *refreshToken.Token}, nil
 }
 

@@ -5,8 +5,8 @@ import (
 	"net/http"
 
 	"github.com/MJU-Capstone-6/devmark-backend/internal/config"
-	"github.com/MJU-Capstone-6/devmark-backend/internal/constants"
 	customerror "github.com/MJU-Capstone-6/devmark-backend/internal/customError"
+	"github.com/MJU-Capstone-6/devmark-backend/internal/request"
 	"github.com/MJU-Capstone-6/devmark-backend/pkg/interfaces"
 	"github.com/labstack/echo/v4"
 )
@@ -26,15 +26,20 @@ type AuthController struct {
 //	@tags			auth
 //	@accept			json
 //	@produce		json
-//	@success		200	{object}	responses.GetKakaoInfoResponse
-//	@failure		401	{object}	customerror.CustomError
-//	@failure		422 {object}	customerror.CustomError
-//	@failure		500 {object}	customerror.CustomError
+//	@param			body	body		request.AuthParam	true	"body to signup/signin"
+//	@success		200		{object}	responses.GetKakaoInfoResponse
+//	@failure		401		{object}	customerror.CustomError
+//	@failure		422		{object}	customerror.CustomError
+//	@failure		500		{object}	customerror.CustomError
 //	@router			/api/v1/auth/kakao [POST]
 func (a *AuthController) GetKakaoUserInfo(ctx echo.Context) error {
+	var param request.AuthParam
+	err := ctx.Bind(&param)
+	if err != nil {
+		return customerror.InternalServerError(err)
+	}
 	key := ctx.Get("key")
 	provider := ctx.Param("provider")
-	agentHeader := ctx.Request().Header.Get(constants.USER_AGENT_HEADER)
 	if parsedKey, ok := key.(string); ok {
 		userInfo, err := requestKakaoUserInfo(parsedKey)
 		if err != nil {
@@ -43,7 +48,7 @@ func (a *AuthController) GetKakaoUserInfo(ctx echo.Context) error {
 		if userInfo.ID == 0 {
 			return customerror.TokenNotValidError(errors.New(""))
 		}
-		request, err := a.AuthService.KakaoSignUp(userInfo.Properties.Nickname, provider, agentHeader)
+		request, err := a.AuthService.KakaoSignUp(userInfo.Properties.Nickname, provider, param.RegistrationToken)
 		if err != nil {
 			return err
 		}

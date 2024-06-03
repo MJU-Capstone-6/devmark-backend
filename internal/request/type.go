@@ -1,5 +1,9 @@
 package request
 
+type AuthParam struct {
+	RegistrationToken string `json:"registration_token"`
+}
+
 type RefreshAccessTokenParam struct {
 	RefreshToken string `json:"refresh_token"`
 }
