@@ -1374,6 +1374,169 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/workspace/:id/recommend": {
+            "get": {
+                "description": "워크스페이스의 추천 포스트를 조회합니다.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "workspace"
+                ],
+                "summary": "워크스페이스 추천 포스트 조회",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Workspace id",
+                        "name": "workspace_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/repository.FindRecommendLinksRow"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/customerror.CustomError"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/customerror.CustomError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/customerror.CustomError"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "워크스페이스의 추천 포스트를 생성합니다.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "workspace"
+                ],
+                "summary": "워크스페이스 추천 포스트 생성",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Workspace id",
+                        "name": "workspace_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Recommend Link Param",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.CreateRecommendLinkParam"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/repository.RecommendLink"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/customerror.CustomError"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/customerror.CustomError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/customerror.CustomError"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/workspace/:id/top": {
+            "get": {
+                "description": "워크스페이스의 상위 카테고리를 조회합니다.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "workspace"
+                ],
+                "summary": "워크스페이스 상위 카테고리 조회",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Workspace id",
+                        "name": "workspace_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/repository.FindTopCategoriesRow"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/customerror.CustomError"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/customerror.CustomError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/customerror.CustomError"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/workspace/:workspace_id/category/:category_id": {
             "get": {
                 "description": "워크스페이스의 카테고리내의 북마크를  조회합니다.",
@@ -1687,6 +1850,34 @@ const docTemplate = `{
                 }
             }
         },
+        "repository.FindRecommendLinksRow": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "recommend_links": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/repository.RecommendLink"
+                    }
+                }
+            }
+        },
+        "repository.FindTopCategoriesRow": {
+            "type": "object",
+            "properties": {
+                "bookmark_count": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
         "repository.FindUserByIdRow": {
             "type": "object",
             "properties": {
@@ -1758,6 +1949,32 @@ const docTemplate = `{
                 },
                 "id": {
                     "type": "integer"
+                },
+                "updated_at": {
+                    "$ref": "#/definitions/pgtype.Timestamptz"
+                },
+                "workspace_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "repository.RecommendLink": {
+            "type": "object",
+            "properties": {
+                "category_id": {
+                    "type": "integer"
+                },
+                "created_at": {
+                    "$ref": "#/definitions/pgtype.Timestamptz"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "link": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
                 },
                 "updated_at": {
                     "$ref": "#/definitions/pgtype.Timestamptz"
@@ -1951,6 +2168,20 @@ const docTemplate = `{
             "properties": {
                 "workspace_id": {
                     "type": "integer"
+                }
+            }
+        },
+        "request.CreateRecommendLinkParam": {
+            "type": "object",
+            "properties": {
+                "category_id": {
+                    "type": "integer"
+                },
+                "link": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
                 }
             }
         },

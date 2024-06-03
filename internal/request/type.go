@@ -29,6 +29,11 @@ type CreateBookmarkParam struct {
 	Title       string `db:"title" json:"title"`
 }
 
+type CreateRecommendLinkParam struct {
+	CategoryID int64  `json:"category_id"`
+	Link       string `json:"link"`
+	Title      string `json:"title"`
+}
 type PredictCategoryParam struct {
 	Code   string `json:"code"`
 	Link   string `json:"link"`

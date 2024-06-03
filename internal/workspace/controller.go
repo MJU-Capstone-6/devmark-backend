@@ -7,6 +7,7 @@ import (
 	"github.com/MJU-Capstone-6/devmark-backend/internal/constants"
 	customerror "github.com/MJU-Capstone-6/devmark-backend/internal/customError"
 	"github.com/MJU-Capstone-6/devmark-backend/internal/repository"
+	"github.com/MJU-Capstone-6/devmark-backend/internal/request"
 	"github.com/MJU-Capstone-6/devmark-backend/internal/responses"
 	"github.com/MJU-Capstone-6/devmark-backend/internal/utils"
 	"github.com/MJU-Capstone-6/devmark-backend/pkg/interfaces"
@@ -16,6 +17,7 @@ import (
 type WorkspaceController struct {
 	WorkspaceService     interfaces.IWorkspaceService
 	WorkspaceCodeService interfaces.IWorkspaceCodeService
+	RecommendLinkService interfaces.IRecommendLinkService
 }
 
 // ViewWorkspaceController godoc
@@ -425,6 +427,97 @@ func (w *WorkspaceController) FindWorkspaceInfoController(ctx echo.Context) erro
 	return ctx.JSON(http.StatusOK, workspaceInfo)
 }
 
+// FindTopRecommendLinks godoc
+//
+//	@summary	워크스페이스 추천 포스트 조회
+//	@schemes
+//	@description	워크스페이스의 추천 포스트를 조회합니다.
+//	@tags			workspace
+//	@accept			json
+//	@produce		json
+//	@param			workspace_id	path		int	true	"Workspace id"
+//	@success		200				{object}	[]repository.FindRecommendLinksRow
+//	@failure		400				{object}	customerror.CustomError
+//	@failure		401				{object}	customerror.CustomError
+//	@failure		500				{object}	customerror.CustomError
+//	@router			/api/v1/workspace/:id/recommend [GET]
+func (w *WorkspaceController) FindTopRecommendLinks(ctx echo.Context) error {
+	id, err := utils.ParseURLParam(ctx, "id")
+	if err != nil {
+		return err
+	}
+	recommendLinks, err := w.WorkspaceService.FindTopRecommendLinks(*id)
+	if err != nil {
+		return err
+	}
+	return ctx.JSON(http.StatusOK, recommendLinks)
+}
+
+// CreateRecommendLink
+//
+//	@summary	워크스페이스 추천 포스트 생성
+//	@schemes
+//	@description	워크스페이스의 추천 포스트를 생성합니다.
+//	@tags			workspace
+//	@accept			json
+//	@produce		json
+//	@param			workspace_id	path		int									true	"Workspace id"
+//	@param			body			body		request.CreateRecommendLinkParam	true	"Recommend Link Param"
+//	@success		200				{object}	repository.RecommendLink
+//	@failure		400				{object}	customerror.CustomError
+//	@failure		401				{object}	customerror.CustomError
+//	@failure		500				{object}	customerror.CustomError
+//	@router			/api/v1/workspace/:id/recommend [POST]
+func (w *WorkspaceController) CreateRecommendLinkController(ctx echo.Context) error {
+	id, err := utils.ParseURLParam(ctx, "id")
+	if err != nil {
+		return err
+	}
+	var body request.CreateRecommendLinkParam
+	err = ctx.Bind(&body)
+	if err != nil {
+		return customerror.InternalServerError(err)
+	}
+	parsedID := int64(*id)
+	param := repository.CreateRecommendLinkParams{
+		WorkspaceID: &parsedID,
+		CategoryID:  &body.CategoryID,
+		Link:        &body.Link,
+		Title:       &body.Title,
+	}
+	recommendLink, err := w.RecommendLinkService.Create(param)
+	if err != nil {
+		return err
+	}
+	return ctx.JSON(http.StatusOK, recommendLink)
+}
+
+// FindTopCategories godoc
+//
+//	@summary	워크스페이스 상위 카테고리 조회
+//	@schemes
+//	@description	워크스페이스의 상위 카테고리를 조회합니다.
+//	@tags			workspace
+//	@accept			json
+//	@produce		json
+//	@param			workspace_id	path		int	true	"Workspace id"
+//	@success		200				{object}	[]repository.FindTopCategoriesRow
+//	@failure		400				{object}	customerror.CustomError
+//	@failure		401				{object}	customerror.CustomError
+//	@failure		500				{object}	customerror.CustomError
+//	@router			/api/v1/workspace/:id/top [GET]
+func (w *WorkspaceController) FindTopCategories(ctx echo.Context) error {
+	id, err := utils.ParseURLParam(ctx, "id")
+	if err != nil {
+		return err
+	}
+	categories, err := w.WorkspaceService.FindTopCategories(*id)
+	if err != nil {
+		return err
+	}
+	return ctx.JSON(http.StatusOK, categories)
+}
+
 func InitWorkspaceController() *WorkspaceController {
 	return &WorkspaceController{}
 }
@@ -436,5 +529,10 @@ func (w WorkspaceController) WithWorkspaceService(service interfaces.IWorkspaceS
 
 func (w WorkspaceController) WithWorkspaceCodeService(service interfaces.IWorkspaceCodeService) WorkspaceController {
 	w.WorkspaceCodeService = service
+	return w
+}
+
+func (w WorkspaceController) WithRecommendLinkService(service interfaces.IRecommendLinkService) WorkspaceController {
+	w.RecommendLinkService = service
 	return w
 }

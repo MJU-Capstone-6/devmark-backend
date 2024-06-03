@@ -8,7 +8,7 @@ RUN go mod download
 RUN go install github.com/swaggo/swag/cmd/swag@latest
 
 COPY . .
-RUN swag init -d internal/auth,internal/category,internal/inviteCode,internal/workspace,internal/user,internal/bookmark,internal/refreshToken,internal/comment,internal/workspaceCode -g ../../main.go --parseDependency
+RUN swag init -d internal/auth,internal/category,internal/inviteCode,internal/workspace,internal/user,internal/bookmark,internal/refreshToken,internal/comment,internal/workspaceCode,internal/recommendLink -g ../../main.go --parseDependency
 RUN CGO_ENABLED=1 GOOS=linux go build -a -installsuffix cgo -o devmark .
 COPY config config
 

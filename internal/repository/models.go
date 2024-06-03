@@ -67,12 +67,29 @@ type InviteCode struct {
 	UpdatedAt   pgtype.Timestamptz `db:"updated_at" json:"updated_at"`
 }
 
+type RecommendLink struct {
+	ID          int64              `db:"id" json:"id"`
+	WorkspaceID *int64             `db:"workspace_id" json:"workspace_id"`
+	Link        *string            `db:"link" json:"link"`
+	CreatedAt   pgtype.Timestamptz `db:"created_at" json:"created_at"`
+	UpdatedAt   pgtype.Timestamptz `db:"updated_at" json:"updated_at"`
+	CategoryID  *int64             `db:"category_id" json:"category_id"`
+	Title       *string            `db:"title" json:"title"`
+}
+
 type RefreshToken struct {
 	ID        int64              `db:"id" json:"id"`
 	Token     *string            `db:"token" json:"token"`
 	UserID    *int32             `db:"user_id" json:"user_id"`
 	CreatedAt pgtype.Timestamptz `db:"created_at" json:"created_at"`
 	UpdatedAt pgtype.Timestamptz `db:"updated_at" json:"updated_at"`
+}
+
+type TopWorkspaceCategory struct {
+	WorkspaceID    *int64          `db:"workspace_id" json:"workspace_id"`
+	CategoryID     *int64          `db:"category_id" json:"category_id"`
+	BookmarkCount  int64           `db:"bookmark_count" json:"bookmark_count"`
+	RecommendLinks []RecommendLink `db:"recommend_links" json:"recommend_links"`
 }
 
 type UnreadBookmark struct {

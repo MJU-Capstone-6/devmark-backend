@@ -233,3 +233,27 @@ JOIN "user" u ON u.id = unread_bookmark.user_id;
 
 -- name: FindDeviceInfoByToken :one
 SELECT * FROM device_info WHERE registration_token = $1;
+
+-- name: FindRecommendLinks :many
+SELECT c.name, recommend_links FROM top_workspace_categories JOIN category c ON c.id = top_workspace_categories.category_id
+WHERE workspace_id = $1;
+
+-- name: FindTopCategories :many
+SELECT
+	category.id,
+  category.name,
+  COUNT(*) AS bookmark_count
+FROM
+    bookmark
+JOIN category ON category.id = bookmark.category_id
+WHERE workspace_id = $1
+GROUP BY
+    workspace_id, category_id, category.name, category.id
+ORDER BY
+    workspace_id, bookmark_count DESC
+LIMIT 3;
+
+-- name: CreateRecommendLink :one
+INSERT INTO recommend_link (workspace_id, category_id, link, title)
+VALUES ($1, $2, $3, $4)
+RETURNING *;

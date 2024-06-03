@@ -99,6 +99,24 @@ definitions:
       workspace:
         $ref: '#/definitions/repository.Workspace'
     type: object
+  repository.FindRecommendLinksRow:
+    properties:
+      name:
+        type: string
+      recommend_links:
+        items:
+          $ref: '#/definitions/repository.RecommendLink'
+        type: array
+    type: object
+  repository.FindTopCategoriesRow:
+    properties:
+      bookmark_count:
+        type: integer
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
   repository.FindUserByIdRow:
     properties:
       created_at:
@@ -146,6 +164,23 @@ definitions:
         $ref: '#/definitions/pgtype.Timestamptz'
       id:
         type: integer
+      updated_at:
+        $ref: '#/definitions/pgtype.Timestamptz'
+      workspace_id:
+        type: integer
+    type: object
+  repository.RecommendLink:
+    properties:
+      category_id:
+        type: integer
+      created_at:
+        $ref: '#/definitions/pgtype.Timestamptz'
+      id:
+        type: integer
+      link:
+        type: string
+      title:
+        type: string
       updated_at:
         $ref: '#/definitions/pgtype.Timestamptz'
       workspace_id:
@@ -271,6 +306,15 @@ definitions:
     properties:
       workspace_id:
         type: integer
+    type: object
+  request.CreateRecommendLinkParam:
+    properties:
+      category_id:
+        type: integer
+      link:
+        type: string
+      title:
+        type: string
     type: object
   request.PredictCategoryBody:
     properties:
@@ -1234,6 +1278,114 @@ paths:
           schema:
             $ref: '#/definitions/customerror.CustomError'
       summary: 워크스페이스 정보 조회
+      tags:
+      - workspace
+  /api/v1/workspace/:id/recommend:
+    get:
+      consumes:
+      - application/json
+      description: 워크스페이스의 추천 포스트를 조회합니다.
+      parameters:
+      - description: Workspace id
+        in: path
+        name: workspace_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/repository.FindRecommendLinksRow'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/customerror.CustomError'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/customerror.CustomError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/customerror.CustomError'
+      summary: 워크스페이스 추천 포스트 조회
+      tags:
+      - workspace
+    post:
+      consumes:
+      - application/json
+      description: 워크스페이스의 추천 포스트를 생성합니다.
+      parameters:
+      - description: Workspace id
+        in: path
+        name: workspace_id
+        required: true
+        type: integer
+      - description: Recommend Link Param
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/request.CreateRecommendLinkParam'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/repository.RecommendLink'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/customerror.CustomError'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/customerror.CustomError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/customerror.CustomError'
+      summary: 워크스페이스 추천 포스트 생성
+      tags:
+      - workspace
+  /api/v1/workspace/:id/top:
+    get:
+      consumes:
+      - application/json
+      description: 워크스페이스의 상위 카테고리를 조회합니다.
+      parameters:
+      - description: Workspace id
+        in: path
+        name: workspace_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/repository.FindTopCategoriesRow'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/customerror.CustomError'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/customerror.CustomError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/customerror.CustomError'
+      summary: 워크스페이스 상위 카테고리 조회
       tags:
       - workspace
   /api/v1/workspace/:workspace_id/category/:category_id:

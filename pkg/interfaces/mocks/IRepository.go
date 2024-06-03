@@ -183,6 +183,34 @@ func (_m *IRepository) CreateInviteCode(_a0 context.Context, _a1 repository.Crea
 	return r0, r1
 }
 
+// CreateRecommendLink provides a mock function with given fields: _a0, _a1
+func (_m *IRepository) CreateRecommendLink(_a0 context.Context, _a1 repository.CreateRecommendLinkParams) (repository.RecommendLink, error) {
+	ret := _m.Called(_a0, _a1)
+
+	if len(ret) == 0 {
+		panic("no return value specified for CreateRecommendLink")
+	}
+
+	var r0 repository.RecommendLink
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, repository.CreateRecommendLinkParams) (repository.RecommendLink, error)); ok {
+		return rf(_a0, _a1)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, repository.CreateRecommendLinkParams) repository.RecommendLink); ok {
+		r0 = rf(_a0, _a1)
+	} else {
+		r0 = ret.Get(0).(repository.RecommendLink)
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, repository.CreateRecommendLinkParams) error); ok {
+		r1 = rf(_a0, _a1)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // CreateRefreshToken provides a mock function with given fields: _a0, _a1
 func (_m *IRepository) CreateRefreshToken(_a0 context.Context, _a1 repository.CreateRefreshTokenParams) (repository.RefreshToken, error) {
 	ret := _m.Called(_a0, _a1)
@@ -621,6 +649,36 @@ func (_m *IRepository) FindInviteCodeByWorkspaceID(_a0 context.Context, _a1 *int
 	return r0, r1
 }
 
+// FindRecommendLinks provides a mock function with given fields: _a0, _a1
+func (_m *IRepository) FindRecommendLinks(_a0 context.Context, _a1 *int64) ([]repository.FindRecommendLinksRow, error) {
+	ret := _m.Called(_a0, _a1)
+
+	if len(ret) == 0 {
+		panic("no return value specified for FindRecommendLinks")
+	}
+
+	var r0 []repository.FindRecommendLinksRow
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, *int64) ([]repository.FindRecommendLinksRow, error)); ok {
+		return rf(_a0, _a1)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, *int64) []repository.FindRecommendLinksRow); ok {
+		r0 = rf(_a0, _a1)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]repository.FindRecommendLinksRow)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, *int64) error); ok {
+		r1 = rf(_a0, _a1)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // FindRefreshTokenByUserID provides a mock function with given fields: _a0, _a1
 func (_m *IRepository) FindRefreshTokenByUserID(_a0 context.Context, _a1 *int32) (repository.RefreshToken, error) {
 	ret := _m.Called(_a0, _a1)
@@ -641,6 +699,36 @@ func (_m *IRepository) FindRefreshTokenByUserID(_a0 context.Context, _a1 *int32)
 	}
 
 	if rf, ok := ret.Get(1).(func(context.Context, *int32) error); ok {
+		r1 = rf(_a0, _a1)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// FindTopCategories provides a mock function with given fields: _a0, _a1
+func (_m *IRepository) FindTopCategories(_a0 context.Context, _a1 *int64) ([]repository.FindTopCategoriesRow, error) {
+	ret := _m.Called(_a0, _a1)
+
+	if len(ret) == 0 {
+		panic("no return value specified for FindTopCategories")
+	}
+
+	var r0 []repository.FindTopCategoriesRow
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, *int64) ([]repository.FindTopCategoriesRow, error)); ok {
+		return rf(_a0, _a1)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, *int64) []repository.FindTopCategoriesRow); ok {
+		r0 = rf(_a0, _a1)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]repository.FindTopCategoriesRow)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, *int64) error); ok {
 		r1 = rf(_a0, _a1)
 	} else {
 		r1 = ret.Error(1)

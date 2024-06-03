@@ -10,6 +10,8 @@ type IWorkspaceService interface {
 	FindInfoById(int) (*repository.FindWorkspaceInfoRow, error)
 	FindCategoriesById(int) (*[]*repository.Category, error)
 	FindCategoryBookmark(repository.FindWorkspaceCategoryBookmarkParams) (*[]repository.Bookmark, error)
+	FindTopCategories(int) (*[]repository.FindTopCategoriesRow, error)
+	FindTopRecommendLinks(int) (*[]repository.FindRecommendLinksRow, error)
 	SearchBookmark(repository.SearchWorkspaceBookmarkParams) (*[]repository.SearchWorkspaceBookmarkRow, error)
 	Update(repository.UpdateWorkspaceParams) (*repository.Workspace, error)
 	Delete(int) error

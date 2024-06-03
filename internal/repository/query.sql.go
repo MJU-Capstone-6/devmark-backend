@@ -163,6 +163,39 @@ func (q *Queries) CreateInviteCode(ctx context.Context, arg CreateInviteCodePara
 	return i, err
 }
 
+const createRecommendLink = `-- name: CreateRecommendLink :one
+INSERT INTO recommend_link (workspace_id, category_id, link, title)
+VALUES ($1, $2, $3, $4)
+RETURNING id, workspace_id, link, created_at, updated_at, category_id, title
+`
+
+type CreateRecommendLinkParams struct {
+	WorkspaceID *int64  `db:"workspace_id" json:"workspace_id"`
+	CategoryID  *int64  `db:"category_id" json:"category_id"`
+	Link        *string `db:"link" json:"link"`
+	Title       *string `db:"title" json:"title"`
+}
+
+func (q *Queries) CreateRecommendLink(ctx context.Context, arg CreateRecommendLinkParams) (RecommendLink, error) {
+	row := q.db.QueryRow(ctx, createRecommendLink,
+		arg.WorkspaceID,
+		arg.CategoryID,
+		arg.Link,
+		arg.Title,
+	)
+	var i RecommendLink
+	err := row.Scan(
+		&i.ID,
+		&i.WorkspaceID,
+		&i.Link,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.CategoryID,
+		&i.Title,
+	)
+	return i, err
+}
+
 const createRefreshToken = `-- name: CreateRefreshToken :one
 INSERT INTO refresh_token (token, user_id)
 VALUES ($1, $2)
@@ -472,6 +505,36 @@ func (q *Queries) FindInviteCodeByWorkspaceID(ctx context.Context, workspaceID *
 	return i, err
 }
 
+const findRecommendLinks = `-- name: FindRecommendLinks :many
+SELECT c.name, recommend_links FROM top_workspace_categories JOIN category c ON c.id = top_workspace_categories.category_id
+WHERE workspace_id = $1
+`
+
+type FindRecommendLinksRow struct {
+	Name           *string         `db:"name" json:"name"`
+	RecommendLinks []RecommendLink `db:"recommend_links" json:"recommend_links"`
+}
+
+func (q *Queries) FindRecommendLinks(ctx context.Context, workspaceID *int64) ([]FindRecommendLinksRow, error) {
+	rows, err := q.db.Query(ctx, findRecommendLinks, workspaceID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []FindRecommendLinksRow
+	for rows.Next() {
+		var i FindRecommendLinksRow
+		if err := rows.Scan(&i.Name, &i.RecommendLinks); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const findRefreshTokenByUserID = `-- name: FindRefreshTokenByUserID :one
 SELECT id, token, user_id, created_at, updated_at from "refresh_token" WHERE "user_id" = $1 LIMIT 1
 `
@@ -487,6 +550,48 @@ func (q *Queries) FindRefreshTokenByUserID(ctx context.Context, userID *int32) (
 		&i.UpdatedAt,
 	)
 	return i, err
+}
+
+const findTopCategories = `-- name: FindTopCategories :many
+SELECT
+	category.id,
+  category.name,
+  COUNT(*) AS bookmark_count
+FROM
+    bookmark
+JOIN category ON category.id = bookmark.category_id
+WHERE workspace_id = $1
+GROUP BY
+    workspace_id, category_id, category.name, category.id
+ORDER BY
+    workspace_id, bookmark_count DESC
+LIMIT 3
+`
+
+type FindTopCategoriesRow struct {
+	ID            int64   `db:"id" json:"id"`
+	Name          *string `db:"name" json:"name"`
+	BookmarkCount int64   `db:"bookmark_count" json:"bookmark_count"`
+}
+
+func (q *Queries) FindTopCategories(ctx context.Context, workspaceID *int64) ([]FindTopCategoriesRow, error) {
+	rows, err := q.db.Query(ctx, findTopCategories, workspaceID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []FindTopCategoriesRow
+	for rows.Next() {
+		var i FindTopCategoriesRow
+		if err := rows.Scan(&i.ID, &i.Name, &i.BookmarkCount); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
 
 const findUnreadBookmark = `-- name: FindUnreadBookmark :many
