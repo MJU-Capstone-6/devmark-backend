@@ -93,6 +93,36 @@ func (_m *IWorkspaceCodeService) FindByCode(_a0 string) (*repository.FindWorkspa
 	return r0, r1
 }
 
+// FindByWorkspaceAndUserID provides a mock function with given fields: _a0
+func (_m *IWorkspaceCodeService) FindByWorkspaceAndUserID(_a0 repository.FindWorkspaceCodeByWorkspaceIDAndUserIDParams) (*repository.WorkspaceCode, error) {
+	ret := _m.Called(_a0)
+
+	if len(ret) == 0 {
+		panic("no return value specified for FindByWorkspaceAndUserID")
+	}
+
+	var r0 *repository.WorkspaceCode
+	var r1 error
+	if rf, ok := ret.Get(0).(func(repository.FindWorkspaceCodeByWorkspaceIDAndUserIDParams) (*repository.WorkspaceCode, error)); ok {
+		return rf(_a0)
+	}
+	if rf, ok := ret.Get(0).(func(repository.FindWorkspaceCodeByWorkspaceIDAndUserIDParams) *repository.WorkspaceCode); ok {
+		r0 = rf(_a0)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*repository.WorkspaceCode)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(repository.FindWorkspaceCodeByWorkspaceIDAndUserIDParams) error); ok {
+		r1 = rf(_a0)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // PredictCategory provides a mock function with given fields: _a0, _a1
 func (_m *IWorkspaceCodeService) PredictCategory(_a0 request.PredictCategoryParam, _a1 string) (*repository.Bookmark, error) {
 	ret := _m.Called(_a0, _a1)

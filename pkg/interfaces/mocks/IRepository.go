@@ -933,6 +933,34 @@ func (_m *IRepository) FindWorkspaceCodeByWorkspaceID(_a0 context.Context, _a1 *
 	return r0, r1
 }
 
+// FindWorkspaceCodeByWorkspaceIDAndUserID provides a mock function with given fields: _a0, _a1
+func (_m *IRepository) FindWorkspaceCodeByWorkspaceIDAndUserID(_a0 context.Context, _a1 repository.FindWorkspaceCodeByWorkspaceIDAndUserIDParams) (repository.WorkspaceCode, error) {
+	ret := _m.Called(_a0, _a1)
+
+	if len(ret) == 0 {
+		panic("no return value specified for FindWorkspaceCodeByWorkspaceIDAndUserID")
+	}
+
+	var r0 repository.WorkspaceCode
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, repository.FindWorkspaceCodeByWorkspaceIDAndUserIDParams) (repository.WorkspaceCode, error)); ok {
+		return rf(_a0, _a1)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, repository.FindWorkspaceCodeByWorkspaceIDAndUserIDParams) repository.WorkspaceCode); ok {
+		r0 = rf(_a0, _a1)
+	} else {
+		r0 = ret.Get(0).(repository.WorkspaceCode)
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, repository.FindWorkspaceCodeByWorkspaceIDAndUserIDParams) error); ok {
+		r1 = rf(_a0, _a1)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // FindWorkspaceInfo provides a mock function with given fields: _a0, _a1
 func (_m *IRepository) FindWorkspaceInfo(_a0 context.Context, _a1 int64) (repository.FindWorkspaceInfoRow, error) {
 	ret := _m.Called(_a0, _a1)
@@ -1017,6 +1045,24 @@ func (_m *IRepository) JoinWorkspaceWithoutCode(_a0 context.Context, _a1 reposit
 
 	var r0 error
 	if rf, ok := ret.Get(0).(func(context.Context, repository.JoinWorkspaceWithoutCodeParams) error); ok {
+		r0 = rf(_a0, _a1)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// ReadBookmark provides a mock function with given fields: _a0, _a1
+func (_m *IRepository) ReadBookmark(_a0 context.Context, _a1 int64) error {
+	ret := _m.Called(_a0, _a1)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ReadBookmark")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, int64) error); ok {
 		r0 = rf(_a0, _a1)
 	} else {
 		r0 = ret.Error(0)

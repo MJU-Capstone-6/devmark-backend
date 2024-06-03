@@ -228,3 +228,9 @@ SELECT * FROM device_info WHERE agent_header = $1;
 -- name: FindDeviceInfoByAgentAndUserID :one
 SELECT * FROM device_info WHERE agent_header = $1 AND user_id = $2;
 
+-- name: ReadBookmark :exec
+UPDATE bookmark
+SET
+  is_read = true,
+  updated_at = CURRENT_TIMESTAMP
+WHERE id = $1;

@@ -75,9 +75,19 @@ func (b *BookmarkController) FindBookmarkController(ctx echo.Context) error {
 	if err != nil {
 		return err
 	}
+	user, err := utils.GetAuthUser(ctx)
+	if err != nil {
+		return err
+	}
 	bookmark, err := b.BookmarkService.FindById(*id)
 	if err != nil {
 		return err
+	}
+	if *bookmark.Bookmark.UserID == user.ID {
+		err = b.BookmarkService.ReadBookmark(int(bookmark.Bookmark.ID))
+		if err != nil {
+			return err
+		}
 	}
 	return ctx.JSON(http.StatusOK, bookmark)
 }

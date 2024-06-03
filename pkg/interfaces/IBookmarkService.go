@@ -11,4 +11,5 @@ type IBookmarkService interface {
 	FindById(int) (*repository.FindBookmarkRow, error)
 	FindComments(int) (*[]*repository.BookmarkCommentRow, error)
 	Delete(int) error
+	ReadBookmark(int) error
 }
