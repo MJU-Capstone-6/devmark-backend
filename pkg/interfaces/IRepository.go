@@ -57,4 +57,7 @@ type IRepository interface {
 	ReadBookmark(context.Context, int64) error
 	FindUnreadBookmark(context.Context) ([]repository.FindUnreadBookmarkRow, error)
 	FindDeviceInfoByToken(context.Context, *string) (repository.DeviceInfo, error)
+	FindRecommendLinks(context.Context, *int64) ([]repository.FindRecommendLinksRow, error)
+	FindTopCategories(context.Context, *int64) ([]repository.FindTopCategoriesRow, error)
+	CreateRecommendLink(context.Context, repository.CreateRecommendLinkParams) (repository.RecommendLink, error)
 }

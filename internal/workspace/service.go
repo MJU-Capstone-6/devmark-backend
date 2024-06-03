@@ -139,6 +139,24 @@ func (w *WorkspaceService) FindInfoById(id int) (*repository.FindWorkspaceInfoRo
 	return &workspaceInfo, nil
 }
 
+func (w *WorkspaceService) FindTopRecommendLinks(id int) (*[]repository.FindRecommendLinksRow, error) {
+	parsedID := int64(id)
+	recommendLinks, err := w.Repository.FindRecommendLinks(context.Background(), &parsedID)
+	if err != nil {
+		return &[]repository.FindRecommendLinksRow{}, nil
+	}
+	return &recommendLinks, nil
+}
+
+func (w *WorkspaceService) FindTopCategories(id int) (*[]repository.FindTopCategoriesRow, error) {
+	parsedID := int64(id)
+	categories, err := w.Repository.FindTopCategories(context.Background(), &parsedID)
+	if err != nil {
+		return &[]repository.FindTopCategoriesRow{}, nil
+	}
+	return &categories, nil
+}
+
 func InitWorkspaceService(repo interfaces.IRepository) *WorkspaceService {
 	return &WorkspaceService{Repository: repo}
 }

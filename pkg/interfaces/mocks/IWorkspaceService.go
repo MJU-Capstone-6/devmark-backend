@@ -180,6 +180,66 @@ func (_m *IWorkspaceService) FindInfoById(_a0 int) (*repository.FindWorkspaceInf
 	return r0, r1
 }
 
+// FindTopCategories provides a mock function with given fields: _a0
+func (_m *IWorkspaceService) FindTopCategories(_a0 int) (*[]repository.FindTopCategoriesRow, error) {
+	ret := _m.Called(_a0)
+
+	if len(ret) == 0 {
+		panic("no return value specified for FindTopCategories")
+	}
+
+	var r0 *[]repository.FindTopCategoriesRow
+	var r1 error
+	if rf, ok := ret.Get(0).(func(int) (*[]repository.FindTopCategoriesRow, error)); ok {
+		return rf(_a0)
+	}
+	if rf, ok := ret.Get(0).(func(int) *[]repository.FindTopCategoriesRow); ok {
+		r0 = rf(_a0)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*[]repository.FindTopCategoriesRow)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(int) error); ok {
+		r1 = rf(_a0)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// FindTopRecommendLinks provides a mock function with given fields: _a0
+func (_m *IWorkspaceService) FindTopRecommendLinks(_a0 int) (*[]repository.FindRecommendLinksRow, error) {
+	ret := _m.Called(_a0)
+
+	if len(ret) == 0 {
+		panic("no return value specified for FindTopRecommendLinks")
+	}
+
+	var r0 *[]repository.FindRecommendLinksRow
+	var r1 error
+	if rf, ok := ret.Get(0).(func(int) (*[]repository.FindRecommendLinksRow, error)); ok {
+		return rf(_a0)
+	}
+	if rf, ok := ret.Get(0).(func(int) *[]repository.FindRecommendLinksRow); ok {
+		r0 = rf(_a0)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*[]repository.FindRecommendLinksRow)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(int) error); ok {
+		r1 = rf(_a0)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // Join provides a mock function with given fields: _a0, _a1
 func (_m *IWorkspaceService) Join(_a0 string, _a1 repository.JoinWorkspaceParams) error {
 	ret := _m.Called(_a0, _a1)

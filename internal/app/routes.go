@@ -13,6 +13,7 @@ import (
 	invitecode "github.com/MJU-Capstone-6/devmark-backend/internal/inviteCode"
 	"github.com/MJU-Capstone-6/devmark-backend/internal/jwtToken"
 	"github.com/MJU-Capstone-6/devmark-backend/internal/middlewares"
+	recommendlink "github.com/MJU-Capstone-6/devmark-backend/internal/recommendLink"
 	refreshtoken "github.com/MJU-Capstone-6/devmark-backend/internal/refreshToken"
 	"github.com/MJU-Capstone-6/devmark-backend/internal/user"
 	"github.com/MJU-Capstone-6/devmark-backend/internal/workspace"
@@ -82,9 +83,10 @@ func (app *Application) InitWorkspaceRoutes() {
 		WithRepository(&app.Repository).
 		WithWorkspaceService(&workspaceService).
 		WithCategoryService(&categoryService)
+	recommendLinkService := recommendlink.InitRecommendLinkService().WithRepository(&app.Repository)
 
 	workspaceCodeService := workspacecode.InitWorkspaceCodeService().WithRepository(&app.Repository).WithBookmarkService(&bookmarkService).WithCategoryService(&categoryService)
-	workspaceController = workspaceController.WithWorkspaceCodeService(&workspaceCodeService)
+	workspaceController = workspaceController.WithWorkspaceCodeService(&workspaceCodeService).WithRecommendLinkService(&recommendLinkService)
 	userService := user.InitUserService(&app.Repository)
 	jwtService := jwtToken.InitJWTService(app.PubKey, app.PrivateKey, app.Config.App.FooterKey)
 
@@ -95,10 +97,13 @@ func (app *Application) InitWorkspaceRoutes() {
 	e.GET("/:workspace_id/category/:category_id", workspaceController.FindWorkspaceCategoryBookmark, customMiddleware.Auth)
 	e.GET("/:id/bookmark", workspaceController.SearchBookmarkController, customMiddleware.Auth)
 	e.GET("/:id/info", workspaceController.FindWorkspaceInfoController, customMiddleware.Auth)
+	e.GET("/:id/recommend", workspaceController.FindTopRecommendLinks, customMiddleware.Auth)
+	e.GET("/:id/top", workspaceController.FindTopCategories, customMiddleware.Auth)
 	e.PUT("/:id", workspaceController.UpdateWorkspaceController, customMiddleware.Auth)
 	e.POST("", workspaceController.CreateWorkspaceController, customMiddleware.Auth)
 	e.POST("/join", workspaceController.JoinWorkspaceController, customMiddleware.Auth)
 	e.POST("/:workspace_id/category/:category_id", workspaceController.RegisterCategoryToWorkspaceController, customMiddleware.Auth)
+	e.POST("/:id/recommend", workspaceController.CreateRecommendLinkController, customMiddleware.Auth)
 	e.GET("/:id/code", workspaceController.FindWorkspaceCodeController, customMiddleware.Auth)
 	e.POST("/:id/code", workspaceController.CreateWorkspaceCodeController, customMiddleware.Auth)
 	e.DELETE("/:id", workspaceController.DeleteWorkspaceController, customMiddleware.Auth)
