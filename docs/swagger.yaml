@@ -1247,6 +1247,43 @@ paths:
       summary: 워크스페이스 코드 생성
       tags:
       - workspace
+  /api/v1/workspace/:id/exit:
+    delete:
+      consumes:
+      - application/json
+      description: 워크스페이스를 나갑니다.
+      parameters:
+      - description: Workspace id
+        in: path
+        name: workspace_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.OkResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/customerror.CustomError'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/customerror.CustomError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/customerror.CustomError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/customerror.CustomError'
+      summary: 워크스페이스 나가기
+      tags:
+      - workspace
   /api/v1/workspace/:id/info:
     get:
       consumes:

@@ -518,6 +518,21 @@ func (w *WorkspaceController) FindTopCategories(ctx echo.Context) error {
 	return ctx.JSON(http.StatusOK, categories)
 }
 
+// ExitWorkspace godoc
+//
+//	@summary	워크스페이스 나가기
+//	@schemes
+//	@description	워크스페이스를 나갑니다.
+//	@tags			workspace
+//	@accept			json
+//	@produce		json
+//	@param			workspace_id	path		int	true	"Workspace id"
+//	@success		200				{object}	responses.OkResponse
+//	@failure		400				{object}	customerror.CustomError
+//	@failure		401				{object}	customerror.CustomError
+//	@failure		404				{object}	customerror.CustomError
+//	@failure		500				{object}	customerror.CustomError
+//	@router			/api/v1/workspace/:id/exit [DELETE]
 func (w *WorkspaceController) ExitWorkspace(ctx echo.Context) error {
 	id, err := utils.ParseURLParam(ctx, "id")
 	if err != nil {
