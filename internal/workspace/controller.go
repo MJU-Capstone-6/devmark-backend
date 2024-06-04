@@ -518,6 +518,26 @@ func (w *WorkspaceController) FindTopCategories(ctx echo.Context) error {
 	return ctx.JSON(http.StatusOK, categories)
 }
 
+func (w *WorkspaceController) ExitWorkspace(ctx echo.Context) error {
+	id, err := utils.ParseURLParam(ctx, "id")
+	if err != nil {
+		return err
+	}
+	user, err := utils.GetAuthUser(ctx)
+	if err != nil {
+		return err
+	}
+	param := repository.ExitWorkspaceParams{
+		WorkspaceID: int64(*id),
+		UserID:      user.ID,
+	}
+	err = w.WorkspaceService.Exit(param)
+	if err != nil {
+		return err
+	}
+	return ctx.JSON(http.StatusOK, responses.OkResponse{Ok: true})
+}
+
 func InitWorkspaceController() *WorkspaceController {
 	return &WorkspaceController{}
 }

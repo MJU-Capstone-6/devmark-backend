@@ -60,4 +60,6 @@ type IRepository interface {
 	FindRecommendLinks(context.Context, *int64) ([]repository.FindRecommendLinksRow, error)
 	FindTopCategories(context.Context, *int64) ([]repository.FindTopCategoriesRow, error)
 	CreateRecommendLink(context.Context, repository.CreateRecommendLinkParams) (repository.RecommendLink, error)
+	ExitWorkspace(context.Context, repository.ExitWorkspaceParams) error
+	IsUserJoinedWorkspace(context.Context, repository.IsUserJoinedWorkspaceParams) (repository.WorkspaceUser, error)
 }
