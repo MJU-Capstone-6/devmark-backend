@@ -17,4 +17,5 @@ type IWorkspaceService interface {
 	Delete(int) error
 	Join(string, repository.JoinWorkspaceParams) error
 	RegisterCategory(repository.RegisterCategoryToWorkspaceParams) error
+	Exit(repository.ExitWorkspaceParams) error
 }

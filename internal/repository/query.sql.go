@@ -333,6 +333,20 @@ func (q *Queries) DeleteWorkspace(ctx context.Context, id int64) error {
 	return err
 }
 
+const exitWorkspace = `-- name: ExitWorkspace :exec
+DELETE FROM workspace_user WHERE workspace_id = $1 AND user_id = $2
+`
+
+type ExitWorkspaceParams struct {
+	WorkspaceID int64 `db:"workspace_id" json:"workspace_id"`
+	UserID      int64 `db:"user_id" json:"user_id"`
+}
+
+func (q *Queries) ExitWorkspace(ctx context.Context, arg ExitWorkspaceParams) error {
+	_, err := q.db.Exec(ctx, exitWorkspace, arg.WorkspaceID, arg.UserID)
+	return err
+}
+
 const findBookmark = `-- name: FindBookmark :one
 SELECT bookmark.id, bookmark.link, bookmark.category_id, bookmark.workspace_id, bookmark.summary, bookmark.created_at, bookmark.updated_at, bookmark.user_id, bookmark.title, bookmark.is_read, workspace.id, workspace.name, workspace.description, workspace.created_at, workspace.updated_at, workspace.bookmark_count, workspace.user_count, category.id, category.name, category.created_at, category.updated_at FROM bookmark
 JOIN workspace on workspace.id = bookmark.workspace_id
@@ -860,6 +874,22 @@ type FindWorkspaceJoinedUserParams struct {
 
 func (q *Queries) FindWorkspaceJoinedUser(ctx context.Context, arg FindWorkspaceJoinedUserParams) (WorkspaceUser, error) {
 	row := q.db.QueryRow(ctx, findWorkspaceJoinedUser, arg.WorkspaceID, arg.UserID)
+	var i WorkspaceUser
+	err := row.Scan(&i.WorkspaceID, &i.UserID)
+	return i, err
+}
+
+const isUserJoinedWorkspace = `-- name: IsUserJoinedWorkspace :one
+SELECT workspace_id, user_id FROM workspace_user WHERE workspace_id = $1 AND user_id = $2
+`
+
+type IsUserJoinedWorkspaceParams struct {
+	WorkspaceID int64 `db:"workspace_id" json:"workspace_id"`
+	UserID      int64 `db:"user_id" json:"user_id"`
+}
+
+func (q *Queries) IsUserJoinedWorkspace(ctx context.Context, arg IsUserJoinedWorkspaceParams) (WorkspaceUser, error) {
+	row := q.db.QueryRow(ctx, isUserJoinedWorkspace, arg.WorkspaceID, arg.UserID)
 	var i WorkspaceUser
 	err := row.Scan(&i.WorkspaceID, &i.UserID)
 	return i, err

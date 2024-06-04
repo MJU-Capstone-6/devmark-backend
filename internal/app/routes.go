@@ -106,6 +106,7 @@ func (app *Application) InitWorkspaceRoutes() {
 	e.POST("/:id/recommend", workspaceController.CreateRecommendLinkController, customMiddleware.Auth)
 	e.GET("/:id/code", workspaceController.FindWorkspaceCodeController, customMiddleware.Auth)
 	e.POST("/:id/code", workspaceController.CreateWorkspaceCodeController, customMiddleware.Auth)
+	e.DELETE("/:id/exit", workspaceController.ExitWorkspace, customMiddleware.Auth)
 	e.DELETE("/:id", workspaceController.DeleteWorkspaceController, customMiddleware.Auth)
 }
 

@@ -157,6 +157,23 @@ func (w *WorkspaceService) FindTopCategories(id int) (*[]repository.FindTopCateg
 	return &categories, nil
 }
 
+func (w *WorkspaceService) Exit(param repository.ExitWorkspaceParams) error {
+	_, err := w.FindById(int(param.WorkspaceID))
+	if err != nil {
+		return err
+	}
+	_, err = w.Repository.IsUserJoinedWorkspace(context.Background(), repository.IsUserJoinedWorkspaceParams(param))
+	if err != nil {
+		log.Println(err)
+		return customerror.WorkspaceNeverJoined(err)
+	}
+	err = w.Repository.ExitWorkspace(context.Background(), param)
+	if err != nil {
+		return customerror.WorkspaceExitFail(err)
+	}
+	return nil
+}
+
 func InitWorkspaceService(repo interfaces.IRepository) *WorkspaceService {
 	return &WorkspaceService{Repository: repo}
 }

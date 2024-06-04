@@ -257,3 +257,9 @@ LIMIT 3;
 INSERT INTO recommend_link (workspace_id, category_id, link, title)
 VALUES ($1, $2, $3, $4)
 RETURNING *;
+
+-- name: ExitWorkspace :exec
+DELETE FROM workspace_user WHERE workspace_id = $1 AND user_id = $2;
+
+-- name: IsUserJoinedWorkspace :one
+SELECT * FROM workspace_user WHERE workspace_id = $1 AND user_id = $2;
