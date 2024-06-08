@@ -183,6 +183,34 @@ func (_m *IRepository) CreateInviteCode(_a0 context.Context, _a1 repository.Crea
 	return r0, r1
 }
 
+// CreateNotificationHistory provides a mock function with given fields: _a0, _a1
+func (_m *IRepository) CreateNotificationHistory(_a0 context.Context, _a1 repository.CreateNotificationHistoryParams) (repository.NotificationHistory, error) {
+	ret := _m.Called(_a0, _a1)
+
+	if len(ret) == 0 {
+		panic("no return value specified for CreateNotificationHistory")
+	}
+
+	var r0 repository.NotificationHistory
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, repository.CreateNotificationHistoryParams) (repository.NotificationHistory, error)); ok {
+		return rf(_a0, _a1)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, repository.CreateNotificationHistoryParams) repository.NotificationHistory); ok {
+		r0 = rf(_a0, _a1)
+	} else {
+		r0 = ret.Get(0).(repository.NotificationHistory)
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, repository.CreateNotificationHistoryParams) error); ok {
+		r1 = rf(_a0, _a1)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // CreateRecommendLink provides a mock function with given fields: _a0, _a1
 func (_m *IRepository) CreateRecommendLink(_a0 context.Context, _a1 repository.CreateRecommendLinkParams) (repository.RecommendLink, error) {
 	ret := _m.Called(_a0, _a1)
@@ -778,6 +806,34 @@ func (_m *IRepository) FindUnreadBookmark(_a0 context.Context) ([]repository.Fin
 
 	if rf, ok := ret.Get(1).(func(context.Context) error); ok {
 		r1 = rf(_a0)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// FindUnreadNotificationHistory provides a mock function with given fields: _a0, _a1
+func (_m *IRepository) FindUnreadNotificationHistory(_a0 context.Context, _a1 int64) (repository.UnreadNotification, error) {
+	ret := _m.Called(_a0, _a1)
+
+	if len(ret) == 0 {
+		panic("no return value specified for FindUnreadNotificationHistory")
+	}
+
+	var r0 repository.UnreadNotification
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, int64) (repository.UnreadNotification, error)); ok {
+		return rf(_a0, _a1)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, int64) repository.UnreadNotification); ok {
+		r0 = rf(_a0, _a1)
+	} else {
+		r0 = ret.Get(0).(repository.UnreadNotification)
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, int64) error); ok {
+		r1 = rf(_a0, _a1)
 	} else {
 		r1 = ret.Error(1)
 	}
