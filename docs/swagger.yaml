@@ -169,6 +169,21 @@ definitions:
       workspace_id:
         type: integer
     type: object
+  repository.NotificationHistory:
+    properties:
+      created_at:
+        $ref: '#/definitions/pgtype.Timestamptz'
+      id:
+        type: integer
+      is_read:
+        type: boolean
+      notification_title:
+        type: string
+      updated_at:
+        $ref: '#/definitions/pgtype.Timestamptz'
+      user_id:
+        type: integer
+    type: object
   repository.RecommendLink:
     properties:
       category_id:
@@ -210,6 +225,17 @@ definitions:
         type: integer
       workspace_id:
         type: integer
+    type: object
+  repository.UnreadNotification:
+    properties:
+      id:
+        type: integer
+      notifications:
+        items:
+          $ref: '#/definitions/repository.NotificationHistory'
+        type: array
+      username:
+        type: string
     type: object
   repository.UpdateCategoryParams:
     properties:
@@ -952,6 +978,25 @@ paths:
       summary: RefreshToken으로 AccessToken을 재발급 합니다.
       tags:
       - refreshToken
+  /api/v1/user/notification:
+    get:
+      consumes:
+      - application/json
+      description: 유저의 알림 리스트를 조회합니다.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/repository.UnreadNotification'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/customerror.CustomError'
+      summary: 유저의 알림 리스트를 조회합니다.
+      tags:
+      - user
   /api/v1/user/workspace:
     get:
       consumes:

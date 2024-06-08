@@ -18,7 +18,7 @@ func (u *UnreadBookmarkSchedulerService) Run() (gocron.Scheduler, error) {
 		return unreadBookmarkScheduler, err
 	}
 
-	job, err := unreadBookmarkScheduler.NewJob(gocron.WeeklyJob(1, gocron.NewWeekdays(time.Sunday), gocron.NewAtTimes(gocron.NewAtTime(12, 0, 0))),
+	job, err := unreadBookmarkScheduler.NewJob(gocron.DurationJob(time.Hour),
 		gocron.NewTask(func() {
 			err := u.NotificationService.SendUnreadBookmarkNotification()
 			if err != nil {

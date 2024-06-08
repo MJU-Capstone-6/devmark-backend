@@ -67,6 +67,15 @@ type InviteCode struct {
 	UpdatedAt   pgtype.Timestamptz `db:"updated_at" json:"updated_at"`
 }
 
+type NotificationHistory struct {
+	ID                int64              `db:"id" json:"id"`
+	UserID            *int64             `db:"user_id" json:"user_id"`
+	NotificationTitle *string            `db:"notification_title" json:"notification_title"`
+	IsRead            *bool              `db:"is_read" json:"is_read"`
+	CreatedAt         pgtype.Timestamptz `db:"created_at" json:"created_at"`
+	UpdatedAt         pgtype.Timestamptz `db:"updated_at" json:"updated_at"`
+}
+
 type RecommendLink struct {
 	ID          int64              `db:"id" json:"id"`
 	WorkspaceID *int64             `db:"workspace_id" json:"workspace_id"`
@@ -97,6 +106,12 @@ type UnreadBookmark struct {
 	WorkspaceID *int64       `db:"workspace_id" json:"workspace_id"`
 	Bookmarks   []Bookmark   `db:"bookmarks" json:"bookmarks"`
 	DeviceInfos []DeviceInfo `db:"device_infos" json:"device_infos"`
+}
+
+type UnreadNotification struct {
+	ID            int64                  `db:"id" json:"id"`
+	Username      *string                `db:"username" json:"username"`
+	Notifications []*NotificationHistory `db:"notifications" json:"notifications"`
 }
 
 type User struct {

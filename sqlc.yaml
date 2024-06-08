@@ -59,3 +59,10 @@ sql:
             go_type:
               type: "RecommendLink"
               slice: true
+
+          - column: "unread_notifications.notifications"
+            nullable: true
+            go_type:
+              type: "NotificationHistory"
+              slice: true
+              pointer: true

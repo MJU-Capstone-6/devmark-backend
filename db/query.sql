@@ -263,3 +263,11 @@ DELETE FROM workspace_user WHERE workspace_id = $1 AND user_id = $2;
 
 -- name: IsUserJoinedWorkspace :one
 SELECT * FROM workspace_user WHERE workspace_id = $1 AND user_id = $2;
+
+-- name: CreateNotificationHistory :one
+INSERT INTO notification_history (user_id, notification_title)
+VALUES ($1, $2)
+RETURNING *;
+
+-- name: FindUnreadNotificationHistory :one
+SELECT * FROM unread_notifications WHERE id = $1;
