@@ -13,6 +13,7 @@ import (
 	invitecode "github.com/MJU-Capstone-6/devmark-backend/internal/inviteCode"
 	"github.com/MJU-Capstone-6/devmark-backend/internal/jwtToken"
 	"github.com/MJU-Capstone-6/devmark-backend/internal/middlewares"
+	"github.com/MJU-Capstone-6/devmark-backend/internal/notification"
 	recommendlink "github.com/MJU-Capstone-6/devmark-backend/internal/recommendLink"
 	refreshtoken "github.com/MJU-Capstone-6/devmark-backend/internal/refreshToken"
 	"github.com/MJU-Capstone-6/devmark-backend/internal/user"
@@ -49,13 +50,14 @@ func (app *Application) InitRoutes() {
 
 func (app *Application) InitUserRoutes() {
 	e := app.Handler.Group(fmt.Sprintf("%s/user", V1))
-
+	notificationService := notification.InitNotificationService().WithRepository(&app.Repository)
 	userService := user.InitUserService(&app.Repository)
-	userController := user.InitController().WithUserService(userService)
+	userController := user.InitController().WithUserService(userService).WithNotificationService(&notificationService)
 
 	jwtService := jwtToken.InitJWTService(app.PubKey, app.PrivateKey, app.Config.App.FooterKey)
 	customMiddleware := middlewares.InitMiddleware().WithUserService(userService).WithJwtTokenService(jwtService)
 	e.GET("/workspace", userController.ViewUserWorkspace, customMiddleware.Auth)
+	e.GET("/notification", userController.ViewUserNotificationHistory, customMiddleware.Auth)
 }
 
 func (app *Application) InitAuthRoutes() {

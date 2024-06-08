@@ -878,6 +878,35 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/user/notification": {
+            "get": {
+                "description": "유저의 알림 리스트를 조회합니다.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "유저의 알림 리스트를 조회합니다.",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/repository.UnreadNotification"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/customerror.CustomError"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/user/workspace": {
             "get": {
                 "description": "유저가 참가한 워크스페이스의 리스트를 조회합니다.",
@@ -2014,6 +2043,29 @@ const docTemplate = `{
                 }
             }
         },
+        "repository.NotificationHistory": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "$ref": "#/definitions/pgtype.Timestamptz"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "is_read": {
+                    "type": "boolean"
+                },
+                "notification_title": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "$ref": "#/definitions/pgtype.Timestamptz"
+                },
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
         "repository.RecommendLink": {
             "type": "object",
             "properties": {
@@ -2075,6 +2127,23 @@ const docTemplate = `{
                 },
                 "workspace_id": {
                     "type": "integer"
+                }
+            }
+        },
+        "repository.UnreadNotification": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "notifications": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/repository.NotificationHistory"
+                    }
+                },
+                "username": {
+                    "type": "string"
                 }
             }
         },

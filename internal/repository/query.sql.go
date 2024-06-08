@@ -163,6 +163,31 @@ func (q *Queries) CreateInviteCode(ctx context.Context, arg CreateInviteCodePara
 	return i, err
 }
 
+const createNotificationHistory = `-- name: CreateNotificationHistory :one
+INSERT INTO notification_history (user_id, notification_title)
+VALUES ($1, $2)
+RETURNING id, user_id, notification_title, is_read, created_at, updated_at
+`
+
+type CreateNotificationHistoryParams struct {
+	UserID            *int64  `db:"user_id" json:"user_id"`
+	NotificationTitle *string `db:"notification_title" json:"notification_title"`
+}
+
+func (q *Queries) CreateNotificationHistory(ctx context.Context, arg CreateNotificationHistoryParams) (NotificationHistory, error) {
+	row := q.db.QueryRow(ctx, createNotificationHistory, arg.UserID, arg.NotificationTitle)
+	var i NotificationHistory
+	err := row.Scan(
+		&i.ID,
+		&i.UserID,
+		&i.NotificationTitle,
+		&i.IsRead,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
 const createRecommendLink = `-- name: CreateRecommendLink :one
 INSERT INTO recommend_link (workspace_id, category_id, link, title)
 VALUES ($1, $2, $3, $4)
@@ -646,6 +671,17 @@ func (q *Queries) FindUnreadBookmark(ctx context.Context) ([]FindUnreadBookmarkR
 		return nil, err
 	}
 	return items, nil
+}
+
+const findUnreadNotificationHistory = `-- name: FindUnreadNotificationHistory :one
+SELECT id, username, notifications FROM unread_notifications WHERE id = $1
+`
+
+func (q *Queries) FindUnreadNotificationHistory(ctx context.Context, id int64) (UnreadNotification, error) {
+	row := q.db.QueryRow(ctx, findUnreadNotificationHistory, id)
+	var i UnreadNotification
+	err := row.Scan(&i.ID, &i.Username, &i.Notifications)
+	return i, err
 }
 
 const findUserById = `-- name: FindUserById :one
