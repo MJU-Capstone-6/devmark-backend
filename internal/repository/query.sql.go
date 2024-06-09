@@ -164,18 +164,19 @@ func (q *Queries) CreateInviteCode(ctx context.Context, arg CreateInviteCodePara
 }
 
 const createNotificationHistory = `-- name: CreateNotificationHistory :one
-INSERT INTO notification_history (user_id, notification_title)
-VALUES ($1, $2)
-RETURNING id, user_id, notification_title, is_read, created_at, updated_at
+INSERT INTO notification_history (user_id, notification_title, bookmark_id)
+VALUES ($1, $2, $3)
+RETURNING id, user_id, notification_title, is_read, created_at, updated_at, bookmark_id
 `
 
 type CreateNotificationHistoryParams struct {
 	UserID            *int64  `db:"user_id" json:"user_id"`
 	NotificationTitle *string `db:"notification_title" json:"notification_title"`
+	BookmarkID        *int64  `db:"bookmark_id" json:"bookmark_id"`
 }
 
 func (q *Queries) CreateNotificationHistory(ctx context.Context, arg CreateNotificationHistoryParams) (NotificationHistory, error) {
-	row := q.db.QueryRow(ctx, createNotificationHistory, arg.UserID, arg.NotificationTitle)
+	row := q.db.QueryRow(ctx, createNotificationHistory, arg.UserID, arg.NotificationTitle, arg.BookmarkID)
 	var i NotificationHistory
 	err := row.Scan(
 		&i.ID,
@@ -184,6 +185,7 @@ func (q *Queries) CreateNotificationHistory(ctx context.Context, arg CreateNotif
 		&i.IsRead,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.BookmarkID,
 	)
 	return i, err
 }
@@ -674,13 +676,21 @@ func (q *Queries) FindUnreadBookmark(ctx context.Context) ([]FindUnreadBookmarkR
 }
 
 const findUnreadNotificationHistory = `-- name: FindUnreadNotificationHistory :one
-SELECT id, username, notifications FROM unread_notifications WHERE id = $1
+SELECT user_id, username, notifications, bookmark_id, bookmark_link, bookmark_summary, bookmark_title FROM unread_notifications WHERE user_id = $1
 `
 
-func (q *Queries) FindUnreadNotificationHistory(ctx context.Context, id int64) (UnreadNotification, error) {
-	row := q.db.QueryRow(ctx, findUnreadNotificationHistory, id)
+func (q *Queries) FindUnreadNotificationHistory(ctx context.Context, userID int64) (UnreadNotification, error) {
+	row := q.db.QueryRow(ctx, findUnreadNotificationHistory, userID)
 	var i UnreadNotification
-	err := row.Scan(&i.ID, &i.Username, &i.Notifications)
+	err := row.Scan(
+		&i.UserID,
+		&i.Username,
+		&i.Notifications,
+		&i.BookmarkID,
+		&i.BookmarkLink,
+		&i.BookmarkSummary,
+		&i.BookmarkTitle,
+	)
 	return i, err
 }
 

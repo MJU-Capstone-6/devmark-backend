@@ -42,6 +42,7 @@ func (n *NotificationService) SendUnreadBookmarkNotification() error {
 			param := repository.CreateNotificationHistoryParams{
 				UserID:            bookmark.UserID,
 				NotificationTitle: &title,
+				BookmarkID:        &bookmark.ID,
 			}
 			_, err = n.CreateNotificationHistory(param)
 			if err != nil {
