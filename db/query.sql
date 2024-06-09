@@ -265,8 +265,8 @@ DELETE FROM workspace_user WHERE workspace_id = $1 AND user_id = $2;
 SELECT * FROM workspace_user WHERE workspace_id = $1 AND user_id = $2;
 
 -- name: CreateNotificationHistory :one
-INSERT INTO notification_history (user_id, notification_title, bookmark_id)
-VALUES ($1, $2, $3)
+INSERT INTO notification_history (user_id, notification_title, bookmark_id, workspace_id)
+VALUES ($1, $2, $3, $4)
 RETURNING *;
 
 -- name: FindUnreadNotificationHistory :many

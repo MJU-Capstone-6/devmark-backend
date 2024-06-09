@@ -164,8 +164,8 @@ func (q *Queries) CreateInviteCode(ctx context.Context, arg CreateInviteCodePara
 }
 
 const createNotificationHistory = `-- name: CreateNotificationHistory :one
-INSERT INTO notification_history (user_id, notification_title, bookmark_id)
-VALUES ($1, $2, $3)
+INSERT INTO notification_history (user_id, notification_title, bookmark_id, workspace_id)
+VALUES ($1, $2, $3, $4)
 RETURNING id, user_id, notification_title, is_read, created_at, updated_at, bookmark_id, workspace_id
 `
 
@@ -173,10 +173,16 @@ type CreateNotificationHistoryParams struct {
 	UserID            *int64  `db:"user_id" json:"user_id"`
 	NotificationTitle *string `db:"notification_title" json:"notification_title"`
 	BookmarkID        *int64  `db:"bookmark_id" json:"bookmark_id"`
+	WorkspaceID       *int64  `db:"workspace_id" json:"workspace_id"`
 }
 
 func (q *Queries) CreateNotificationHistory(ctx context.Context, arg CreateNotificationHistoryParams) (NotificationHistory, error) {
-	row := q.db.QueryRow(ctx, createNotificationHistory, arg.UserID, arg.NotificationTitle, arg.BookmarkID)
+	row := q.db.QueryRow(ctx, createNotificationHistory,
+		arg.UserID,
+		arg.NotificationTitle,
+		arg.BookmarkID,
+		arg.WorkspaceID,
+	)
 	var i NotificationHistory
 	err := row.Scan(
 		&i.ID,

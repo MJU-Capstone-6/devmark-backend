@@ -814,22 +814,24 @@ func (_m *IRepository) FindUnreadBookmark(_a0 context.Context) ([]repository.Fin
 }
 
 // FindUnreadNotificationHistory provides a mock function with given fields: _a0, _a1
-func (_m *IRepository) FindUnreadNotificationHistory(_a0 context.Context, _a1 *int64) (repository.UnreadNotification, error) {
+func (_m *IRepository) FindUnreadNotificationHistory(_a0 context.Context, _a1 *int64) ([]repository.FindUnreadNotificationHistoryRow, error) {
 	ret := _m.Called(_a0, _a1)
 
 	if len(ret) == 0 {
 		panic("no return value specified for FindUnreadNotificationHistory")
 	}
 
-	var r0 repository.UnreadNotification
+	var r0 []repository.FindUnreadNotificationHistoryRow
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, *int64) (repository.UnreadNotification, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, *int64) ([]repository.FindUnreadNotificationHistoryRow, error)); ok {
 		return rf(_a0, _a1)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, *int64) repository.UnreadNotification); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, *int64) []repository.FindUnreadNotificationHistoryRow); ok {
 		r0 = rf(_a0, _a1)
 	} else {
-		r0 = ret.Get(0).(repository.UnreadNotification)
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]repository.FindUnreadNotificationHistoryRow)
+		}
 	}
 
 	if rf, ok := ret.Get(1).(func(context.Context, *int64) error); ok {
