@@ -117,6 +117,17 @@ definitions:
       name:
         type: string
     type: object
+  repository.FindUnreadNotificationHistoryRow:
+    properties:
+      bookmarks:
+        items:
+          $ref: '#/definitions/repository.Bookmark'
+        type: array
+      notification_id:
+        type: integer
+      notification_title:
+        type: string
+    type: object
   repository.FindUserByIdRow:
     properties:
       created_at:
@@ -169,21 +180,6 @@ definitions:
       workspace_id:
         type: integer
     type: object
-  repository.NotificationHistory:
-    properties:
-      created_at:
-        $ref: '#/definitions/pgtype.Timestamptz'
-      id:
-        type: integer
-      is_read:
-        type: boolean
-      notification_title:
-        type: string
-      updated_at:
-        $ref: '#/definitions/pgtype.Timestamptz'
-      user_id:
-        type: integer
-    type: object
   repository.RecommendLink:
     properties:
       category_id:
@@ -225,17 +221,6 @@ definitions:
         type: integer
       workspace_id:
         type: integer
-    type: object
-  repository.UnreadNotification:
-    properties:
-      id:
-        type: integer
-      notifications:
-        items:
-          $ref: '#/definitions/repository.NotificationHistory'
-        type: array
-      username:
-        type: string
     type: object
   repository.UpdateCategoryParams:
     properties:
@@ -989,7 +974,13 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/repository.UnreadNotification'
+            items:
+              $ref: '#/definitions/repository.FindUnreadNotificationHistoryRow'
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/customerror.CustomError'
         "500":
           description: Internal Server Error
           schema:

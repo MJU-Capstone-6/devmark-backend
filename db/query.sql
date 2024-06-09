@@ -269,5 +269,5 @@ INSERT INTO notification_history (user_id, notification_title, bookmark_id)
 VALUES ($1, $2, $3)
 RETURNING *;
 
--- name: FindUnreadNotificationHistory :one
-SELECT * FROM unread_notifications WHERE user_id = $1;
+-- name: FindUnreadNotificationHistory :many
+SELECT notification_id, notification_title, bookmarks FROM unread_notifications WHERE user_id = $1;

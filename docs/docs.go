@@ -895,7 +895,16 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/repository.UnreadNotification"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/repository.FindUnreadNotificationHistoryRow"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/customerror.CustomError"
                         }
                     },
                     "500": {
@@ -1963,6 +1972,23 @@ const docTemplate = `{
                 }
             }
         },
+        "repository.FindUnreadNotificationHistoryRow": {
+            "type": "object",
+            "properties": {
+                "bookmarks": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/repository.Bookmark"
+                    }
+                },
+                "notification_id": {
+                    "type": "integer"
+                },
+                "notification_title": {
+                    "type": "string"
+                }
+            }
+        },
         "repository.FindUserByIdRow": {
             "type": "object",
             "properties": {
@@ -2043,29 +2069,6 @@ const docTemplate = `{
                 }
             }
         },
-        "repository.NotificationHistory": {
-            "type": "object",
-            "properties": {
-                "created_at": {
-                    "$ref": "#/definitions/pgtype.Timestamptz"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "is_read": {
-                    "type": "boolean"
-                },
-                "notification_title": {
-                    "type": "string"
-                },
-                "updated_at": {
-                    "$ref": "#/definitions/pgtype.Timestamptz"
-                },
-                "user_id": {
-                    "type": "integer"
-                }
-            }
-        },
         "repository.RecommendLink": {
             "type": "object",
             "properties": {
@@ -2127,23 +2130,6 @@ const docTemplate = `{
                 },
                 "workspace_id": {
                     "type": "integer"
-                }
-            }
-        },
-        "repository.UnreadNotification": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "integer"
-                },
-                "notifications": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/repository.NotificationHistory"
-                    }
-                },
-                "username": {
-                    "type": "string"
                 }
             }
         },

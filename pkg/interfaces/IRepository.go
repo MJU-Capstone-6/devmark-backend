@@ -63,5 +63,5 @@ type IRepository interface {
 	ExitWorkspace(context.Context, repository.ExitWorkspaceParams) error
 	IsUserJoinedWorkspace(context.Context, repository.IsUserJoinedWorkspaceParams) (repository.WorkspaceUser, error)
 	CreateNotificationHistory(context.Context, repository.CreateNotificationHistoryParams) (repository.NotificationHistory, error)
-	FindUnreadNotificationHistory(context.Context, int64) (repository.UnreadNotification, error)
+	FindUnreadNotificationHistory(context.Context, *int64) ([]repository.FindUnreadNotificationHistoryRow, error)
 }

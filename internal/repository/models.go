@@ -75,6 +75,7 @@ type NotificationHistory struct {
 	CreatedAt         pgtype.Timestamptz `db:"created_at" json:"created_at"`
 	UpdatedAt         pgtype.Timestamptz `db:"updated_at" json:"updated_at"`
 	BookmarkID        *int64             `db:"bookmark_id" json:"bookmark_id"`
+	WorkspaceID       *int64             `db:"workspace_id" json:"workspace_id"`
 }
 
 type RecommendLink struct {
@@ -110,13 +111,16 @@ type UnreadBookmark struct {
 }
 
 type UnreadNotification struct {
-	UserID          int64                  `db:"user_id" json:"user_id"`
-	Username        *string                `db:"username" json:"username"`
-	Notifications   []*NotificationHistory `db:"notifications" json:"notifications"`
-	BookmarkID      int64                  `db:"bookmark_id" json:"bookmark_id"`
-	BookmarkLink    *string                `db:"bookmark_link" json:"bookmark_link"`
-	BookmarkSummary *string                `db:"bookmark_summary" json:"bookmark_summary"`
-	BookmarkTitle   *string                `db:"bookmark_title" json:"bookmark_title"`
+	NotificationID    int64              `db:"notification_id" json:"notification_id"`
+	UserID            *int64             `db:"user_id" json:"user_id"`
+	NotificationTitle *string            `db:"notification_title" json:"notification_title"`
+	IsRead            *bool              `db:"is_read" json:"is_read"`
+	CreatedAt         pgtype.Timestamptz `db:"created_at" json:"created_at"`
+	UpdatedAt         pgtype.Timestamptz `db:"updated_at" json:"updated_at"`
+	BookmarkID        *int64             `db:"bookmark_id" json:"bookmark_id"`
+	WorkspaceID       *int64             `db:"workspace_id" json:"workspace_id"`
+	Bookmarks         []*Bookmark        `db:"bookmarks" json:"bookmarks"`
+	DeviceInfos       []byte             `db:"device_infos" json:"device_infos"`
 }
 
 type User struct {

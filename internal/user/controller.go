@@ -53,7 +53,7 @@ func (u *UserController) ViewUserWorkspace(ctx echo.Context) error {
 //	@tags			user
 //	@accept			json
 //	@produce		json
-//	@success		200	{object}	repository.UnreadNotification
+//	@success		200	{object}	[]repository.FindUnreadNotificationHistoryRow
 //	@failure		404 {object}	customerror.CustomError
 //	@failure		500	{object}	customerror.CustomError
 //	@router			/api/v1/user/notification [GET]

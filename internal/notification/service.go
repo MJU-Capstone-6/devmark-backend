@@ -61,8 +61,8 @@ func (n *NotificationService) CreateNotificationHistory(param repository.CreateN
 	return &history, nil
 }
 
-func (n *NotificationService) FindUnreadNotificationHistory(userID int64) (*repository.UnreadNotification, error) {
-	historys, err := n.Repository.FindUnreadNotificationHistory(context.Background(), userID)
+func (n *NotificationService) FindUnreadNotificationHistory(userID int64) (*[]repository.FindUnreadNotificationHistoryRow, error) {
+	historys, err := n.Repository.FindUnreadNotificationHistory(context.Background(), &userID)
 	if err != nil {
 		log.Println(err)
 		return nil, customerror.NotificationHistoryNotFound(err)

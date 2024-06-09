@@ -66,3 +66,9 @@ sql:
               type: "NotificationHistory"
               slice: true
               pointer: true
+          - column: "unread_notifications.bookmarks"
+            nullable: true
+            go_type:
+              type: "Bookmark"
+              slice: true
+              pointer: true
